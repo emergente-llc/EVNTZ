@@ -7,5 +7,9 @@
         ]
 
         [profile.release]
-        opt-level = 'z'
+        
+            opt-level = 'z'
+            lto = "fat"
+            codegen-units = 1
+        
     

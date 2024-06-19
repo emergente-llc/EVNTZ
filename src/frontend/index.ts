@@ -15,7 +15,7 @@ export class AzleApp extends LitElement {
         this.db = 'Loading...';
 
         const response = await fetch(
-            `${import.meta.env.VITE_CANISTER_ORIGIN}/db`
+            `${import.meta.env.VITE_CANISTER_ORIGIN}/transactions`
         );
         const responseJson = await response.json();
 
@@ -26,7 +26,7 @@ export class AzleApp extends LitElement {
         this.db = 'Loading...';
 
         const response = await fetch(
-            `${import.meta.env.VITE_CANISTER_ORIGIN}/db/update`,
+            `${import.meta.env.VITE_CANISTER_ORIGIN}/transactions`,
             {
                 method: 'POST',
                 headers: [['Content-Type', 'application/json']],
@@ -49,13 +49,13 @@ export class AzleApp extends LitElement {
             <br />
 
             <div>
-                <button @click=${this.getDb}>Test /db</button>
+                <button @click=${this.getDb}>Test /transactions</button>
             </div>
 
             <br />
 
             <div>
-                <button @click=${this.updateDb}>Test /db/update</button>
+                <button @click=${this.updateDb}>Test /transactions</button>
             </div>
         `;
     }
