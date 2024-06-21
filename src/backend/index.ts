@@ -10,7 +10,7 @@ import {
 } from "azle";
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
-import {v4} from "uuid";
+import { v4 } from "uuid";
 
 dotenv.config();
 
@@ -210,7 +210,6 @@ function postLog(req: Request, res: Response, next: NextFunction) {
 
 // Middleware to validate Customer tokens
 const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
-  // console.log("Headers Received:", req.headers);
 
   const authHeader = req.headers["authorization"];
   const vendorIdHeader = req.headers["rs_sec_hdr_vendor_id"];
@@ -226,11 +225,18 @@ const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
     return res.status(401).send("Bearer token not provided");
   }
 
-  //if (token === process.env.ACCESS_TOKEN_SECRET) {
+  console.log("authHeader: " + token.trimStart().trimEnd());
+  console.log("vendorIdHeader: " + vendorIdHeader);
+  console.log("vendorPasswordHeader: " + vendorPasswordHeader);
+
+  console.log("Token: " + process.env.ACCESS_TOKEN_SECRET);
+  console.log("Vendor Id: " + process.env.RS_SEC_HDR_VENDOR_ID);
+  console.log("Vendor Password: " + process.env.RS_SEC_HDR_VENDOR_PASSWORD);
+
   if (
-    token === "ecc448d9-5f00-42f6-a973-ad6fca9fa265" &&
-    vendorIdHeader === "ab38a423-9af0-4811-a5b4-482114fd918d" &&
-    vendorPasswordHeader === "201y*ZI1N-2+5&>MSfUfo2o+Buo8&klt3uw?863M2L71z*qY"
+    token.trimStart().trimEnd() === process.env.ACCESS_TOKEN_SECRET && 
+    vendorIdHeader.trimStart().trimEnd() === process.env.RS_SEC_HDR_VENDOR_ID && 
+    vendorPasswordHeader.trimStart().trimEnd() === process.env.RS_SEC_HDR_VENDOR_PASSWORD
   ) {
     next(); // proceed to the next middleware or route handler
   } else {
