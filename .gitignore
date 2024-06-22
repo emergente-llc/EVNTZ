@@ -1,2 +1,4 @@
+.azle
 .env
-/node_modules/
+.dfx
+node_modules

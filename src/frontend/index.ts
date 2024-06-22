@@ -1,62 +1,46 @@
-import { html, LitElement } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { html, LitElement } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
-@customElement('azle-app')
+@customElement("azle-app")
+
 export class AzleApp extends LitElement {
-    @property()
-    db = {};
 
-    constructor() {
-        super();
-        this.getDb();
-    }
+  @property()
+  sortedTransactions = {};
 
-    async getDb() {
-        this.db = 'Loading...';
+  constructor() {
+    super();
+    this.getAllTransaction();
+  }
 
-        const response = await fetch(
-            `${import.meta.env.VITE_CANISTER_ORIGIN}/transactions`
-        );
-        const responseJson = await response.json();
+  async getAllTransaction() {
+    this.sortedTransactions = "Loading...";
 
-        this.db = responseJson;
-    }
+    const response = await fetch(
+      `${import.meta.env.VITE_CANISTER_ORIGIN}/transactions/all`
+    );
+    const responseJson = await response.json();
 
-    async updateDb() {
-        this.db = 'Loading...';
+    this.sortedTransactions = responseJson;
+  }
 
-        const response = await fetch(
-            `${import.meta.env.VITE_CANISTER_ORIGIN}/transactions`,
-            {
-                method: 'POST',
-                headers: [['Content-Type', 'application/json']],
-                body: JSON.stringify({
-                    hello: 'world'
-                })
-            }
-        );
-        const responseJson = await response.json();
+  render() {
+    return html`
+      <h1>EVNTZ - Sales Transaction dashboard</h1>
 
-        this.db = responseJson;
-    }
-
-    render() {
-        return html`
-            <h1>Azle Hello World</h1>
-
-            <div>db: ${JSON.stringify(this.db)}</div>
-
-            <br />
-
-            <div>
-                <button @click=${this.getDb}>Test /transactions</button>
-            </div>
-
-            <br />
-
-            <div>
-                <button @click=${this.updateDb}>Test /transactions</button>
-            </div>
-        `;
-    }
+      <div style="width: 50%;">
+        Transactions: 
+        <br>
+        <pre style="white-space: pre-wrap;">
+          ${JSON.stringify(this.sortedTransactions, null, 2)}
+        </pre>
+      </div>
+      <br />
+      <div>
+        <button>
+          @click=${this.getAllTransaction}>Test /transactions
+        </button>        
+      </div>
+    `;
+  }
 }

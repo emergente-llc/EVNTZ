@@ -10,7 +10,6 @@ import {
 } from "azle";
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
-import { v4 } from "uuid";
 
 dotenv.config();
 
@@ -64,60 +63,58 @@ type Transaction = {
   ];
 };
 
-let transaction: Transaction[] = [];
-
-// let transaction: Transaction[] = [
-//   {
-//     orderId: "JAQ4L56",
-//     status: "new",
-//     operation: "sale",
-//     companyId: "1642e7f0-979d-4d57-aaa0-c73ed96622ae",
-//     event: {
-//       eventId: "d472d65e-b4cb-47ef-837d-544e4f26974c",
-//       eventName: "Journey - Freedom Tour 2022",
-//       eventArtist: "Journey",
-//       eventVenue: "Coliseo de Puerto Rico",
-//       eventCountry: "San Juan Puerto Rico",
-//       eventVenueGPS: "18.4277361,-66.0639617",
-//       eventDateTime: "09/23/2022 08:00PM",
-//       eventPromoterCompany:
-//         "Sireno Mesa, R&M Entertainment y Caribbean Concerts",
-//       eventInformation:
-//         "Por política del Coliseo y por su seguridad, se requiere que todo menor de 16 años esté acompañado por un adulto en todo momento durante los eventos. Esta regla aplica para todos los eventos que se llevan a cabo en el Coliseo de Puerto Rico.",
-//     },
-//     user: {
-//       name: "Juan del Pueblo",
-//       email: "juan.delpueblo@gmail.com",
-//       phone: "7873452022",
-//     },
-//     seats: [
-//       {
-//         ticket: {
-//           ticketId: "1256",
-//           ticketStatus: "active",
-//           ticketSection: "110",
-//           ticketRow: "A",
-//           ticketSeat: "15",
-//           ticketDescription: "",
-//           ticketQty: "1",
-//           ticketPrice: "155.00",
-//           ticketPriceIVU: "13.23",
-//           ticketServiceFee: "6.75",
-//           ticketServiceFeeIVU: "0.78",
-//           ticketPromoterFee: "4.00",
-//           ticketPromoterFeeIVU: "0.46",
-//           ticketClubSeatsFee: "5.00",
-//           ticketClubSeatsFeeIVU: "0.58",
-//           ticketFacilityFee: "2.00",
-//           ticketFacilityFeeIVU: "0.23",
-//           ticketOrderFeeWeb: "3.00",
-//           ticketOrderFeeWebIVU: "0.35",
-//           ticketTotal: "151.38",
-//         },
-//       },
-//     ],
-//   },
-// ];
+let transaction: Transaction[] = [
+  {
+    orderId: "JAQ4L56",
+    status: "new",
+    operation: "sale",
+    companyId: "1642e7f0-979d-4d57-aaa0-c73ed96622ae",
+    event: {
+      eventId: "d472d65e-b4cb-47ef-837d-544e4f26974c",
+      eventName: "Journey - Freedom Tour 2022",
+      eventArtist: "Journey",
+      eventVenue: "Coliseo de Puerto Rico",
+      eventCountry: "San Juan Puerto Rico",
+      eventVenueGPS: "18.4277361,-66.0639617",
+      eventDateTime: "09/23/2022 08:00PM",
+      eventPromoterCompany:
+        "Sireno Mesa, R&M Entertainment y Caribbean Concerts",
+      eventInformation:
+        "Por política del Coliseo y por su seguridad, se requiere que todo menor de 16 años esté acompañado por un adulto en todo momento durante los eventos. Esta regla aplica para todos los eventos que se llevan a cabo en el Coliseo de Puerto Rico.",
+    },
+    user: {
+      name: "Juan del Pueblo",
+      email: "juan.delpueblo@gmail.com",
+      phone: "7873452022",
+    },
+    seats: [
+      {
+        ticket: {
+          ticketId: "1256",
+          ticketStatus: "active",
+          ticketSection: "110",
+          ticketRow: "A",
+          ticketSeat: "15",
+          ticketDescription: "",
+          ticketQty: "1",
+          ticketPrice: "155.00",
+          ticketPriceIVU: "13.23",
+          ticketServiceFee: "6.75",
+          ticketServiceFeeIVU: "0.78",
+          ticketPromoterFee: "4.00",
+          ticketPromoterFeeIVU: "0.46",
+          ticketClubSeatsFee: "5.00",
+          ticketClubSeatsFeeIVU: "0.58",
+          ticketFacilityFee: "2.00",
+          ticketFacilityFeeIVU: "0.23",
+          ticketOrderFeeWeb: "3.00",
+          ticketOrderFeeWebIVU: "0.35",
+          ticketTotal: "151.38",
+        },
+      },
+    ],
+  },
+];
 
 const Order = Record({
   orderId: text,
@@ -128,6 +125,7 @@ const Order = Record({
   id: Principal,
 });
 type Order = typeof Order.tsType;
+let Orders = StableBTreeMap<Principal, Order>(0);
 
 const User = Record({
   id: Principal,
@@ -251,7 +249,12 @@ export default Server(() => {
   app.use(postLog);
 
   // GET
-  app.get("/transactions", customerFrontDoor, (req, res) => {
+  app.get("/transactions", customerFrontDoor, (_req, res) => {
+    res.json(transaction);
+  });
+
+  // GET
+  app.get("/transactions/all", (_req, res) => {
     const sortedTransactions = transaction.sort((a, b) =>
       a.orderId.localeCompare(b.orderId)
     );
@@ -279,9 +282,6 @@ export default Server(() => {
     // Distribute payload into Stable Structures
 
     // Store the Order
-    let saveOrder = StableBTreeMap<Principal, Order>(0);
-    saveOrder.insert(orderId, req.body);
-
   });
 
   // PUT
@@ -332,6 +332,8 @@ export default Server(() => {
     );
     res.send("Ticket transaction deleted successfully!");
   });
+
+  app.use(express.static("/dist"));
 
   return app.listen();
 });
