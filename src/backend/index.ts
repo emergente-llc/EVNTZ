@@ -210,8 +210,8 @@ function postLog(req: Request, res: Response, next: NextFunction) {
 const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
 
   const authHeader = req.headers["authorization"];
-  const vendorIdHeader = req.headers["rs_sec_hdr_vendor_id"];
-  const vendorPasswordHeader = req.headers["rs_sec_hdr_vendor_password"];
+  const vendorIdHeader = req.headers["rs_sec_hdr_vendor_id"] as string;
+  const vendorPasswordHeader = req.headers["rs_sec_hdr_vendor_password"] as string;
 
   if (!authHeader || !vendorIdHeader || !vendorPasswordHeader) {
     return res.status(401).send("No authorization headers provided.");
