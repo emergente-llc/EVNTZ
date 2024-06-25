@@ -1,15 +1,27 @@
+/* MUST IMPLEMENT BEST PRACTICES FROM
+   OWASP API Security Project
+   https://owasp.org/www-project-api-security/ 
+*/
+
 import {
   Record,
   Server,
   StableBTreeMap,
+  Canister,
   text,
   nat64,
   Principal,
   Vec,
   nat8,
+  ic,
+  update,
+  query,
 } from "azle";
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
+import helmet from "helmet";
+// import { body, validationResult } from 'express-validator';
+// import sqlstring from 'sqlstring';
 
 dotenv.config();
 
@@ -123,19 +135,20 @@ const Order = Record({
   companyId: text,
   receivedAt: nat64,
   id: Principal,
+  eventId: text,
 });
 type Order = typeof Order.tsType;
-let Orders = StableBTreeMap<Principal, Order>(0);
+let orders = StableBTreeMap<text, Order>(0);
 
 const User = Record({
   id: Principal,
   createdAt: nat64,
-  recordingIds: Vec(Principal),
   username: text,
   email: text,
   phone: text,
 });
 type User = typeof User.tsType;
+let users = StableBTreeMap<Principal, User>(1);
 
 const Event = Record({
   eventId: text,
@@ -149,11 +162,10 @@ const Event = Record({
   eventInformation: text,
 });
 type Event = typeof Event.tsType;
+let events = StableBTreeMap<text, Event>(2);
 
 const Ticket = Record({
   orderId: text,
-  eventId: text,
-  id: Principal,
   ticketId: text,
   ticketStatus: text,
   ticketSection: text,
@@ -176,13 +188,21 @@ const Ticket = Record({
   ticketTotal: text,
 });
 type Ticket = typeof Ticket.tsType;
+let tickets = StableBTreeMap<Principal, Ticket>(3);
 
 const Company = Record({
   companyId: text,
   companyName: text,
   companyDescription: text,
+  companyAddress: text,
+  companyCountry: text,
+  companyCity: text,
+  companyState: text,
+  companyZip: text,
+  companyGPS: text,
 });
 type Company = typeof Company.tsType;
+let companies = StableBTreeMap<text, Company>(4);
 
 const Venue = Record({
   venueId: text,
@@ -196,6 +216,7 @@ const Venue = Record({
   venueGPS: text,
 });
 type Venue = typeof Venue.tsType;
+let venues = StableBTreeMap<text, Venue>(5);
 // Data structures =============================>
 
 function postLog(req: Request, res: Response, next: NextFunction) {
@@ -206,9 +227,8 @@ function postLog(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-// Middleware to validate Customer tokens
+// Middleware to validate Customer Tokens
 const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
-
   const authHeader = req.headers["authorization"];
   const vendorIdHeader = req.headers["rs_sec_hdr_vendor_id"] as string;
   const vendorPasswordHeader = req.headers["rs_sec_hdr_vendor_password"] as string;
@@ -220,7 +240,7 @@ const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
   const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
 
   if (!token) {
-    return res.status(401).send("Bearer token not provided");
+    return res.status(401).send("Token not found.");
   }
 
   console.log("authHeader: " + token.trimStart().trimEnd());
@@ -232,15 +252,35 @@ const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
   console.log("Vendor Password: " + process.env.RS_SEC_HDR_VENDOR_PASSWORD);
 
   if (
-    token.trimStart().trimEnd() === process.env.ACCESS_TOKEN_SECRET && 
-    vendorIdHeader.trimStart().trimEnd() === process.env.RS_SEC_HDR_VENDOR_ID && 
-    vendorPasswordHeader.trimStart().trimEnd() === process.env.RS_SEC_HDR_VENDOR_PASSWORD
+    token.trimStart().trimEnd() === process.env.ACCESS_TOKEN_SECRET &&
+    vendorIdHeader.trimStart().trimEnd() === process.env.RS_SEC_HDR_VENDOR_ID &&
+    vendorPasswordHeader.trimStart().trimEnd() ===
+      process.env.RS_SEC_HDR_VENDOR_PASSWORD
   ) {
     next(); // proceed to the next middleware or route handler
   } else {
-    res.sendStatus(403); // if token is invalid, return 403 Forbidden
+    res.sendStatus(403).send("403 Forbidden"); // if token is invalid, return 403 Forbidden
   }
 };
+
+// Middleware to sanitize req.body and prevent SQL injections
+// const sanitizeRequestBody = [
+//   body('orderId').trim().escape(),
+//   // Add more sanitization rules for other fields as needed
+//   (req: Request, res: Response, next: NextFunction) => {
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//       return res.status(400).json({ errors: errors.array() });
+//     }
+
+//     // Prevent SQL injections
+//     Object.keys(req.body).forEach(key => {
+//       req.body[key] = sqlstring.escape(req.body[key]).trim();
+//     });
+
+//     next();
+//   }
+// ];
 
 export default Server(() => {
   const app = express();
@@ -248,13 +288,30 @@ export default Server(() => {
   app.use(express.json());
   app.use(postLog);
 
+  // Redirect HTTP to HTTPS
+  // app.use((req, res, next) => {
+  //   if (req.headers["x-forwarded-proto"] !== "https") {
+  //     return res.redirect("https://" + req.headers.host + req.url);
+  //   }
+  //   next();
+  // });
+
+  // Add helmet middleware for setting HSTS: HTTP Strict Transport Security header
+  app.use(
+    helmet.hsts({
+      maxAge: 31536000, // 1 year in seconds
+      includeSubDomains: true,
+      preload: true,
+    })
+  );
+
   // GET
-  app.get("/transactions", customerFrontDoor, (_req, res) => {
+  app.get("/v1/tickets/all", customerFrontDoor, (_req, res) => {
     res.json(transaction);
   });
 
   // GET
-  app.get("/transactions/all", (_req, res) => {
+  app.get("/v1/tickets/all/sorted", (_req, res) => {
     const sortedTransactions = transaction.sort((a, b) =>
       a.orderId.localeCompare(b.orderId)
     );
@@ -262,30 +319,59 @@ export default Server(() => {
   });
 
   // POST
-  app.post("/transactions", customerFrontDoor, (req, res) => {
+  app.post("/v1/tickets/post", customerFrontDoor, (req, res) => {
     const { orderId } = req.body;
+
+    // Input validation
+    if (typeof orderId !== "string") {
+      return res.status(400).send("Invalid input data.");
+    }
 
     const orderIdExists = transaction.some(
       (transaction) => transaction.orderId === orderId
     );
 
     if (orderIdExists) {
-      res
-        .status(409)
-        .send("Order transation with this OrderId already exists.");
+      res.status(409).send("Can't post this transaction.");
       return;
     }
 
     transaction = [...transaction, req.body];
     res.send("Ticket transaction added successfully!");
 
-    // Distribute payload into Stable Structures
+    // Store the Order information
+    export default Canister({
+      createOrder: update([text], Order, (orderId) => {
+        const id = generateId();
+        const order: Order = {
+          orderId,
+          id,
+          status: req.body.status,
+          operation: req.body.operation,
+          companyId: req.body.companyId,
+          receivedAt: ic.time(),
+          eventId: req.body.eventId,
+        };
 
-    // Store the Order
+        orders.insert(order.orderId, order);
+        return order;
+      }),
+      readOrders: query([], Vec(Order), () => {
+        return orders.values();
+      }),
+    });
+
+    function generateId(): Principal {
+      const randomBytes = new Array(29)
+        .fill(0)
+        .map((_) => Math.floor(Math.random() * 256));
+
+      return Principal.fromUint8Array(Uint8Array.from(randomBytes));
+    }
   });
 
   // PUT
-  app.put("/voidticket/:ticketId", customerFrontDoor, (req, res) => {
+  app.put("/v1/tickets/put/:ticketId", customerFrontDoor, (req, res) => {
     const ticketId = req.params.ticketId;
     const newStatus = req.body.status;
 
@@ -314,7 +400,7 @@ export default Server(() => {
   });
 
   // DELETE
-  app.delete("/transactions/:orderid", customerFrontDoor, (req, res) => {
+  app.delete("/v1/tickets/delete/:orderid", customerFrontDoor, (req, res) => {
     const orderId = req.params.orderid;
 
     // Find the ticket directly

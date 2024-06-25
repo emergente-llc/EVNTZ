@@ -5,10 +5,19 @@
         "test": "jest"
     },
     "dependencies": {
+        "@dfinity/agent": "^1.4.0",
+        "@dfinity/auth-client": "^1.4.0",
+        "@dfinity/identity": "^1.4.0",
+        "@dfinity/principal": "^1.4.0",
+        "@nfid/embed": "^0.10.3",
         "azle": "^0.22.0",
+        "bootstrap": "^5.3.3",
         "dotenv": "^16.4.5",
         "express": "^4.18.2",
-        "lit": "^3.1.2"
+        "express-validator": "^7.1.0",
+        "helmet": "^7.1.0",
+        "lit": "^3.1.2",
+        "sqlstring": "^2.3.3"
     },
     "devDependencies": {
         "@types/express": "^4.17.21",
