@@ -15,7 +15,7 @@ export class AzleApp extends LitElement {
     this.sortedTransactions = "Loading...";
 
     const response = await fetch(
-      `${import.meta.env.VITE_CANISTER_ORIGIN}/transactions/all`
+      `${import.meta.env.VITE_CANISTER_ORIGIN}/v1/tickets/all/sorted`
     );
     const responseJson = await response.json();
 
@@ -37,8 +37,20 @@ export class AzleApp extends LitElement {
               <h3>EVNTZ - Sales Transaction dashboard</h3>
             </div>
 
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click=${this.getAllTransaction}
+            >
+              Fetch all transactions
+            </button>
+
+            &nbsp;
+            &nbsp;
+            &nbsp;
+
             <button type="button" class="btn btn-light position-relative">
-              <h5>Transactions</h5>
+              Transactions
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
                 ${Object.keys(this.sortedTransactions).length}
                 <span class="visually-hidden">All transactions</span>
