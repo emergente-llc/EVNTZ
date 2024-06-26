@@ -5,6 +5,7 @@ import { customElement, property } from "lit/decorators.js";
 export class AzleApp extends LitElement {
   @property()
   sortedTransactions = {};
+  nftResponse = "";
 
   constructor() {
     super();
@@ -20,6 +21,20 @@ export class AzleApp extends LitElement {
     const responseJson = await response.json();
 
     this.sortedTransactions = responseJson;
+  }
+
+  async uploadTheFirstNft() {
+    this.nftResponse = "Uploading own first nft...";
+
+    // const response = await fetch(
+    //   `${import.meta.env.VITE_CANISTER_ORIGIN}/v1/nft/create`, {
+    //     method: "POST",
+    //     body: "",
+    //   }
+    // );
+    // const responseJson = await response.json();
+
+    // if(responseJson.ok) this.nftResponse = "Nft created! 😎";
   }
 
   render() {
@@ -44,6 +59,15 @@ export class AzleApp extends LitElement {
             >
               Fetch all transactions
             </button>
+            
+            <button
+              type="button"
+              class="btn btn-secondary"
+              @click=${this.uploadTheFirstNft}
+            >
+              Upload new nft
+            </button>
+            <p>${this.nftResponse}</p>
 
             &nbsp;
             &nbsp;
@@ -56,6 +80,7 @@ export class AzleApp extends LitElement {
                 <span class="visually-hidden">All transactions</span>
               </span>
             </button>
+
 
             <br />
             <br />

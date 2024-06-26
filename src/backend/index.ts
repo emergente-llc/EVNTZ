@@ -16,6 +16,7 @@ import {
   ic,
   update,
   query,
+  serialize,
 } from "azle";
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
@@ -305,6 +306,20 @@ export default Server(() => {
     })
   );
 
+
+  // app.post("/v1/nft/create", async (req, res) => {
+  //   const to: string = req.body.to;
+  //   const amount: number = req.body.amount;
+
+  //   const response = await fetch(`icp://dfdal-2uaaa-aaaaa-qaama-cai/transfer`, {
+  //       body: serialize({
+  //           candidPath: '/token.did',
+  //           args: [to, amount]
+  //       })
+  //   });
+  //   const responseJson = await response.json();
+  // });
+
   // GET
   app.get("/v1/tickets/all", customerFrontDoor, (_req, res) => {
     res.json(transaction);
@@ -339,8 +354,16 @@ export default Server(() => {
     transaction = [...transaction, req.body];
     res.send("Ticket transaction added successfully!");
 
+    function generateId(): Principal {
+      const randomBytes = new Array(29)
+        .fill(0)
+        .map((_) => Math.floor(Math.random() * 256));
+
+      return Principal.fromUint8Array(Uint8Array.from(randomBytes));
+    }
+
     // Store the Order information
-    export default Canister({
+    Canister({
       createOrder: update([text], Order, (orderId) => {
         const id = generateId();
         const order: Order = {
@@ -361,13 +384,7 @@ export default Server(() => {
       }),
     });
 
-    function generateId(): Principal {
-      const randomBytes = new Array(29)
-        .fill(0)
-        .map((_) => Math.floor(Math.random() * 256));
-
-      return Principal.fromUint8Array(Uint8Array.from(randomBytes));
-    }
+    
   });
 
   // PUT

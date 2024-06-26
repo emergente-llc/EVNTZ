@@ -8,6 +8,8 @@ import Array "mo:base/Array";
 import Option "mo:base/Option";
 import Bool "mo:base/Bool";
 import Principal "mo:base/Principal";
+import Debug "mo:base/Debug";
+import Buffer "mo:base/Buffer";
 import Types "./types";
 
 shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibleToken) = Self {
@@ -19,7 +21,6 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
   stable var symbol : Text = init.symbol;
   stable var maxLimit : Nat16 = init.maxLimit;
 
-  // https://forum.dfinity.org/t/is-there-any-address-0-equivalent-at-dfinity-motoko/5445/3
   let null_address : Principal = Principal.fromText("aaaaa-aa");
 
   public query func balanceOfDip721(user: Principal) : async Nat64 {
@@ -61,12 +62,13 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
         return #Err(#InvalidTokenId);
       };
       case (?token) {
-        if (
-          caller != token.owner and
-          not List.some(custodians, func (custodian : Principal) : Bool { custodian == caller })
-        ) {
-          return #Err(#Unauthorized);
-        } else if (Principal.notEqual(from, token.owner)) {
+        // if (
+        //   caller != token.owner and
+        //   not List.some(custodians, func (custodian : Principal) : Bool { custodian == caller })
+        // ) {
+        //   return #Err(#Unauthorized);
+        // } else 
+        if (Principal.notEqual(from, token.owner)) {
           return #Err(#Other);
         } else {
           nfts := List.map(nfts, func (item : Types.Nft) : Types.Nft {
@@ -148,9 +150,9 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
   };
 
   public shared({ caller }) func mintDip721(to: Principal, metadata: Types.MetadataDesc) : async Types.MintReceipt {
-    if (not List.some(custodians, func (custodian : Principal) : Bool { custodian == caller })) {
-      return #Err(#Unauthorized);
-    };
+    // if (not List.some(custodians, func (custodian : Principal) : Bool { custodian == caller })) {
+    //   return #Err(#Unauthorized);
+    // };
 
     let newId = Nat64.fromNat(List.size(nfts));
     let nft : Types.Nft = {
@@ -167,5 +169,53 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
       token_id = newId;
       id = transactionId;
     });
+  };
+
+  public shared({ caller }) func update_value(token_id: Types.TokenId, key: Text, new_value: Types.MetadataVal) : async Types.TxReceipt {
+    let item = List.find(nfts, func(token: Types.Nft) : Bool { token.id == token_id });
+    switch (item) {
+      case null {
+        return #Err(#InvalidTokenId);
+      };
+      case (?token) {
+        // if (
+        //   caller != token.owner and
+        //   not List.some(custodians, func (custodian : Principal) : Bool { custodian == caller })
+        // ) {
+        //   return #Err(#Unauthorized);
+        // } else {
+          nfts := List.map(nfts, func (item : Types.Nft) : Types.Nft {
+            if (item.id == token.id) {
+              let updatedKeyVals = Buffer.Buffer<Types.MetadataKeyVal>(5);
+
+              let index = for (element in token.metadata[0].key_val_data.vals()) {
+                if(element.key == key) {
+                  updatedKeyVals.add({ key = element.key; val = new_value });
+                } else {
+                  updatedKeyVals.add(element);
+                }
+              };
+
+              let updatedMetadata: Types.MetadataDesc = [{
+                data = token.metadata[0].data;
+                purpose = token.metadata[0].purpose;
+                key_val_data = Buffer.toArray(updatedKeyVals);
+              }];
+                            
+              let update : Types.Nft = {
+                owner = token.owner;
+                id = item.id;
+                metadata = updatedMetadata;
+              };
+              return update;
+            } else {
+              return item;
+            };
+          });
+          transactionId += 1;
+          return #Ok(transactionId);   
+        // };
+      };
+    };
   };
 }

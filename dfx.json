@@ -10,8 +10,8 @@
             "env": ["ACCESS_TOKEN_SECRET", "RS_SEC_HDR_VENDOR_ID", "RS_SEC_HDR_VENDOR_PASSWORD"]
         },
         "nft": {
-            "main": "src/nft/main.mo",
-            "type": "motoko"
+            "type": "motoko",
+            "main": "src/nft/main.mo"
           }
     }
 }

@@ -1,9 +1,9 @@
 import Nat "mo:base/Nat";
+import Blob "mo:base/Blob";
 import Nat8 "mo:base/Nat8";
 import Nat16 "mo:base/Nat16";
 import Nat32 "mo:base/Nat32";
 import Nat64 "mo:base/Nat64";
-import Blob "mo:base/Blob";
 import Principal "mo:base/Principal";
 
 module {
@@ -84,6 +84,7 @@ module {
     #Nat16Content: Nat16;
     #Nat32Content: Nat32;
     #Nat64Content: Nat64;
+    #TextArray: [Text];
   };
 
   public type MintReceipt = Result<MintReceiptPart, ApiError>;
