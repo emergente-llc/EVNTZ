@@ -3,15 +3,16 @@
         "backend": {
             "type": "azle",
             "main": "src/backend/index.ts",
-            "assets": [["src/frontend/dist", "dist"]],
+            "assets": [["src/frontend/dist", "dist"], ["src/nft/nft.did", "candid/nft.did"]],
             "build_assets": "npm run build",
             "gzip": true,
             "opt_level": "4",
-            "env": ["ACCESS_TOKEN_SECRET", "RS_SEC_HDR_VENDOR_ID", "RS_SEC_HDR_VENDOR_PASSWORD"]
+            "env": ["ACCESS_TOKEN_SECRET", "RS_SEC_HDR_VENDOR_ID", "RS_SEC_HDR_VENDOR_PASSWORD", "NFT_ID"]
         },
         "nft": {
             "type": "motoko",
-            "main": "src/nft/main.mo"
+            "main": "src/nft/main.mo",
+            "opt_level": "4"
           }
     }
 }

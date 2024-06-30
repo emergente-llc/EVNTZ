@@ -23,6 +23,10 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
 
   let null_address : Principal = Principal.fromText("aaaaa-aa");
 
+  public func hola(user: Text): async Text {
+    return "Hola " # user # "!";
+  };
+
   public query func balanceOfDip721(user: Principal) : async Nat64 {
     return Nat64.fromNat(
       List.size(
@@ -30,6 +34,7 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
       )
     );
   };
+  
 
   public query func ownerOfDip721(token_id: Types.TokenId) : async Types.OwnerResult {
     let item = List.find(nfts, func(token: Types.Nft) : Bool { token.id == token_id });

@@ -256,7 +256,7 @@ const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
     token.trimStart().trimEnd() === process.env.ACCESS_TOKEN_SECRET &&
     vendorIdHeader.trimStart().trimEnd() === process.env.RS_SEC_HDR_VENDOR_ID &&
     vendorPasswordHeader.trimStart().trimEnd() ===
-      process.env.RS_SEC_HDR_VENDOR_PASSWORD
+    process.env.RS_SEC_HDR_VENDOR_PASSWORD
   ) {
     next(); // proceed to the next middleware or route handler
   } else {
@@ -308,17 +308,34 @@ export default Server(() => {
 
 
   // app.post("/v1/nft/create", async (req, res) => {
-  //   const to: string = req.body.to;
-  //   const amount: number = req.body.amount;
+  //   const minter: Principal = req.body.minter;
+  //   const metadataNft: { [key: string]: any } = req.body.metadata;
 
-  //   const response = await fetch(`icp://dfdal-2uaaa-aaaaa-qaama-cai/transfer`, {
+  //   const response = await fetch(`icp://bd3sg-teaaa-aaaaa-qaaba-cai&id=be2us-64aaa-aaaaa-qaabq-cai/mintDip721`, {
   //       body: serialize({
-  //           candidPath: '/token.did',
-  //           args: [to, amount]
+  //         args: [minter, metadataNft]
   //       })
   //   });
   //   const responseJson = await response.json();
+  //   res.json(responseJson);
+
   // });
+
+  app.post("/v1/nft/create", async (req, res) => {
+    // const minter: Principal = req.body.minter;
+    // const metadataNft: { [key: string]: any } = req.body.metadata;
+
+    const response = await fetch(`icp://${process.env.NFT_ID}/hola`, {
+      body: serialize({
+        candidPath: "/candid/nft.did",
+        args: ["Testing"],
+        // args: [minter, metadataNft]
+      })
+    });
+    const text = await response.text();
+    res.send(`${text} nfts`);
+
+  });
 
   // GET
   app.get("/v1/tickets/all", customerFrontDoor, (_req, res) => {
@@ -384,7 +401,7 @@ export default Server(() => {
       }),
     });
 
-    
+
   });
 
   // PUT
@@ -436,7 +453,7 @@ export default Server(() => {
     res.send("Ticket transaction deleted successfully!");
   });
 
-  app.use(express.static("/dist"));
+  // app.use(express.static("dist"));
 
   return app.listen();
 });
