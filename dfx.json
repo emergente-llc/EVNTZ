@@ -3,7 +3,7 @@
         "backend": {
             "type": "azle",
             "main": "src/backend/index.ts",
-            "assets": [["src/frontend/dist", "dist"], ["src/nft/nft.did", "candid/nft.did"]],
+            "assets": [["src/frontend/dist", "dist"], ["src/declarations/nft/nft.did", "candid/nft.did"]],
             "build_assets": "npm run build",
             "gzip": true,
             "opt_level": "4",

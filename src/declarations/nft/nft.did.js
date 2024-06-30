@@ -64,7 +64,6 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(TokenId)],
         ['query'],
       ),
-    'hola' : IDL.Func([IDL.Text], [IDL.Text], []),
     'logoDip721' : IDL.Func([], [LogoResult], ['query']),
     'mintDip721' : IDL.Func([IDL.Principal, MetadataDesc], [MintReceipt], []),
     'nameDip721' : IDL.Func([], [IDL.Text], ['query']),

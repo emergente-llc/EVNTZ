@@ -87,7 +87,6 @@ type Dip721NFT =
    getMetadataDip721: (TokenId) -> (MetadataResult) query;
    getMetadataForUserDip721: (principal) -> (ExtendedMetadataResult);
    getTokenIdsForUserDip721: (principal) -> (vec TokenId) query;
-   hola: (text) -> (text);
    logoDip721: () -> (LogoResult) query;
    mintDip721: (principal, MetadataDesc) -> (MintReceipt);
    nameDip721: () -> (text) query;

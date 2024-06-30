@@ -11,6 +11,7 @@
         "@dfinity/principal": "^1.4.0",
         "@nfid/embed": "^0.10.3",
         "azle": "^0.22.0",
+        "base64-arraybuffer": "^1.0.2",
         "bootstrap": "^5.3.3",
         "compressorjs": "^1.2.1",
         "dotenv": "^16.4.5",

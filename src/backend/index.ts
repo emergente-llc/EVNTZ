@@ -18,9 +18,10 @@ import {
   query,
   serialize,
 } from "azle";
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response, NextFunction, Router } from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
+import { encode } from "base64-arraybuffer";
 // import { body, validationResult } from 'express-validator';
 // import sqlstring from 'sqlstring';
 
@@ -283,6 +284,14 @@ const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
 //   }
 // ];
 
+const toJson = (json: { [key: string]: any }) => (
+  JSON.parse(JSON.stringify(json, (_key, value) =>
+    typeof value === 'bigint'
+      ? Number(value.toString())
+      : value // return everything else unchanged
+  ))
+)
+
 export default Server(() => {
   const app = express();
 
@@ -321,21 +330,147 @@ export default Server(() => {
 
   // });
 
-  app.post("/v1/nft/create", async (req, res) => {
-    // const minter: Principal = req.body.minter;
-    // const metadataNft: { [key: string]: any } = req.body.metadata;
+  const nft = Router();
 
-    const response = await fetch(`icp://${process.env.NFT_ID}/hola`, {
-      body: serialize({
-        candidPath: "/candid/nft.did",
-        args: ["Testing"],
-        // args: [minter, metadataNft]
-      })
-    });
-    const text = await response.text();
-    res.send(`${text} nfts`);
+
+  nft.get("/total", async (req, res) => {
+    try {
+      const response = await fetch(`icp://${process.env.NFT_ID}/totalSupplyDip721`, {
+        body: serialize({
+          candidPath: "/candid/nft.did",
+          args: []
+        })
+      });
+      const responseJson = await response.json();
+      res.json(toJson(responseJson));
+    } catch (err) {
+      res.send({
+        error: err,
+      });
+    }
+    // console.log(text)
 
   });
+
+  nft.post("/mint", async (req, res) => {
+    const minter: string = req.body.minter;
+    const metadataNft: { [key: string]: any } = req.body.metadata;
+
+    try {
+      const response = await fetch(`icp://${process.env.NFT_ID}/mintDip721`, {
+        body: serialize({
+          candidPath: "/candid/nft.did",
+          args: [minter, metadataNft]
+        })
+      });
+
+      const responseJson = await response.json();
+      res.json(toJson(responseJson));
+    } catch (err) {
+      res.send(`${err}`);
+    }
+
+  });
+
+  nft.put("/update", async (req, res) => {
+    const tokenId: string = req.body.token;
+    const key: string = req.body.key;
+    const metadataNft: { [key: string]: any } = req.body.metadata;
+
+    try {
+      const response = await fetch(`icp://${process.env.NFT_ID}/update_value`, {
+        body: serialize({
+          candidPath: "/candid/nft.did",
+          args: [tokenId, key, metadataNft]
+        })
+      });
+
+      const responseJson = await response.json();
+      res.json(toJson(responseJson));
+    } catch (err) {
+      res.send(`${err}`);
+    }
+
+  });
+
+  nft.get("/tokens/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      const response = await fetch(`icp://${process.env.NFT_ID}/getTokenIdsForUserDip721`, {
+        body: serialize({
+          candidPath: "/candid/nft.did",
+          args: [id]
+        })
+      });
+
+      const responseJson = await response.json();
+      res.json(toJson(responseJson));
+    } catch (err) {
+      res.send(`${err}`);
+    }
+
+  });
+
+  nft.get("/tokens/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      const response = await fetch(`icp://${process.env.NFT_ID}/getTokenIdsForUserDip721`, {
+        body: serialize({
+          candidPath: "/candid/nft.did",
+          args: [id]
+        })
+      });
+
+      const responseJson = await response.json();
+      res.json(toJson(responseJson));
+    } catch (err) {
+      res.send(`${err}`);
+    }
+
+  });
+
+  nft.get("/metadata/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      const response = await fetch(`icp://${process.env.NFT_ID}/getMetadataForUserDip721`, {
+        body: serialize({
+          candidPath: "/candid/nft.did",
+          args: [id]
+        })
+      });
+
+      const responseJson = await response.json();
+      res.json(toJson(responseJson));
+    } catch (err) {
+      res.send(`${err}`);
+    }
+
+  });
+
+  nft.post("/transfer", async (req, res) => {
+    const { from, to, tokenId } = req.body;
+
+    try {
+      const response = await fetch(`icp://${process.env.NFT_ID}/safeTransferFromDip721`, {
+        body: serialize({
+          candidPath: "/candid/nft.did",
+          args: [from, to, tokenId]
+        })
+      });
+
+      const responseJson = await response.json();
+      res.json(toJson(responseJson));
+    } catch (err) {
+      res.send(`${err}`);
+    }
+
+  });
+
+
+  app.use("/v1/nft", nft);
 
   // GET
   app.get("/v1/tickets/all", customerFrontDoor, (_req, res) => {

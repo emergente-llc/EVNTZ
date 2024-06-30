@@ -15,7 +15,6 @@ export interface Dip721NFT {
     [Principal],
     BigUint64Array | bigint[]
   >,
-  'hola' : ActorMethod<[string], string>,
   'logoDip721' : ActorMethod<[], LogoResult>,
   'mintDip721' : ActorMethod<[Principal, MetadataDesc], MintReceipt>,
   'nameDip721' : ActorMethod<[], string>,
