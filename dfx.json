@@ -7,7 +7,7 @@
             "build_assets": "npm run build",
             "gzip": true,
             "opt_level": "4",
-            "env": ["ACCESS_TOKEN_SECRET", "RS_SEC_HDR_VENDOR_ID", "RS_SEC_HDR_VENDOR_PASSWORD", "NFT_ID"]
+            "env": ["ACCESS_TOKEN_SECRET", "RS_SEC_HDR_VENDOR_ID", "RS_SEC_HDR_VENDOR_PASSWORD", "NFT_ID", "TESTING_PRINCIPAL"]
         },
         "nft": {
             "type": "motoko",

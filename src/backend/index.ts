@@ -348,8 +348,6 @@ export default Server(() => {
         error: err,
       });
     }
-    // console.log(text)
-
   });
 
   nft.post("/mint", async (req, res) => {
@@ -360,7 +358,7 @@ export default Server(() => {
       const response = await fetch(`icp://${process.env.NFT_ID}/mintDip721`, {
         body: serialize({
           candidPath: "/candid/nft.did",
-          args: [minter, metadataNft]
+          args: [Principal.fromText(minter), metadataNft]
         })
       });
 
@@ -588,7 +586,7 @@ export default Server(() => {
     res.send("Ticket transaction deleted successfully!");
   });
 
-  // app.use(express.static("dist"));
+  app.use(express.static("dist"));
 
   return app.listen();
 });
