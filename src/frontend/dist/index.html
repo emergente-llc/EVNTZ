@@ -1,35 +1,725 @@
-<!doctype html>
-
-<html lang="en">
+<!DOCTYPE html>
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="EVNTZ">
-    <meta name="author" content="Richard Roman Crespo">
-    <meta name="docsearch:language" content="en">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <link rel="shortcut icon" href="assets/images/evntz.png" type="image/x-icon">
+  <meta name="description" content="">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <title>Home</title>
+  <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap">
+  </noscript>
 
-    <title>EVNTZ - Sales Transaction dashboard</title>
-
-  <script type="module" crossorigin src="/assets/index-BEoxB0pR.js"></script>
+  <meta name="theme-color" content="#713193">
+  <link rel="manifest" href="manifest.json">
+  <script src="sw-connect.js"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-startup-image"
+    media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+    href="/assets/apple-launch-640x1136-Cb6zDBgf.png">
+  <link rel="apple-touch-startup-image"
+    media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+    href="/assets/apple-launch-750x1334-DrKxQgd2.png">
+  <link rel="apple-touch-startup-image"
+    media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+    href="/assets/apple-launch-1242x2208-tOrIOcEG.png">
+  <link rel="apple-touch-startup-image"
+    media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+    href="/assets/apple-launch-1125x2436-COkEAEtX.png">
+  <link rel="apple-touch-startup-image"
+    media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+    href="/assets/apple-launch-1536x2048-CdVIGL3H.png">
+  <link rel="apple-touch-startup-image"
+    media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+    href="/assets/apple-launch-1668x2224-CnZ-Cten.png">
+  <link rel="apple-touch-startup-image"
+    media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+    href="/assets/apple-launch-2048x2732-CvN8Ub0Q.png">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" crossorigin href="/assets/index-BAdmR81_.css">
 </head>
 
 <body>
-    <img src="/assets/evntz_logo-CBQDq8Lh.png" alt="EVNTZ" width="200" height="50">
-    <br>
-    <br>
 
-    <azle-app></azle-app>
+  <section data-bs-version="5.1" class="menu menu6 cid-ugQx0skzf4" once="menu" id="menu06-e">
+    <nav class="navbar navbar-dropdown opacityScroll navbar-expand-lg">
+      <div class="container">
+        <div class="navbar-brand">
+          <span class="navbar-logo">
+            <a href="https://www.evntz.io">
+              <img src="data:image/webp;base64,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" alt="EVNTZ" style="height: 3.4rem;">
+            </a>
+          </span>
+        </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+          data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+        <div class="collapse navbar-collapse opacityScroll" id="navbarSupportedContent">
+          <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
+            <li class="nav-item">
+              <a class="nav-link link text-white text-primary display-7" href="index.html#formbuilder-b">Contact us</a>
+            </li>
+            <li class="nav-item"><a class="nav-link link text-white text-primary display-7" href="#" data-toggle="modal"
+                data-bs-toggle="modal" data-target="#mbr-popup-p" data-bs-target="#mbr-popup-p"><span
+                  class="icon54-v2-user-fingerprint mbr-iconfont mbr-iconfont-btn"
+                  style="color: rgb(255, 255, 255);"></span>Access</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-        crossorigin="anonymous"></script>
+  <section data-bs-version="5.1" class="header19 cid-ugQypZpV67 mbr-fullscreen mbr-parallax-background" id="header19-f">
+    <div class="mbr-overlay" style="opacity: 0.7; background-color: rgb(0, 0, 0);"></div>
+    <div class="container">
+      <div class="row">
+        <div class="content-wrap col-12 col-md-11">
+          <h1 class="mbr-section-title mbr-fonts-style mb-4 display-1"><strong>Protect your events with the Security
+              platform you can trust.</strong></h1>
+          <p class="mbr-fonts-style mbr-text mb-4 display-7">
+            The agnostic security solution your audience will love.
+          </p>
+          <div class="mbr-section-btn"><a class="btn btn-info display-7" href="index.html#formbuilder-b">Request early
+              access</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-bs-version="5.1" class="article14 cid-ugQu0MmkYP" id="article14-a">
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-md-12 col-lg-12">
+          <h3 class="mbr-section-title mbr-fonts-style display-2"><strong>Secure Events, Uncompromised
+              Integrity</strong></h3>
+          <p class="mbr-section-subtitle mbr-fonts-style mt-4 display-7">
+            Events are transformed into safe and authentic experiences, free of fraud and illegal ticket resale.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-bs-version="5.1" class="features38 cid-ugQtH9r4pu" id="features038-9">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-12 col-lg">
+          <div class="text-wrapper align-left">
+            <h1 class="mbr-section-title mbr-fonts-style mb-4 display-2">
+              <strong>Connect, innovate, succeed</strong>
+            </h1>
+            <p class="mbr-text align-left mbr-fonts-style mb-4 display-7">
+              EVNTZ empowers your event with cutting-edge technology. Our AI and Distributed Ledger Technology create a
+              transparent, loyal, and secure ecosystem. Take charge by establishing rules that fit your event,
+              preventing fraud, fake ticket sales, unfair contracts, IP infringements, and unwanted outcomes. It’s your
+              show, your rules!
+            </p>
+            <div class="mbr-section-btn align-left mt-3"><a class="btn btn-primary display-7"
+                href="index.html#formbuilder-b">Get started</a></div>
+          </div>
+        </div>
+        <div class="col-12 col-md-12 col-lg-6 image-wrapper">
+          <img class="w-100" src="/assets/mbr-1256x837-Dna-jhzy.webp" alt="Promoters and Platforms">
+        </div>
+      </div>
+      <div class="row row-reverse justify-content-center">
+        <div class="col-12 col-md-12 col-lg">
+          <div class="text-wrapper align-left">
+            <h1 class="mbr-section-title mbr-fonts-style mb-4 display-2"><strong>Create unique experiences</strong></h1>
+            <p class="mbr-text align-left mbr-fonts-style mb-4 display-7">Experience the excitement of live events
+              again!
+              <br>With EVNTZ, you can be sure of a secure and authentic experience, knowing that you have real tickets.
+              You will have never before benefits like secure and authentic tickets, tradable digital collectibles, and
+              exclusive experiences.
+            </p>
+            <div class="mbr-section-btn align-left mt-3"><a class="btn btn-primary display-7"
+                href="index.html#formbuilder-b">Get started</a></div>
+          </div>
+        </div>
+        <div class="col-12 col-md-12 col-lg-6 image-wrapper">
+          <img class="w-100" src="/assets/sport-fans-1256x1005-BiE4QvF9.webp" alt="Fans">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-bs-version="5.1" class="features21 cid-ugQIVHKZZv" id="features021-h">
+    <div class="container">
+      <div class="row mb-5 justify-content-center">
+        <div class="col-12 mb-0 content-head">
+          <h3 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
+            <strong>Unparallel Benefits</strong>
+          </h3>
+        </div>
+      </div>
+      <div class="row mbr-masonry" data-masonry="{&quot;percentPosition&quot;: true }">
+        <div class="item features-without-image col-12 col-md-6 col-lg-4">
+          <div class="item-wrapper">
+            <div class="card-box align-left">
+              <div class="img-wrapper mb-3">
+                <img src="/assets/icp-onchain-circle-489x488-CKWSDQZv.webp" alt="Hosted on Internet Computer">
+              </div>
+              <h5 class="card-title mbr-fonts-style display-5">
+                <strong>Blockchain</strong>
+              </h5>
+              <p class="card-text mbr-fonts-style display-7">
+                EVNTZ integrates best-in-class technologies, distributed ledger technology, NFTs, and Artificial
+                Intelligence. Experience unmatched high efficiency, security, and transparency at your events like never
+                before.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="item features-without-image col-12 col-md-6 col-lg-4">
+          <div class="item-wrapper">
+            <div class="card-box align-left">
+              <div class="img-wrapper mb-3">
+                <img src="data:image/webp;base64,UklGRjgLAABXRUJQVlA4ICwLAACwNACdASqgAGsAPok4lUelI6IhM7WdUKARCWQAwn5VWb6cZr+RYHp6S+h6Tdv3zsGnadCPePso9rlraNJcr9pM58GgJi11+YR/EaSKocykunwG35U0+aPoRxl+StJO7N2ItkqVlk/qH7IcNsWLqOSuBRYcnTv9m65t40TX1FVb6RCv8/9sBZu/KK62DZj99T5nYY1dCbJekqg9vH/fz6tk/G3DtWXqdh0/YPfHXP9nkG7+zpoc6ucfu9F9LzEf0cygSh1SAHYeU6GfDY6q8fG/4/CPYnUQ6f1Fq2legdRaEVt2ptz794iGb2FYUPscB7kIuvvcb2WBHm+5Sz4e3eGPtD1ssFkFo74JPSwxOI34E06o8Mf+wa8iz/Q0ho9JkfTdxzoZ7MAFonA4oOJekHjmfV8aiL5RdxxdxBJOJ1UpWz1fc14P1ByP5q9UCmd3oFQpguXLaVuKFlTrdKOszl0i7ZM2MbvkkcUXY6qwQLxGwTTHTboX+LS0XkHClBNXo5SGPbwhl8BD7xF53FNCxKVwtZhuuSP+zPk+NZgmP2EncJrRy+KvrWsI5mNLwpeAAP76KVNzlbATWisTcRrMhZMw4RF+kXN3OBYEic/AvPNzIYDs67DLxaVq8vBZ0aZGGqKZSEChH6tZtqi6l6SfOBegyeHqw3KPQt3blfy1I66FLwCxx//cgjLCPNVYpXOUyAJ36/PYzUNMLJod8Ig3tAKUX+SPZKdcr0fZ6uku1xjzAGaYCsWH+OvPNAY2cJ1l6kYxSQIfPO2SUA/UN9QxsT6wYAdAfa6dLonpVIs80JWSxm/0nj4DWHc6sKz0l/5u/79hiTgj7TJyqdbpxSjbGxgnC852V+DEUIOVX4J2q56a5qDiphwsgAhs8Fe/H7DMXG8CRtm7EMSzFHzeLoq4pnuB05VCs49ns0aprtU6o7r+GU2YqZcc715DsGyecTiyknFrVBPBGQ4Jc2cCxhi5gONMDyF2hPx940cCdZxwirSlIHtppxewrxe1SdLZ4UUNE4BHk+nlRn2e39GWV6ODD0nfQDJrzMJXuCU2x19eQ4A3myd4I7JNbmZRFP9J9D9eQ8F7sGo9piw6G3+dHRpmA6Rdi5HpkNpOjfPPJgs06RXp+yiksRH0bdIl69Cq8wI5kPDF1HfS41NVUu0dbV5LNYFqDlbImiU/nCm9uIH+AUPDfjsVNziPgc8yOvm0nXTlBySmgwzWuceaB9fOjpQgIuYV/q3hjWrZGfsr2eELmvChBAPNl0dBb1IPYZGl9vTt+4ckqXNrmbovNwCY9isN2eOgiyYR+dv5Z4FdhKQ5M6LSRKN8e4wrbzOIlJ+s4cNajLcQEFutGATkHEh9zFLWbZ4udZ1c7ADqTLxvug9q2Lo6hmrK6SV7DICnkDBwXkeBAlI86LIZBhjwLs8HS0ES1Yffoxaib/vqd2Gouh7K8Kz1++8R1f4nbYk0ukeHd1+BNxDtfVbyJUhQLRBdh93zwNSOcaM4ufsiERnYgviHrjWmSmVIQxaW9MYM2bMDuA5GjBtFzzkVPlqAPE2iS6l2okXofpC+gAnt2LqjL+dXMsjI2UJ8dBa4eEZDz1675uHOJoMOqluGkQ9ZH/rEpdcr8R9VgWylUXjp3sS+qYBOobhcwvsUeKdSmvAD4MCjZHT0+8wUhvKNTRQK1Ax9XZAB+VgbEumsP5HVuNO4USvWP6Re2M2fpLrRmFYF66xKEwAJWffcygBzQHDneCv0dkKMWQNmbvruiClFgkfe1XgBMctZy7QS6Yw2tytmc9po/XQ6ZV6k0aAWBm5dDAffIZKJKTGIIAwydzk+JiWhi91pEebTJFj2Gd6D0eNzM/cv6IjcL37i4Vxxc6PPhwQdT0mhFTar2msBYE9BOvYsXkQeTd+v57c3Ka90rHKZifJSAeFUOS6ejoeIT2IHeQRGLi2C7lk+8wCLJKhe+SUJ8OjLAXrxV2Cl9Eo4MUGjln1bhcPxk6FJDEKPiXGpg2QpTICQGfJ//6juxn9qXQRR1bzhak831XhtdE8I7lnABwDW8Limoy251/JxjGQs6y+gKDmK0oGt8sI9WVu2qkdAh6MYba3UnjbN1orU2KvkCmDD0YXVOUgS7t9dVNtkuDT5f7dKyO95XQvowhsK3RYW1D1lNQwSBVkQM+xRHBpYUqSh1jT/Yca945v2GatjfuzhMvZYK5qBdn9uPOxPqxzWIs8ENTnk3f7bpWt+OKtW5GKmXEhuctkGopUrcyQopWJvy/PX2sh+Te7N9gjYmTCvH9Up5/wodA7et0XOmDM5yfAeDSGWpC8OYXsTJ9vPKS76ABGEE3h7XoGlYNIV5/VZUJC6FkruDuUdSE9T7NKoIdseaop6bgJmlheUJ7tCGjlFoyECgsq53fFEz3mQimskXtw5wzFUB3z2e+Jy7gFNymUxGt8xD7xeAIYFhXKM/a0Hb44o9JvyRZy3MiNqexBJaCx+Y5Oqy6W+q6wkOCI2e3d2AL750yFhhch8BxRg6o52tjlx/yPlZVqJq/codBBkc0suDJB45NjKXJ94Ns6jSMBeYo/uqMRgkFhE2JiBNit51FO/v2a0r3TXMTIFbWqfHyY4iIhMmYUYic65ucsM/uwLeKL+V/AyzwQbZ1soIoFyuFgJFScnHO3Ith/Zk1LqR4ww8PanG+2mW0JvH8Z++K5fAb3NjtKGKMBHjxL8BmyNUFmXvqdxn0l9nMm8dqL63yZeTExHOy8zV3OGAJnq81Y2ukWEeufA3Sl2QQIqhnQqLDRawOOP13zZtwzl8N2yiDj7M+iBvQo7E3EGe/lWidr+O/2//Ane25BFVaYlyjqroXYcR9tp7tUqOn4KZwhzOg8icGwq87HQoSYOwAfjHXP4bNfwpwFrVXG6CXKS4GSgkRjodpmB+K+PNw2qt6OMNAqmpqiIjiEkvWO1QlCTcNRCAfTtrvROwy0uBNCMCaN4MJpL7FB0CWTUdTuLrYTSDWFqIcXnfviJk91oPQtEAALkno+2IivbmSinI7ki5Ve6bP6bLfVAR+7xL9Of7uU6K2X4JQUeSC66dlz9+P4zGASXQBUYzmxPWzLW9jbx/dFR3wCCzxkeMHyT4cUFo+bmdgkxErJbdOYjO17Sx2uvMDT/wy1RN9AQ2OSREmJfPaYkooXr1EtXcilcsX6SV9PEUkaaDvGcGMr6CP351V+63suvz0GHKD4GzNzhfmo2HQZwGOlDbYuCRDcbSCxpuaE6ZNDnibEldnbIyBXK7RI+UkcQeKqQc42Q3KiBr2eU4UlMevNEygMOvmxuvfMnTHNaEpqZT7rmMQ+OnWp8sILhyGP4m3arBQgW6A7+ur/a58H88cXwi7R8gaTcFf+kR65VOPPUbduEYqerxaMZIEDJBXZO1jiiGVE7uSpmqqxaQHZmiM0Gp3w4Bz/X3egFMkXY5qMMpD2x9adYDl0EfPB+d/TL03YL//z4a8BRrAaC+lEnoeuXOQCs1FbAHX3NBIoiHgCwF/uBd7oHUS5pAgtDde/7SmEAWMYlBXMRku3Wbrb4jQzOUujmaaDlatZszeGFXSxO/ggHrfbRCMKqFatrBlwRQHJ4uIB/P9B5js2ay6ZUp02TKrtkJkQW0kp6eWP5aHAeZYr/xb6WGi7mLeJ3FkxGp6Z0tIfD/c1esb+kJeKP3q7bYtALBRQ7WBiQmN7F6hz5kSpm2uCvGgOu6VOawygHWBZc8dtxkLQk5Rm2LiUfVq0RA9o7bOoZplBd7DAmBc8Gt2JCJkI+R5+TxGRdUz5L19eHSyLS1jDVMCOyau8yr9c8reBJymMf8GpjHYrbgAAA" alt="Agnostic Platform">
+              </div>
+              <h5 class="card-title mbr-fonts-style display-5"><strong>Agnostic Platform</strong></h5>
+              <p class="card-text mbr-fonts-style display-7">With intuitive and optimized APIs, ticketing platforms can
+                effortlessly connect to EVNTZ. Whether you’re a large-scale concert organizer or a local theater, our
+                APIs adapt to your needs.<br></p>
+            </div>
+          </div>
+        </div>
+        <div class="item features-without-image col-12 col-md-6 col-lg-4">
+          <div class="item-wrapper">
+            <div class="card-box align-left">
+              <div class="img-wrapper mb-3">
+                <img src="data:image/webp;base64,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" alt="Information Security">
+              </div>
+              <h5 class="card-title mbr-fonts-style display-5">
+                <strong>Security</strong>
+              </h5>
+              <p class="card-text mbr-fonts-style display-7">
+                EVNTZ is designed to prevent and eliminate fraudulent activity, scammers, resellers, and other unwanted
+                actors. Our mission is to protect Creators and their fans so they can enjoy life-changing experiences to
+                the fullest.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="item features-without-image col-12 col-md-6 col-lg-4">
+          <div class="item-wrapper">
+            <div class="card-box align-left">
+              <div class="img-wrapper mb-3">
+                <img src="data:image/webp;base64,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" alt="">
+              </div>
+              <h5 class="card-title mbr-fonts-style display-5"><strong>Ticketing Inventory Control</strong></h5>
+              <p class="card-text mbr-fonts-style display-7">
+                Take control of your ticket inventory again. Automate ticket issuance, transfers, and refunds using
+                Smart Contracts. Track tickets in real-time, say goodbye to manual processes and hello to efficiency.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="item features-without-image col-12 col-md-6 col-lg-4">
+          <div class="item-wrapper">
+            <div class="card-box align-left">
+              <div class="img-wrapper mb-3">
+                <img src="data:image/webp;base64,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" alt="Realtime analytics and KPIs">
+              </div>
+              <h5 class="card-title mbr-fonts-style display-5"><strong>Real-Time Analytics &amp; KPI's</strong></h5>
+              <p class="card-text mbr-fonts-style display-7">
+                Unlock the power of data-driven with our Data Analytics &amp; KPIs feature, providing you with powerful
+                tools and streamlined processes to simplify your ticketing management.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="item features-without-image col-12 col-md-6 col-lg-4">
+          <div class="item-wrapper">
+            <div class="card-box align-left">
+              <div class="img-wrapper mb-3">
+                <img src="data:image/webp;base64,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" alt="">
+              </div>
+              <h5 class="card-title mbr-fonts-style display-5"><strong>Perpetual Royalties</strong></h5>
+              <p class="card-text mbr-fonts-style display-7">
+                EVNTZ ensures that Creators receive ongoing royalties from the resale of their digital assets. This
+                means that creators can continue to benefit financially from all resales, and under their terms and
+                conditions.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-bs-version="5.1" class="article14 cid-ugRX1oqdP6" id="article14-s">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-12 col-lg-12">
+          <h3 class="mbr-section-title mbr-fonts-style display-5"><strong>EVNTZ is environmentally friendly. Our
+              technology stack is sustainable, energy efficient and carbon negative. We operate under strict quality
+              standards to provide a reliable and compatible platform with global initiatives to protect our
+              planet.</strong></h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-bs-version="5.1" class="features5 cid-ugRYH8mKE0" id="features05-w">
+    <div class="container-fluid">
+      <div class="row mb-5 justify-content-center">
+        <div class="col-12 content-head">
+          <h3 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2"><strong>Seamless and Secure</strong>
+          </h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="item features-without-image col-12 col-md-6 col-lg-3 item-mb">
+          <div class="item-wrapper">
+            <div class="card-box align-left">
+              <div class="iconfont-wrapper">
+                <span class="mbr-iconfont mbri-cloud"></span>
+              </div>
+              <h5 class="card-title mbr-fonts-style display-5">
+                <strong>Integration</strong>
+              </h5>
+              <p class="card-text mbr-fonts-style display-7">
+                Agnostic, easy and secure data integration with your actual ticketing system.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="item features-without-image col-12 col-md-6 col-lg-3 item-mb">
+          <div class="item-wrapper">
+            <div class="card-box align-left">
+              <div class="iconfont-wrapper">
+                <span class="mbr-iconfont mbri-lock"></span>
+              </div>
+              <h5 class="card-title mbr-fonts-style display-5">
+                <strong>Security &amp; Trust</strong>
+              </h5>
+              <p class="card-text mbr-fonts-style display-7">
+                We process your transactions and convert them into a secure and unique digital assets.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="item features-without-image col-12 col-md-6 col-lg-3 item-mb">
+          <div class="item-wrapper">
+            <div class="card-box align-left">
+              <div class="iconfont-wrapper">
+                <span class="mbr-iconfont icon54-v2-militay-shield"></span>
+              </div>
+              <h5 class="card-title mbr-fonts-style display-5">
+                <strong>Secured Ledger</strong>
+              </h5>
+              <p class="card-text mbr-fonts-style display-7">
+                All your transactions live in a secure and decentralized ledger.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="item features-without-image col-12 col-md-6 col-lg-3 item-mb">
+          <div class="item-wrapper">
+            <div class="card-box align-left">
+              <div class="iconfont-wrapper">
+                <span class="mbr-iconfont mbri-devices"></span>
+              </div>
+              <h5 class="card-title mbr-fonts-style display-5">
+                <strong>Accessibility</strong>
+              </h5>
+              <p class="card-text mbr-fonts-style display-7">
+                Easy access for your company and buyers from an easy to use mobile app.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-bs-version="5.1" class="start article2 cid-ugS2xQqpua" id="article02-x">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-12 col-lg-6 image-wrapper">
+          <img class="w-100" src="/assets/monitor-1256x1134-CRA17nNc.webp" alt="EVNTZ Dashboard">
+        </div>
+        <div class="col-12 col-md-12 col-lg">
+          <div class="text-wrapper align-left">
+            <h1 class="mbr-section-title mbr-fonts-style mb-4 display-2">
+              <strong>Manage, lead, work smart.</strong>
+            </h1>
+            <p class="mbr-text align-left mbr-fonts-style mb-4 display-7">
+              With a spirit of innovation, exploring new ideas, technologies, and approaches. It is through our
+              willingness to challenge conventions and think beyond boundaries that we discover innovative solutions
+              that propel us forward.
+            </p>
+            <div class="mbr-section-btn align-left mt-3"><a class="btn btn-success-outline display-7"
+                href="index.html#formbuilder-b">Get started</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-bs-version="5.1" class="start article4 cid-ugS6nHmX50" id="article04-y">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-12 col-lg-4 image-wrapper">
+          <img class="w-100" src="/assets/phone-app-v3-401x562-D8LziBlk.webp" alt="EVNTZ Phone App">
+        </div>
+        <div class="col-12 col-md-12 col-lg">
+          <div class="text-wrapper align-left">
+            <h1 class="mbr-section-title mbr-fonts-style mb-4 display-2">
+              <strong>Creating unique and trusted experiences.</strong>
+            </h1>
+            <p class="mbr-text mbr-fonts-style mb-4 display-7">
+              With EVNTZ's modern and safe technology your events are secured. You have full control of your digital
+              ticket, transfers and resales. No more uncertainties or doubts with your tickets.
+            </p>
+            <div class="mbr-section-btn mt-3"><a class="btn btn-lg btn-success-outline display-7"
+                href="index.html#formbuilder-b">Get Started</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-bs-version="5.1" class="clients3 cid-ugR2CwbTdO" id="clients03-n">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 content-head">
+          <div class="mb-5">
+            <h5 class="mbr-section-title mbr-fonts-style mb-0 display-2">
+              <strong>Proud Alumni</strong>
+            </h5>
+            <div class="col-12">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="item features-without-image col-12 col-lg-3 active">
+          <div class="item-wrapper">
+            <div class="img-wrapper">
+              <a href="https://fase1.org/" target="_blank"><img src="/assets/fase1-logo-v2-400x270-CU3U8D8s.webp"
+                  alt="Fase1" data-slide-to="0" data-bs-slide-to="0"></a>
+            </div>
+            <div class="card-box align-center">
+            </div>
+          </div>
+        </div>
+        <div class="item features-without-image col-12 col-lg-3">
+          <div class="item-wrapper">
+            <div class="img-wrapper">
+              <a href="https://zonatres.org/" target="_blank"><img
+                  src="/assets/zona-tres-labs-logo-v2-400x270-CCYcJGe6.webp" alt="Zona Tres"></a>
+            </div>
+            <div class="card-box align-center">
+            </div>
+          </div>
+        </div>
+        <div class="item features-without-image col-12 col-lg-3">
+          <div class="item-wrapper">
+            <div class="img-wrapper">
+              <a href="https://lu.ma/vjoe0yhb" target="_blank"><img
+                  src="/assets/zona-tres-labs-incubadora-400x270-Dl6NL7Lb.webp" alt="Zona Tres Labs" data-slide-to="3"
+                  data-bs-slide-to="4"></a>
+            </div>
+            <div class="card-box align-center">
+            </div>
+          </div>
+        </div>
+        <div class="item features-without-image col-12 col-lg-3">
+          <div class="item-wrapper">
+            <div class="img-wrapper">
+              <a href="https://dfinity.org/" target="_blank"><img src="data:image/webp;base64,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"
+                  alt="DFINITY Foundation" data-slide-to="3" data-bs-slide-to="4"></a>
+            </div>
+            <div class="card-box align-center">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-bs-version="5.1" class="team1 cid-ugXgjE1A8a" id="team01-11">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 mb-5">
+          <h3 class="mbr-section-title mbr-fonts-style align-center mb-2 display-2"><strong>Our Team Members</strong>
+          </h3>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+          <div class="card-wrap">
+            <div class="image-wrap">
+              <a href="https://richardromancrespo.com" target="_blank">
+                <img src="data:image/webp;base64,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" alt="Richard N. Román Crespo">
+              </a>
+            </div>
+            <div class="content-wrap">
+              <h5 class="mbr-section-title card-title mbr-fonts-style align-center m-0 display-5"><strong>Richard
+                  Román</strong></h5>
+              <h6 class="mbr-role mbr-fonts-style align-center mb-3 display-4">
+                Founder &amp; CEO</h6>
+              <div class="social-row display-7">
+                <div class="soc-item">
+                  <a href="https://www.linkedin.com/in/richardneilroman" target="_blank">
+                    <span class="mbr-iconfont fa-linkedin-square fa"></span>
+                  </a>
+                </div>
+                <div class="soc-item">
+                  <a href="https://richardromancrespo.com/" target="_blank">
+                    <span class="mbr-iconfont li_world"></span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+          <div class="card-wrap">
+              <div class="image-wrap">
+                  <a href="https://3j4o4-raaaa-aaaal-ajb4q-cai.icp0.io/" target="_blank">
+                    <img src="/assets/alejo-300x461-DX7ZuUWD.webp" alt="Alejandro Oroncoy">
+                  </a>
+              </div>
+              <div class="content-wrap">
+                  <h5 class="mbr-section-title card-title mbr-fonts-style align-center m-0 display-5">
+                    <strong>Alejandro Oroncoy</strong>
+                  </h5>
+                  <h6 class="mbr-role mbr-fonts-style align-center mb-3 display-4">Fullstack Developer</h6>
+                  <div class="social-row display-7">
+                      <div class="soc-item">
+                          <a href="https://www.linkedin.com/in/alejandro-daniel-oroncoy-almeyda-b0a4642bb" target="_blank">
+                              <span class="mbr-iconfont fa-linkedin-square fa"></span>
+                          </a>
+                      </div>
+                      <div class="soc-item">
+                          <a href="https://3j4o4-raaaa-aaaal-ajb4q-cai.icp0.io/" target="_blank">
+                              <span class="mbr-iconfont li_world"></span>
+                          </a>
+                      </div>                                                                                    
+                  </div>                    
+              </div>
+          </div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-bs-version="5.1" class="social02 cid-ugQTA26oCv" id="social02-k">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 content-head">
+          <div class="mb-5">
+            <h5 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
+              <strong>Follow us</strong>
+            </h5>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="item features-without-image col-12 col-md-6 col-lg-3">
+          <div class="item-wrapper">
+            <span class="mbr-iconfont m-auto socicon-instagram socicon"></span>
+            <div class="card-box">
+              <h4 class="card-title mbr-fonts-style mb-1 display-7">
+                <strong>Instagram</strong>
+              </h4>
+            </div>
+          </div>
+        </div>
+        <div class="item features-without-image col-12 col-md-6 col-lg-3">
+          <div class="item-wrapper">
+            <span class="mbr-iconfont m-auto socicon-discord socicon"></span>
+            <div class="card-box">
+              <h4 class="card-title mbr-fonts-style mb-1 display-7">
+                <strong>Discord</strong>
+              </h4>
+            </div>
+          </div>
+        </div>
+        <div class="item features-without-image col-12 col-md-6 col-lg-3">
+          <div class="item-wrapper">
+            <span class="mbr-iconfont m-auto socicon-twitter socicon"></span>
+            <div class="card-box">
+              <h4 class="card-title mbr-fonts-style mb-1 display-7">
+                <strong>Twitter</strong>
+              </h4>
+            </div>
+          </div>
+        </div>
+        <div class="item features-without-image col-12 col-md-6 col-lg-3">
+          <div class="item-wrapper">
+            <span class="mbr-iconfont m-auto socicon-facebook socicon"></span>
+            <div class="card-box">
+              <h4 class="card-title mbr-fonts-style mb-1 display-7">
+                <strong>Facebook</strong>
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="form cid-ugQutwbqsu" id="formbuilder-b">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto mbr-form" data-form-type="formoid">
+          <!--Formbuilder Form-->
+          <form action="https://mobirise.eu/" method="POST" class="mbr-form form-with-styler"
+            data-form-title="Contact Us"><input type="hidden" name="email" data-form-email="true"
+              value="uJE47WCxJoCuFM/CgvsjmxrGEmCNeHzP2K8drdBksGPn9HKZSWtaml1PefEqJxnCDVg683Qn6RlZ748qxy0X9vmYvhEXXNaJJy36ESY3sTbdwGTHInNGzOo6HEHuEmIy.Keb46grG3H9Te7MY0KF+O+2qVT4loCurrhUsKiWIbWc0zoikFuXMOR2nqe7+tvv3tAVTxJEWKwQDBgX4BTgxS12A2pGRFrPnqVWroq2mUgZCA5DuXSaL5srJj9szODia">
+            <div class="form-row">
+              <div hidden="hidden" data-form-alert="" class="alert alert-success col-12">Thanks for filling out the
+                form!</div>
+              <div hidden="hidden" data-form-alert-danger="" class="alert alert-danger col-12">Oops...! some problem!
+              </div>
+            </div>
+            <div class="dragArea form-row">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <h4 class="mbr-fonts-style display-5">Request your early access now!</h4>
+              </div>
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <hr>
+              </div>
+              <div data-for="name" class="col-lg-12 col-md-12 col-sm-12 form-group">
+                <input type="text" name="name" placeholder="Name" data-form-field="name" class="form-control display-7"
+                  value="" id="name-formbuilder-b">
+              </div>
+              <div data-for="email" class="col-lg-12 col-md-12 col-sm-12 form-group">
+                <input type="email" name="email" placeholder="Email" data-form-field="email"
+                  class="form-control display-7" value="" id="email-formbuilder-b">
+              </div>
+              <div data-for="phone" class="col-lg-12 col-md-12 col-sm-12 form-group">
+                <input type="tel" name="phone" placeholder="Phone" pattern="*" data-form-field="phone"
+                  class="form-control display-7" value="" id="phone-formbuilder-b">
+              </div>
+              <div data-for="I am a" class="col-lg-12 col-md-12 col-sm-12 form-group">
+                <div class="form-control-label">
+                  <label for="I am a-formbuilder-b" class="mbr-fonts-style display-7">Radio</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" name="I am a" data-form-field="I am a" class="form-check-input display-7"
+                    value="Artist" checked="" id="I am a-formbuilder-b">
+                  <label class="form-check-label display-7">Artist</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" name="I am a" data-form-field="I am a" class="form-check-input display-7"
+                    value="Producer" id="I am a-formbuilder-b">
+                  <label class="form-check-label display-7">Producer</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" name="I am a" data-form-field="I am a" class="form-check-input display-7"
+                    value="Ticketing Platform" id="I am a-formbuilder-b">
+                  <label class="form-check-label display-7">Ticketing Platform</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" name="I am a" data-form-field="I am a" class="form-check-input display-7"
+                    value="Other" id="I am a-formbuilder-b">
+                  <label class="form-check-label display-7">Other</label>
+                </div>
+              </div>
+              <div class="col-lg-12 col-md-12 col-sm-12 form-group" data-for="message">
+                <textarea name="message" placeholder="Message" data-form-field="message" class="form-control display-7"
+                  id="message-formbuilder-b"></textarea>
+              </div>
+              <div class="col-auto">
+                <button type="submit" class="btn btn-primary display-7">Submit</button>
+              </div>
+            </div>
+          </form><!--Formbuilder Form-->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-bs-version="5.1" class="footer2 cid-ugRMg8WSfp" once="footers" id="footer02-o">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 col-lg-6 center mt-2 mb-3">
+          <p class="mbr-fonts-style copyright mb-0 display-7">
+            © Copyright 2024 Emergente, LLC - All Rights Reserved
+          </p>
+        </div>
+        <div class="col-12 col-lg-6 center">
+          <div class="row-links mt-2 mb-3">
+            <ul class="row-links-soc">
+              <li class="row-links-soc-item mbr-fonts-style display-7"><a href="website/portal.html" class="text-primary"
+                  data-toggle="modal" data-bs-toggle="modal" data-target="#mbr-popup-p"
+                  data-bs-target="#mbr-popup-p">Enterprise Portal</a>
+              </li>
+              <li class="row-links-soc-item mbr-fonts-style display-7"><a href="website/portal.html" class="text-primary"
+                  data-toggle="modal" data-bs-toggle="modal" data-target="#mbr-popup-p"
+                  data-bs-target="#mbr-popup-p">Customer Portal</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal mbr-popup cid-ugRMG6b1BW fade" tabindex="-1" role="dialog" data-overlay-color="#000000"
+    data-overlay-opacity="0.8" id="mbr-popup-p" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="container position-static margin-center-pos">
+          <div class="modal-header">
+            <h5 class="modal-title mbr-fonts-style display-5">Access Control</h5>
+            <button type="button" class="close d-flex" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23"
+                fill="currentColor">
+                <path
+                  d="M13.4 12l10.3 10.3-1.4 1.4L12 13.4 1.7 23.7.3 22.3 10.6 12 .3 1.7 1.7.3 12 10.6 22.3.3l1.4 1.4L13.4 12z">
+                </path>
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div>
+            </div>
+          </div>
+          <div class="modal-footer pt-0">
+            <div class="mbr-section-btn"><a class="btn btn-md btn-primary display-4" href="website/portal.html">Enterprise
+                Portal</a> <a class="btn btn-md btn-info-outline display-4" href="index.html">&nbsp; &nbsp; &nbsp;
+                &nbsp; Sign out&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="website/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="website/assets/parallax/jarallax.js"></script>
+  <script src="website/assets/smoothscroll/smooth-scroll.js"></script>
+  <script src="website/assets/ytplayer/index.js"></script>
+  <script src="website/assets/dropdown/js/navbar-dropdown.js"></script>
+  <script src="website/assets/masonry/masonry.pkgd.min.js"></script>
+  <script src="website/assets/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="website/assets/popup-plugin/script.js"></script>
+  <script src="website/assets/popup-overlay-plugin/script.js"></script>
+  <script src="website/assets/theme/js/script.js"></script>
+  <script src="website/assets/formoid.min.js"></script>
+
+  <div id="scrollToTop" class="scrollToTop mbr-arrow-up">
+    <a style="text-align: center;">
+      <i class="mbr-arrow-up-icon mbr-arrow-up-icon-cm cm-icon cm-icon-smallarrow-up"></i>
+    </a>
+  </div>
+  <input name="animation" type="hidden">
+
 </body>
 
 </html>

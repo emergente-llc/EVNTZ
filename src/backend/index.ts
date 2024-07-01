@@ -288,14 +288,6 @@ export default Server(() => {
   app.use(express.json());
   app.use(postLog);
 
-  // Redirect HTTP to HTTPS
-  // app.use((req, res, next) => {
-  //   if (req.headers["x-forwarded-proto"] !== "https") {
-  //     return res.redirect("https://" + req.headers.host + req.url);
-  //   }
-  //   next();
-  // });
-
   // Add helmet middleware for setting HSTS: HTTP Strict Transport Security header
   app.use(
     helmet.hsts({
@@ -340,34 +332,34 @@ export default Server(() => {
     res.send("Ticket transaction added successfully!");
 
     // Store the Order information
-    export default Canister({
-      createOrder: update([text], Order, (orderId) => {
-        const id = generateId();
-        const order: Order = {
-          orderId,
-          id,
-          status: req.body.status,
-          operation: req.body.operation,
-          companyId: req.body.companyId,
-          receivedAt: ic.time(),
-          eventId: req.body.eventId,
-        };
+    // export default Canister({
+    //   createOrder: update([text], Order, (orderId) => {
+    //     const id = generateId();
+    //     const order: Order = {
+    //       orderId,
+    //       id,
+    //       status: req.body.status,
+    //       operation: req.body.operation,
+    //       companyId: req.body.companyId,
+    //       receivedAt: ic.time(),
+    //       eventId: req.body.eventId,
+    //     };
 
-        orders.insert(order.orderId, order);
-        return order;
-      }),
-      readOrders: query([], Vec(Order), () => {
-        return orders.values();
-      }),
-    });
+    //     orders.insert(order.orderId, order);
+    //     return order;
+    //   }),
+    //   readOrders: query([], Vec(Order), () => {
+    //     return orders.values();
+    //   }),
+    // });
 
-    function generateId(): Principal {
-      const randomBytes = new Array(29)
-        .fill(0)
-        .map((_) => Math.floor(Math.random() * 256));
+    // function generateId(): Principal {
+    //   const randomBytes = new Array(29)
+    //     .fill(0)
+    //     .map((_) => Math.floor(Math.random() * 256));
 
-      return Principal.fromUint8Array(Uint8Array.from(randomBytes));
-    }
+    //   return Principal.fromUint8Array(Uint8Array.from(randomBytes));
+    // }
   });
 
   // PUT
