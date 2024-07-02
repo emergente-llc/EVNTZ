@@ -1,13 +1,13 @@
-EVNTZ PROPRIETARY LICENSE AGREEMENT
+# EVNTZ PROPRIETARY LICENSE AGREEMENT
 
 THIS LICENSE AGREEMENT (this "Agreement") is by and between Emergente, LLC ("EVNTZ"), a company founded by Richard Román Crespo ("Licensor") and the individual or entity licensing the EVNTZ Software ("Licensee"). This Agreement is effective as of the date Licensee clicks "I Accept" or otherwise indicates acceptance of this Agreement (the "Effective Date").
 
 1. DEFINITIONS.
 
-EVNTZ Software: Refers to the proprietary software developed by EVNTZ, including but not limited to the source code, object code, documentation, and any associated materials.
-Internet Computer Protocol: Refers to the blockchain technology underlying the EVNTZ Software.
-Tokenization: Refers to the process of representing event tickets as digital tokens on the Internet Computer Protocol.
-Smart Contract Canisters: Refers to self-contained programs on the Internet Computer Protocol that execute the logic of NFT tickets.
+- EVNTZ Software: Refers to the proprietary software developed by EVNTZ, including but not limited to the source code, object code, documentation, and any associated materials.
+- Internet Computer Protocol: Refers to the blockchain technology underlying the EVNTZ Software.
+- Tokenization: Refers to the process of representing event tickets as digital tokens on the Internet Computer Protocol.
+- Smart Contract Canisters: Refers to self-contained programs on the Internet Computer Protocol that execute the logic of NFT tickets.
 
 2. GRANT OF LICENSE.
 
@@ -62,6 +62,6 @@ Contact Information:
 
 Emergente, LLC
 EVNTZ
-San juan, Puerto Rico
+San Juan, Puerto Rico
 hello@evntz.io
 Website: https://www.evntz.io

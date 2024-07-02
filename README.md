@@ -1,3 +1,12 @@
+<div align="center" style="display:flex;flex-direction:column;">
+  <a href="https://www.evntz.io/">
+    <img src="logo/evntz_logo.png" width="100%" alt="EVNTZ" role="presentation"/>
+  </a>
+
+  <br />
+  <br />
+</div>
+
 # EVNTZ
 
 #### 🚀 Introduction
@@ -10,6 +19,23 @@ EVNTZ, built on the Internet Computer Protocol Blockchain, aims to revolutionize
 Here are some useful links:
 -   [EVNTZ](https://www.evntz.io/)
 
+#### For demo purposes only
+```bash
+cd EVNTZ
+
+# with npm
+npm install
+
+# with dfx
+dfx start --clean --background --host 127.0.0.1:8000
+
+# with dfx
+ACCESS_TOKEN_SECRET="ecc448d9-5f00-42f6-a973-ad6fca9fa265" RS_SEC_HDR_VENDOR_ID="ab38a423-9af0-4811-a5b4-482114fd918d" RS_SEC_HDR_VENDOR_PASSWORD="79*jA27i76q5P5E8e?Lz0x)f1vUw5*5hyv~Fu96b#--MZB>;~48p<E3L9L.9S-~GfO>i~#" dfx deploy
+
+# In browser
+http://<backend_canister_name>.localhost:8000
+```
+
 #### 🧑‍🤝‍🧑 Community
 Have questions, comments, or feedback?
 
@@ -17,7 +43,13 @@ Have questions, comments, or feedback?
 Email us at hello@evntz.io
 
 #### 🖥️ Technology Stack
-EVNTZ was develop using [Azle](https://github.com/demergent-labs/azle).
+EVNTZ was develop using:
+- [Azle](https://github.com/demergent-labs/azle).
 Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript on [ICP](https://internetcomputer.org/). The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
 
 For more documentation please see [The Azle Book](https://demergent-labs.github.io/azle/).
+
+- [Motoko](https://internetcomputer.org/docs/current/motoko/main/getting-started/motoko-introduction).
+Motoko is a modern, general-purpose programming language you can use specifically to author ICP canister smart contracts. Although aimed primarily at ICP canister development, its design is general enough to support future compilation to other targets.
+
+Motoko is designed to be approachable for programmers who have some basic familiarity with object-oriented and/or functional programming idioms in either JavaScript, or another modern programming language, such as Rust, Swift, TypeScript, C#, or Java.
