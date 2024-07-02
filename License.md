@@ -1,52 +1,67 @@
-### EVNTZ Elastic License 1.0
+EVNTZ PROPRIETARY LICENSE AGREEMENT
 
-**Acceptance**
+THIS LICENSE AGREEMENT (this "Agreement") is by and between Emergente, LLC ("EVNTZ"), a company founded by Richard Román Crespo ("Licensor") and the individual or entity licensing the EVNTZ Software ("Licensee"). This Agreement is effective as of the date Licensee clicks "I Accept" or otherwise indicates acceptance of this Agreement (the "Effective Date").
 
-By using the software, you agree to all of the terms and conditions below.
+1. DEFINITIONS.
 
-**Copyright License**
+EVNTZ Software: Refers to the proprietary software developed by EVNTZ, including but not limited to the source code, object code, documentation, and any associated materials.
+Internet Computer Protocol: Refers to the blockchain technology underlying the EVNTZ Software.
+Tokenization: Refers to the process of representing event tickets as digital tokens on the Internet Computer Protocol.
+Smart Contract Canisters: Refers to self-contained programs on the Internet Computer Protocol that execute the logic of NFT tickets.
 
-The licensor, EVNTZ, grants you a non-exclusive, royalty-free, worldwide, non-sublicensable, non-transferable license to use, copy, distribute, make available, and prepare derivative works of the software, in each case subject to the limitations and conditions below.
+2. GRANT OF LICENSE.
 
-**Limitations**
+Licensor grants Licensee a non-exclusive, non-transferable, revocable license to use the EVNTZ Software solely for the purpose of accessing and utilizing the EVNTZ platform for auditing purposes, subject to the terms and conditions of this Agreement.
 
-1. **No Hosting or Managed Services**: You may not provide the software to third parties as a hosted or managed service, where the service provides users with access to any substantial set of the features or functionality of the software.
+The source code provided by EVNTZ shall not be used to create any similar Blockchain-as-a-Service offerings or any other similar products.
+
+The infrastructure and services of EVNTZ and other infrastructure and services provided by EVNTZ must not be used unless special agreements have been concluded with EVNTZ.
+
+All artwork and icons - provided by Richard Roman Crespo - are licensed.
+
+EVNTZ is developed by Emergente, LLC.
+
+3. RESTRICTIONS.
+
+1. **No Hosting or any other delivery of Services**: You may not provide, copy, modify, or create derivative works of the EVNTZ software to third parties as a hosted, managed service or any other way, where the service provides users with access to any substantial set of the features or functionality of the software.
 2. **No Circumvention**: You may not move, change, disable, or circumvent the license key functionality in the software, and you may not remove or obscure any functionality in the software that is protected by the license key.
 3. **No Removal of Notices**: You may not alter, remove, or obscure any licensing, copyright, or other notices of the licensor in the software.
 4. **No Commercial Use Without Permission**: You may not use the software for commercial purposes without obtaining explicit permission from EVNTZ.
 
-**Patents**
+**You shall not**
 
-The licensor grants you a license, under any patent claims the licensor can license, or becomes able to license, to make, have made, use, sell, offer for sale, import, and have imported the software, in each case subject to the limitations and conditions in this license. This license does not cover any patent claims that you cause to be infringed by modifications or additions to the software. If you or your company make any written claim that the software infringes or contributes to infringement of any patent, your patent license for the software granted under these terms ends immediately. If your company makes such a claim, your patent license ends immediately for work on behalf of your company.
+- Copy, modify, or create derivative works of the EVNTZ Software for any commecial use or any other for profit means.
+- Reverse engineer, decompile, or disassemble the EVNTZ Software.
+- Distribute, sublicense, rent, lease, or otherwise transfer the EVNTZ Software.
+- Use the EVNTZ Software for any illegal or unauthorized purpose.
+- Remove or alter any proprietary notices or markings on the EVNTZ Software.
 
-**Notices**
+4. OWNERSHIP.
 
-You must ensure that anyone who gets a copy of any part of the software from you also gets a copy of these terms. If you modify the software, you must include in any modified copies of the software prominent notices stating that you have modified the software.
+Licensor retains all right, title, and interest in and to the EVNTZ Software, including all intellectual property rights therein. This license does not grant Licensee any ownership rights in the EVNTZ Software.
 
-**No Other Rights**
+5. DISCLAIMER OF WARRANTY.
 
-These terms do not imply any licenses other than those expressly granted in these terms.
+THE EVNTZ SOFTWARE IS PROVIDED "AS IS," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THE EVNTZ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-**Termination**
+6. TERMINATION.
 
-If you use the software in violation of these terms, such use is not licensed, and your licenses will automatically terminate. If the licensor provides you with a notice of your violation, and you cease all violation of this license no later than 30 days after you receive that notice, your licenses will be reinstated retroactively. However, if you violate these terms after such reinstatement, any additional violation of these terms will cause your licenses to terminate automatically and permanently.
+This Agreement may be terminated by either party upon written notice to the other party. Upon termination, Licensee shall cease all use of the EVNTZ Software and destroy all copies thereof.
 
-**No Liability**
+7. GOVERNING LAW.
 
-As far as the law allows, the software comes as is, without any warranty or condition, and the licensor will not be liable to you for any damages arising out of these terms or the use or nature of the software, under any kind of legal claim.
+This Agreement shall be governed by and construed in accordance with the laws of [Jurisdiction], without regard to its conflict of laws provisions.
 
-**Definitions**
+8. ENTIRE AGREEMENT.
 
-- **Licensor**: EVNTZ
-- **Software**: The software EVNTZ makes available under these terms, including any portion of it.
+This Agreement constitutes the entire agreement between the parties with respect to the subject matter hereof and supersedes all prior or contemporaneous communications and proposals, whether oral or written.
 
----
+By clicking "I Accept" or otherwise indicating acceptance of this Agreement, Licensee acknowledges that Licensee has read, understands, and agrees to be bound by the terms and conditions of this Agreement.
 
-Feel free to review and modify this draft to better suit your specific needs. If you have any questions or need further adjustments, let me know!
+Contact Information:
 
-Source: Conversation with Copilot, 7/2/2024
-(1) Elastic License 2.0 | Elastic. https://www.elastic.co/licensing/elastic-license.
-(2) FAQ on Elastic License 2.0 (ELv2) | Elastic. https://www.elastic.co/licensing/elastic-license/faq.
-(3) Create an Elastic Template - DocuSign Support Center. https://support.docusign.com/s/document-item?language=en_US&bundleId=igo1666647424726&topicId=vxi1572482718750.html&_LANG=enus.
-(4) elasticsearch/licenses/ELASTIC-LICENSE-2.0.txt at main - GitHub. https://github.com/elastic/elasticsearch/blob/main/licenses/ELASTIC-LICENSE-2.0.txt.
-(5) Create Elastic Templates - DocuSign Support Center. https://support.docusign.com/s/document-item?language=en_US&bundleId=igo1666647424726&topicId=zts1572482721906.html&_LANG=enus.
+Emergente, LLC
+EVNTZ
+San juan, Puerto Rico
+hello@evntz.io
+Website: https://www.evntz.io
