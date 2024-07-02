@@ -3,11 +3,30 @@
         "backend": {
             "type": "azle",
             "main": "src/backend/index.ts",
-            "assets": [["src/frontend/dist", "dist"]],
+            "assets": [
+                [
+                    "src/frontend/dist",
+                    "dist"
+                ]
+            ],
             "build_assets": "npm run build",
             "gzip": true,
             "opt_level": "4",
-            "env": ["ACCESS_TOKEN_SECRET", "RS_SEC_HDR_VENDOR_ID", "RS_SEC_HDR_VENDOR_PASSWORD"]
+            "env": [
+                "ACCESS_TOKEN_SECRET",
+                "RS_SEC_HDR_VENDOR_ID",
+                "RS_SEC_HDR_VENDOR_PASSWORD"
+            ]
+        },
+        "internet-identity": {
+            "type": "custom",
+            "candid": "https://github.com/dfinity/internet-identity/releases/download/release-2023-09-08/internet_identity.did",
+            "wasm": "https://github.com/dfinity/internet-identity/releases/download/release-2023-09-08/internet_identity_dev.wasm.gz",
+            "remote": {
+                "id": {
+                    "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+                }
+            }
         }
     }
 }

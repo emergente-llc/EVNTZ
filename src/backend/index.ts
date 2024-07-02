@@ -19,10 +19,6 @@ import {
 } from "azle";
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
-import helmet from "helmet";
-// import { body, validationResult } from 'express-validator';
-// import sqlstring from 'sqlstring';
-
 dotenv.config();
 
 // Data structures =============================>
@@ -251,51 +247,21 @@ const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
   console.log("Vendor Id: " + process.env.RS_SEC_HDR_VENDOR_ID);
   console.log("Vendor Password: " + process.env.RS_SEC_HDR_VENDOR_PASSWORD);
 
-  if (
-    token.trimStart().trimEnd() === process.env.ACCESS_TOKEN_SECRET &&
+  if (token.trimStart().trimEnd() === process.env.ACCESS_TOKEN_SECRET &&
     vendorIdHeader.trimStart().trimEnd() === process.env.RS_SEC_HDR_VENDOR_ID &&
-    vendorPasswordHeader.trimStart().trimEnd() ===
-      process.env.RS_SEC_HDR_VENDOR_PASSWORD
+    vendorPasswordHeader.trimStart().trimEnd() === process.env.RS_SEC_HDR_VENDOR_PASSWORD
   ) {
-    next(); // proceed to the next middleware or route handler
+    next();
   } else {
-    res.sendStatus(403).send("403 Forbidden"); // if token is invalid, return 403 Forbidden
+    res.sendStatus(500).send("Internal Server Error");
   }
 };
-
-// Middleware to sanitize req.body and prevent SQL injections
-// const sanitizeRequestBody = [
-//   body('orderId').trim().escape(),
-//   // Add more sanitization rules for other fields as needed
-//   (req: Request, res: Response, next: NextFunction) => {
-//     const errors = validationResult(req);
-//     if (!errors.isEmpty()) {
-//       return res.status(400).json({ errors: errors.array() });
-//     }
-
-//     // Prevent SQL injections
-//     Object.keys(req.body).forEach(key => {
-//       req.body[key] = sqlstring.escape(req.body[key]).trim();
-//     });
-
-//     next();
-//   }
-// ];
 
 export default Server(() => {
   const app = express();
 
   app.use(express.json());
   app.use(postLog);
-
-  // Add helmet middleware for setting HSTS: HTTP Strict Transport Security header
-  app.use(
-    helmet.hsts({
-      maxAge: 31536000, // 1 year in seconds
-      includeSubDomains: true,
-      preload: true,
-    })
-  );
 
   // GET
   app.get("/v1/tickets/all", customerFrontDoor, (_req, res) => {
@@ -328,7 +294,19 @@ export default Server(() => {
       return;
     }
 
-    transaction = [...transaction, req.body];
+    // sanitize req.body
+    const sanitizedBody = req.body;
+    // Replace any SQL keywords with empty strings
+    for (const key in sanitizedBody) {
+      if (typeof sanitizedBody[key] === "string") {
+        sanitizedBody[key] = sanitizedBody[key].replace(
+          /\b(?:SELECT|JOIN|WHERE|AND|OR|DELETE|UPDATE|UNION|INSERT|LIKE|DROP|ALTER|TRUNCATE)\b/gi, ""
+        );
+      }
+    }
+    //req.body = sanitizedBody;
+
+    transaction = [...transaction, sanitizedBody];
     res.send("Ticket transaction added successfully!");
 
     // Store the Order information
