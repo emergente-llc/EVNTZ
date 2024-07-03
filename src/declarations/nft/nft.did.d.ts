@@ -8,6 +8,7 @@ export type ApiError = { 'ZeroAddress' : null } |
   { 'Other' : null };
 export interface Dip721NFT {
   'balanceOfDip721' : ActorMethod<[Principal], bigint>,
+  'getAllNfts' : ActorMethod<[], Array<Nft>>,
   'getMaxLimitDip721' : ActorMethod<[], number>,
   'getMetadataDip721' : ActorMethod<[TokenId], MetadataResult>,
   'getMetadataForUserDip721' : ActorMethod<[Principal], ExtendedMetadataResult>,
@@ -70,6 +71,11 @@ export type MetadataVal = { 'Nat64Content' : bigint } |
 export type MintReceipt = { 'Ok' : MintReceiptPart } |
   { 'Err' : ApiError };
 export interface MintReceiptPart { 'id' : bigint, 'token_id' : TokenId }
+export interface Nft {
+  'id' : TokenId,
+  'owner' : Principal,
+  'metadata' : MetadataDesc,
+}
 export type OwnerResult = { 'Ok' : Principal } |
   { 'Err' : ApiError };
 export type TokenId = bigint;

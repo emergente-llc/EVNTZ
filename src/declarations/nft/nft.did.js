@@ -28,6 +28,11 @@ export const idlFactory = ({ IDL }) => {
     'purpose' : MetadataPurpose,
   });
   const MetadataDesc = IDL.Vec(MetadataPart);
+  const Nft = IDL.Record({
+    'id' : TokenId,
+    'owner' : IDL.Principal,
+    'metadata' : MetadataDesc,
+  });
   const ApiError = IDL.Variant({
     'ZeroAddress' : IDL.Null,
     'InvalidTokenId' : IDL.Null,
@@ -52,6 +57,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const Dip721NFT = IDL.Service({
     'balanceOfDip721' : IDL.Func([IDL.Principal], [IDL.Nat64], ['query']),
+    'getAllNfts' : IDL.Func([], [IDL.Vec(Nft)], ['query']),
     'getMaxLimitDip721' : IDL.Func([], [IDL.Nat16], ['query']),
     'getMetadataDip721' : IDL.Func([TokenId], [MetadataResult], ['query']),
     'getMetadataForUserDip721' : IDL.Func(

@@ -18,14 +18,16 @@ import {
   query,
   serialize,
 } from "azle";
-import express, { Request, Response, NextFunction, Router } from "express";
-import dotenv from "dotenv";
 import helmet from "helmet";
+import express, { Request, Response, NextFunction, Router } from "express";
+// import dotenv from "dotenv";
 // import { encode } from "base64-arraybuffer";
 // import { body, validationResult } from 'express-validator';
 // import sqlstring from 'sqlstring';
 
-dotenv.config();
+// dotenv.config({
+//   path: "/.env.file"
+// });
 
 // Data structures =============================>
 type Transaction = {
@@ -350,10 +352,44 @@ export default Server(() => {
     }
   });
 
+  // nft.get("/nfts", async (req, res) => {
+  //   try {
+  //     const response = await fetch(`icp://${process.env.NFT_ID}/getAllNfts`, {
+  //       body: serialize({
+  //         candidPath: "/candid/nft.did",
+  //         args: []
+  //       })
+  //     });
+  //     const responseJson = await response.json();
+  //     console.log(responseJson)
+  //     res.json(toJson(responseJson));
+  //   } catch (err) {
+  //     res.send({
+  //       error: err,
+  //     });
+  //   }
+  // });
+  nft.get("/total", async (req, res) => {
+    try {
+      const response = await fetch(`icp://${process.env.NFT_ID}/totalSupplyDip721`, {
+        body: serialize({
+          candidPath: "/candid/nft.did",
+          args: []
+        })
+      });
+      const responseJson = await response.json();
+      res.json(toJson(responseJson));
+    } catch (err) {
+      res.send({
+        error: err,
+      });
+    }
+  });
+
   nft.post("/mint", async (req, res) => {
     const minter: string = req.body.minter;
     const metadataNft: { [key: string]: any } = req.body.metadata;
-
+    
     try {
       const response = await fetch(`icp://${process.env.NFT_ID}/mintDip721`, {
         body: serialize({

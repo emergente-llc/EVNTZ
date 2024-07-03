@@ -9,6 +9,12 @@ type OwnerResult =
    Err: ApiError;
    Ok: principal;
  };
+type Nft = 
+ record {
+   id: TokenId;
+   metadata: MetadataDesc;
+   owner: principal;
+ };
 type MintReceiptPart = 
  record {
    id: nat;
@@ -83,6 +89,7 @@ type Dip721NonFungibleToken =
 type Dip721NFT = 
  service {
    balanceOfDip721: (principal) -> (nat64) query;
+   getAllNfts: () -> (vec Nft) query;
    getMaxLimitDip721: () -> (nat16) query;
    getMetadataDip721: (TokenId) -> (MetadataResult) query;
    getMetadataForUserDip721: (principal) -> (ExtendedMetadataResult);
