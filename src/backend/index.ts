@@ -21,7 +21,7 @@ import {
 import express, { Request, Response, NextFunction, Router } from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
-import { encode } from "base64-arraybuffer";
+// import { encode } from "base64-arraybuffer";
 // import { body, validationResult } from 'express-validator';
 // import sqlstring from 'sqlstring';
 
@@ -253,13 +253,15 @@ const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
   console.log("Vendor Id: " + process.env.RS_SEC_HDR_VENDOR_ID);
   console.log("Vendor Password: " + process.env.RS_SEC_HDR_VENDOR_PASSWORD);
 
-  if (token.trimStart().trimEnd() === process.env.ACCESS_TOKEN_SECRET &&
+  if (
+    token.trimStart().trimEnd() === process.env.ACCESS_TOKEN_SECRET &&
     vendorIdHeader.trimStart().trimEnd() === process.env.RS_SEC_HDR_VENDOR_ID &&
-    vendorPasswordHeader.trimStart().trimEnd() === process.env.RS_SEC_HDR_VENDOR_PASSWORD
+    vendorPasswordHeader.trimStart().trimEnd() ===
+    process.env.RS_SEC_HDR_VENDOR_PASSWORD
   ) {
-    next();
+    next(); // proceed to the next middleware or route handler
   } else {
-    res.sendStatus(500).send("Internal Server Error");
+    res.sendStatus(403).send("403 Forbidden"); // if token is invalid, return 403 Forbidden
   }
 };
 
@@ -499,19 +501,7 @@ export default Server(() => {
       return;
     }
 
-    // sanitize req.body
-    const sanitizedBody = req.body;
-    // Replace any SQL keywords with empty strings
-    for (const key in sanitizedBody) {
-      if (typeof sanitizedBody[key] === "string") {
-        sanitizedBody[key] = sanitizedBody[key].replace(
-          /\b(?:SELECT|JOIN|WHERE|AND|OR|DELETE|UPDATE|UNION|INSERT|LIKE|DROP|ALTER|TRUNCATE)\b/gi, ""
-        );
-      }
-    }
-    //req.body = sanitizedBody;
-
-    transaction = [...transaction, sanitizedBody];
+    transaction = [...transaction, req.body];
     res.send("Ticket transaction added successfully!");
 
     function generateId(): Principal {
@@ -596,7 +586,7 @@ export default Server(() => {
     res.send("Ticket transaction deleted successfully!");
   });
 
-  app.use(express.static("dist"));
+  app.use(express.static("/dist"));
 
   return app.listen();
 });
