@@ -7,15 +7,10 @@ import {
   Record,
   Server,
   StableBTreeMap,
-  Canister,
   text,
   nat64,
   Principal,
-  Vec,
   nat8,
-  ic,
-  update,
-  query,
 } from "azle";
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
