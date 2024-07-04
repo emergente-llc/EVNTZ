@@ -387,7 +387,7 @@ export default Server(() => {
   nft.post("/mint", async (req, res) => {
     const minter: string = req.body.minter;
     const metadataNft: { [key: string]: any } = req.body.metadata;
-    
+
     try {
       const response = await fetch(`icp://${process.env.NFT_ID}/mintDip721`, {
         body: serialize({

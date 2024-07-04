@@ -1,15 +1,28 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import "./nft";
 
 @customElement("azle-app")
 export class AzleApp extends LitElement {
   @property()
   sortedTransactions = {};
   transactions: any[] = [];
-
+  @property()
+  nftsTotal = 0;
+  
   constructor() {
     super();
     this.getAllTransaction();
+    this.getNftsTotal();
+  }
+
+  getNftsTotal = async () =>{
+    const response = await fetch(
+      `${import.meta.env.VITE_CANISTER_ORIGIN}/v1/nft/total`
+    );
+    const total = await response.text();
+
+    this.nftsTotal = +total;
   }
 
   async getAllTransaction() {
@@ -22,57 +35,30 @@ export class AzleApp extends LitElement {
     this.transactions = responseJson;
   }
 
+  protected createRenderRoot() {
+    return this;
+  }
+
+  handleAddNftsTotal = () => {
+    this.nftsTotal++;
+  };
+
+  connectedCallback() {
+    super.connectedCallback();
+    
+    window.addEventListener("add-nfts-total", this.handleAddNftsTotal);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    
+    window.removeEventListener("add-nfts-total", this.handleAddNftsTotal);
+  }
+
   render() {
-
-    if(this.isNftPage) {
-      return html`
-      <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-        crossorigin="anonymous"
-      />
-      <div class="container">
-        <div class="row g-3">
-          <div class="col-md-8">
-            <div class="alert alert-primary" role="alert">
-              <h3>EVNTZ - NFT dashboard</h3>
-            </div>
-
-            <button
-              type="button"
-              class="btn btn-primary"
-              @click=${this.getAllTransaction}
-            >
-              Fetch all transactions
-            </button>
-            
-            <button
-              type="button"
-              class="btn btn-secondary"
-              @click=${this.uploadTheFirstNft}
-            >
-              Upload new nft
-            </button>
-
-            </div>
-
-            <div class="mb-3">
-              <label for="formFile" class="form-label">Sube la imagen para crear tu nft</label>
-              <input class="form-control" type="file" @change=${this.handleChangeImg}>
-            </div>
-
-            <p>${this.nftResponse}</p>
-        </div>
-      </div>
-    `;
-    }
     return html`
 
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-            <section data-bs-version="5.1" class="counter1 counters cid-ugXs5vm9Vt" id="counter1-1h">
+            <section data-bs-version="5.1" class="counter1 counters cid-ugXs5vm9Vt pt-3" id="counter1-1h">
               <div class="container">
                 <div class="row justify-content-center">
                   <div class="col-12 content-head">
@@ -128,7 +114,7 @@ export class AzleApp extends LitElement {
                       <div class="title mb-3">
                         <h3 class="count mbr-fonts-style display-1">
                           <span style="color: #9fe870; font-weight: 700; text-align: center;" class="align-center">
-                            ${Object.keys(this.sortedTransactions).length}
+                            ${this.nftsTotal}
                           </span>
                         </h3>
                       </div>
@@ -144,7 +130,7 @@ export class AzleApp extends LitElement {
                       <div class="title mb-3">
                         <h3 class="count mbr-fonts-style display-1">
                           <span style="color: #9fe870; font-weight: 700; text-align: center;" class="align-center">
-                            ${Object.keys(this.sortedTransactions).length}
+                            ${this.nftsTotal}
                           </span>
                         </h3>
                       </div>
@@ -205,7 +191,7 @@ export class AzleApp extends LitElement {
                         </tr>
                       </thead>
                       <tbody>
-                        ${transaction.seats.map(seat => html`
+                        ${transaction.seats.map((seat: any) => html`
                           <tr>
                             <td>${seat.ticket.ticketSection}</td>
                             <td>${seat.ticket.ticketRow}</td>
@@ -220,6 +206,9 @@ export class AzleApp extends LitElement {
                 </div>
               `)}
             </div>
+
+
+            <nft-form nftsTotal=${this.nftsTotal}></nft-form>
     `;
   }
 }
