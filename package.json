@@ -1,14 +1,28 @@
 {
     "name": "EVNTZ MVP",
-    "version": "0.0.1",
-    "license": "GPL-3.0 license",
+    "version": "1.0.0",
+    "license": "PROPRIETARY LICENSE AGREEMENT",
     "author": "Richard Román Crespo, Alejandro Oroncoy",
     "company": "Emergente, LLC",
+    "description": "EVNTZ is an agnostic digital platform designed to seamlessly integrate with existing web2 ticketing systems, leveraging the power of tokenization and sophisticated security mechanisms in the Internet Computer Protocol, transforming the way event tickets are issued.",
+    "homepage": "https://www.evntz.io",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/emergente-llc/EVNTZ.git"
+    },
     "workspaces": [
         "backend",
         "frontend"
     ],
     "keywords": [
+        "ic",
+        "dfinity",
+        "dfx",
+        "candid",
+        "webauthn",
+        "identity",
+        "principal",
+        "authentication",
         "azle",
         "dapps",
         "express",
@@ -19,7 +33,11 @@
         "rest",
         "rest api",
         "motoko",
-        "typescript"
+        "typescript",
+        "blockchain",
+        "crypto",
+        "distributed",
+        "api"
     ],
     "scripts": {
         "build": "cd src/frontend && VITE_CANISTER_ORIGIN=http://$(dfx canister id backend).localhost:8000 vite build",
