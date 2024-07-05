@@ -14,19 +14,9 @@ import {
   ic,
   update,
   query,
-  serialize,
-  AzleBlob,
+  serialize
 } from "azle";
-import helmet from "helmet";
 import express, { Request, Response, NextFunction, Router } from "express";
-// import dotenv from "dotenv";
-// import { encode } from "base64-arraybuffer";
-// import { body, validationResult } from 'express-validator';
-// import sqlstring from 'sqlstring';
-
-// dotenv.config({
-//   path: "/.env.file"
-// });
 
 // Data structures =============================>
 type Transaction = {
@@ -266,25 +256,6 @@ const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-// Middleware to sanitize req.body and prevent SQL injections
-// const sanitizeRequestBody = [
-//   body('orderId').trim().escape(),
-//   // Add more sanitization rules for other fields as needed
-//   (req: Request, res: Response, next: NextFunction) => {
-//     const errors = validationResult(req);
-//     if (!errors.isEmpty()) {
-//       return res.status(400).json({ errors: errors.array() });
-//     }
-
-//     // Prevent SQL injections
-//     Object.keys(req.body).forEach(key => {
-//       req.body[key] = sqlstring.escape(req.body[key]).trim();
-//     });
-
-//     next();
-//   }
-// ];
-
 const toJson = (json: { [key: string]: any }) => (
   JSON.parse(JSON.stringify(json, (_key, value) =>
     typeof value === 'bigint'
@@ -299,41 +270,9 @@ export default Server(() => {
   app.use(express.json());
   app.use(postLog);
 
-  // Redirect HTTP to HTTPS
-  // app.use((req, res, next) => {
-  //   if (req.headers["x-forwarded-proto"] !== "https") {
-  //     return res.redirect("https://" + req.headers.host + req.url);
-  //   }
-  //   next();
-  // });
-
-  // Add helmet middleware for setting HSTS: HTTP Strict Transport Security header
-  app.use(
-    helmet.hsts({
-      maxAge: 31536000, // 1 year in seconds
-      includeSubDomains: true,
-      preload: true,
-    })
-  );
-
-
-  // app.post("/v1/nft/create", async (req, res) => {
-  //   const minter: Principal = req.body.minter;
-  //   const metadataNft: { [key: string]: any } = req.body.metadata;
-
-  //   const response = await fetch(`icp://bd3sg-teaaa-aaaaa-qaaba-cai&id=be2us-64aaa-aaaaa-qaabq-cai/mintDip721`, {
-  //       body: serialize({
-  //         args: [minter, metadataNft]
-  //       })
-  //   });
-  //   const responseJson = await response.json();
-  //   res.json(responseJson);
-
-  // });
-
   const nft = Router();
 
-
+  // GET
   nft.get("/total", async (req, res) => {
     try {
       const response = await fetch(`icp://${process.env.NFT_ID}/totalSupplyDip721`, {
@@ -351,40 +290,7 @@ export default Server(() => {
     }
   });
 
-  // nft.get("/nfts", async (req, res) => {
-  //   try {
-  //     const response = await fetch(`icp://${process.env.NFT_ID}/getAllNfts`, {
-  //       body: serialize({
-  //         candidPath: "/candid/nft.did",
-  //         args: []
-  //       })
-  //     });
-  //     const responseJson = await response.json();
-  //     console.log(responseJson)
-  //     res.json(toJson(responseJson));
-  //   } catch (err) {
-  //     res.send({
-  //       error: err,
-  //     });
-  //   }
-  // });
-  nft.get("/total", async (req, res) => {
-    try {
-      const response = await fetch(`icp://${process.env.NFT_ID}/totalSupplyDip721`, {
-        body: serialize({
-          candidPath: "/candid/nft.did",
-          args: []
-        })
-      });
-      const responseJson = await response.json();
-      res.json(toJson(responseJson));
-    } catch (err) {
-      res.send({
-        error: err,
-      });
-    }
-  });
-
+  // POST
   nft.post("/mint", async (req, res) => {
     const minter: string = req.body.minter;
     const metadataNft: { [key: string]: any } = req.body.metadata;
@@ -402,9 +308,9 @@ export default Server(() => {
     } catch (err) {
       res.send(`${err}`);
     }
-
   });
 
+  // PUT
   nft.put("/update", async (req, res) => {
     const tokenId: string = req.body.token;
     const key: string = req.body.key;
@@ -423,9 +329,9 @@ export default Server(() => {
     } catch (err) {
       res.send(`${err}`);
     }
-
   });
 
+  // GET
   nft.get("/tokens/:id", async (req, res) => {
     const { id } = req.params;
 
@@ -442,9 +348,9 @@ export default Server(() => {
     } catch (err) {
       res.send(`${err}`);
     }
-
   });
 
+  // GET
   nft.get("/tokens/:id", async (req, res) => {
     const { id } = req.params;
 
@@ -461,9 +367,9 @@ export default Server(() => {
     } catch (err) {
       res.send(`${err}`);
     }
-
   });
 
+  // GET
   nft.get("/metadata/:id", async (req, res) => {
     const { id } = req.params;
 
@@ -480,9 +386,9 @@ export default Server(() => {
     } catch (err) {
       res.send(`${err}`);
     }
-
   });
 
+  // POST
   nft.post("/transfer", async (req, res) => {
     const { from, to, tokenId } = req.body;
 
@@ -499,9 +405,7 @@ export default Server(() => {
     } catch (err) {
       res.send(`${err}`);
     }
-
   });
-
 
   app.use("/v1/nft", nft);
 

@@ -3,7 +3,6 @@ import { customElement, property } from "lit/decorators.js";
 import { initSatellite, signIn, signOut,  NFIDProvider, authSubscribe, type User, Unsubscribe } from "@junobuild/core";
 import "./nft";
 
-
 // Update the top-level await to be within an async function
 async function initializeApp() {
   await initSatellite({
@@ -86,7 +85,6 @@ export class AzleApp extends LitElement {
   signOutAsync = async () => {
     await signOut();
   }
-  
 
   render() {
     return html`
@@ -101,7 +99,6 @@ export class AzleApp extends LitElement {
                         <button type="button" class="btn btn-primary" @click=${this.getAllTransaction}>
                           Fetch all transactions
                         </button>
-                        
                         
                         ${this.user ? html`<button type="button" class="btn btn-warning" @click=${this.signOutAsync}>
                           Sign out with NFID

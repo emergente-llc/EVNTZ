@@ -133,7 +133,7 @@ buffer/index.js:
 								<div id="nftNameHelp" class="form-text">You're creative and make a description for your NFT.</div>
 							</div>
 							<div class="mb-3">
-								<label for="nft" class="form-label">Upload a image of your NFT</label>
+								<label for="nft" class="form-label">Upload a image of your NFT (up to 25kb)</label>
 								<input required name="img" class="form-control" type="file" id="formFile">
 							</div>
 							<div class="d-flex align-items-center gap-2">
@@ -159,7 +159,6 @@ buffer/index.js:
                         <button type="button" class="btn btn-primary" @click=${this.getAllTransaction}>
                           Fetch all transactions
                         </button>
-                        
                         
                         ${this.user?Pt`<button type="button" class="btn btn-warning" @click=${this.signOutAsync}>
                           Sign out with NFID
