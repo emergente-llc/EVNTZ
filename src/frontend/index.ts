@@ -1,6 +1,34 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { initSatellite, signIn, signOut,  NFIDProvider, authSubscribe, type User } from "@junobuild/core";
 import "./nft";
+
+
+// Update the top-level await to be within an async function
+async function initializeApp() {
+  await initSatellite({
+    satelliteId: "reahh-3qaaa-aaaal-ajmkq-cai"
+  });
+}
+
+initializeApp();
+
+async function signInAsync() {
+  await signIn({
+    provider: new NFIDProvider({
+      appName: "EVNTZ",
+      logoUrl: "/EVNTZ/logo/evntz_logo.png"
+    })
+  });
+}
+
+async function signOutAsync() {
+  await signOut();
+}
+
+const subscribeUser = authSubscribe((user: User | null) => {
+  console.log("User:", user);
+});
 
 @customElement("azle-app")
 export class AzleApp extends LitElement {
@@ -68,6 +96,16 @@ export class AzleApp extends LitElement {
                         <button type="button" class="btn btn-primary" @click=${this.getAllTransaction}>
                           Fetch all transactions
                         </button>
+
+                        <button type="button" class="btn btn-info" @click=${signInAsync}>
+                          Sign in with NFID
+                        </button>
+
+                        <button type="button" class="btn btn-warning" @click=${signOutAsync}>
+                          Sign out with NFID
+                        </button>
+
+                        Login User: ${subscribeUser}
 
                         <h5 class="mbr-section-title mbr-fonts-style mb-4 display-1" style="font-weight: 700; font-size: 64px; font-family: Inter Tight, sans-serif; text-align: center;">
                           Transactions
