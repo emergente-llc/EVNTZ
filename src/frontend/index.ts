@@ -1,6 +1,6 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { initSatellite, signIn, signOut,  NFIDProvider, authSubscribe, type User } from "@junobuild/core";
+import { initSatellite, signIn, signOut,  NFIDProvider, authSubscribe, type User, Unsubscribe } from "@junobuild/core";
 import "./nft";
 
 
@@ -13,23 +13,6 @@ async function initializeApp() {
 
 initializeApp();
 
-async function signInAsync() {
-  await signIn({
-    provider: new NFIDProvider({
-      appName: "EVNTZ",
-      logoUrl: "/EVNTZ/logo/evntz_logo.png"
-    })
-  });
-}
-
-async function signOutAsync() {
-  await signOut();
-}
-
-const subscribeUser = authSubscribe((user: User | null) => {
-  console.log("User:", user);
-});
-
 @customElement("azle-app")
 export class AzleApp extends LitElement {
   @property()
@@ -37,7 +20,10 @@ export class AzleApp extends LitElement {
   transactions: any[] = [];
   @property()
   nftsTotal = 0;
-  
+  unsubscribeAuth: Unsubscribe = () => {};
+  @property()
+  user: User | null = null;
+
   constructor() {
     super();
     this.getAllTransaction();
@@ -75,18 +61,37 @@ export class AzleApp extends LitElement {
     super.connectedCallback();
     
     window.addEventListener("add-nfts-total", this.handleAddNftsTotal);
+
+    this.unsubscribeAuth = authSubscribe((user: User | null) => {
+     this.user = user;
+    });
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     
     window.removeEventListener("add-nfts-total", this.handleAddNftsTotal);
+    this.unsubscribeAuth();
   }
+  
+  signInAsync = async () => {
+    await signIn({
+      provider: new NFIDProvider({
+        appName: "EVNTZ",
+        logoUrl: "/EVNTZ/logo/evntz_logo.png"
+      })
+    });
+  }
+
+  signOutAsync = async () => {
+    await signOut();
+  }
+  
 
   render() {
     return html`
 
-            <section data-bs-version="5.1" class="counter1 counters cid-ugXs5vm9Vt pt-3" id="counter1-1h">
+        <section data-bs-version="5.1" class="counter1 counters cid-ugXs5vm9Vt pt-3" id="counter1-1h">
               <div class="container">
                 <div class="row justify-content-center">
                   <div class="col-12 content-head">
@@ -96,16 +101,15 @@ export class AzleApp extends LitElement {
                         <button type="button" class="btn btn-primary" @click=${this.getAllTransaction}>
                           Fetch all transactions
                         </button>
-
-                        <button type="button" class="btn btn-info" @click=${signInAsync}>
-                          Sign in with NFID
-                        </button>
-
-                        <button type="button" class="btn btn-warning" @click=${signOutAsync}>
+                        
+                        
+                        ${this.user ? html`<button type="button" class="btn btn-warning" @click=${this.signOutAsync}>
                           Sign out with NFID
-                        </button>
+                        </button>` : html`<button type="button" class="btn btn-info" @click=${this.signInAsync}>
+                          Sign in with NFID
+                        </button>`}
 
-                        Login User: ${subscribeUser}
+                        ${this.user ? html`Login User: ${this.user.key}` : ""}
 
                         <h5 class="mbr-section-title mbr-fonts-style mb-4 display-1" style="font-weight: 700; font-size: 64px; font-family: Inter Tight, sans-serif; text-align: center;">
                           Transactions
@@ -245,8 +249,7 @@ export class AzleApp extends LitElement {
               `)}
             </div>
 
-
-            <nft-form nftsTotal=${this.nftsTotal}></nft-form>
+            <nft-form .user=${this.user}></nft-form>
     `;
   }
 }

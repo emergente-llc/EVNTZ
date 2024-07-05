@@ -1,5 +1,4 @@
 import Nat "mo:base/Nat";
-import Blob "mo:base/Blob";
 import Nat8 "mo:base/Nat8";
 import Nat16 "mo:base/Nat16";
 import Nat32 "mo:base/Nat32";
@@ -63,7 +62,7 @@ module {
   public type MetadataPart = {
     purpose: MetadataPurpose;
     key_val_data: [MetadataKeyVal];
-    data: Blob;
+    data: Text;
   };
 
   public type MetadataPurpose = {

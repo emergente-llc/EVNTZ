@@ -1,6 +1,7 @@
 import { html, LitElement } from "lit";
 import confetti from "canvas-confetti";
 import { customElement, property } from "lit/decorators.js";
+import { uploadFile, User } from "@junobuild/core";
 
 type DataNft = {
   name: string,
@@ -15,6 +16,8 @@ class NftFormComponent extends LitElement {
   loading = false;
   @property()
   textButton = "Create my nft 😄";
+  @property()
+  user: User | null = null;
 
   imgSrcToArrayBuffer = async (img: Blob) => {
     const arrayBuffer = await new Promise(resolve => {
@@ -36,11 +39,17 @@ class NftFormComponent extends LitElement {
     const { VITE_CANISTER_ORIGIN } = import.meta.env;
 
 
-    const arrayBufferImg = await this.imgSrcToArrayBuffer(dataNft.img);
+    // const arrayBufferImg = await this.imgSrcToArrayBuffer(dataNft.img);
+
+    const result = await uploadFile({
+      data: dataNft.img,
+      collection: "evntz_nfts",
+      token: crypto.randomUUID()
+    });
 
     const nftMetadata = [
       {
-        data: Array.from(arrayBufferImg),
+        data: result.downloadUrl,
         purpose: { Rendered: null },
         key_val_data:
           [
@@ -51,7 +60,7 @@ class NftFormComponent extends LitElement {
     ]
 
     const body = {
-      minter: "zrzlu-77t5u-6mmw7-zpbko-j73cv-fh5aq-wgjyr-w7but-3nars-j4lul-nae",
+      minter: this.user?.key,
       metadata: nftMetadata,
     }
 

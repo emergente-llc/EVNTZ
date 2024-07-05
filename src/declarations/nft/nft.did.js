@@ -23,7 +23,7 @@ export const idlFactory = ({ IDL }) => {
     'Rendered' : IDL.Null,
   });
   const MetadataPart = IDL.Record({
-    'data' : IDL.Vec(IDL.Nat8),
+    'data' : IDL.Text,
     'key_val_data' : IDL.Vec(MetadataKeyVal),
     'purpose' : MetadataPurpose,
   });

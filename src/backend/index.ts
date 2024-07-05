@@ -15,6 +15,7 @@ import {
   update,
   query,
   serialize,
+  AzleBlob,
 } from "azle";
 import helmet from "helmet";
 import express, { Request, Response, NextFunction, Router } from "express";
