@@ -40,7 +40,7 @@
         "api"
     ],
     "scripts": {
-        "build": "cd src/frontend && VITE_CANISTER_ORIGIN=http://$(dfx canister id backend).localhost:8000 vite build",
+        "build": "cd src/frontend && VITE_CANISTER_ORIGIN=https://$(dfx canister id backend).raw.icp0.io vite build",
         "pretest": "ts-node --transpile-only --ignore=false --skip-project test/pretest.ts",
         "test": "jest"
     },
