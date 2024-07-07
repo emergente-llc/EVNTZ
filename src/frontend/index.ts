@@ -77,7 +77,7 @@ export class AzleApp extends LitElement {
     await signIn({
       provider: new NFIDProvider({
         appName: "EVNTZ",
-        logoUrl: "/EVNTZ/logo/evntz_logo.png"
+        logoUrl: "../logo/evntz_logo.png"
       })
     });
   }

@@ -16,6 +16,7 @@
         "nft": {
             "type": "motoko",
             "main": "src/nft/main.mo",
+            "gzip": true,
             "opt_level": "4"
           }
     }

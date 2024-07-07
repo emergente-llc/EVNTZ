@@ -5,7 +5,7 @@
     "author": "Richard Román Crespo, Alejandro Oroncoy",
     "company": "Emergente, LLC",
     "description": "EVNTZ is an agnostic digital platform designed to seamlessly integrate with existing web2 ticketing systems, leveraging the power of tokenization and sophisticated security mechanisms in the Internet Computer Protocol, transforming the way event tickets are issued.",
-    "homepage": "https://www.evntz.io",
+    "homepage": "https://v4wsq-jyaaa-aaaal-ajmta-cai.icp0.io/ ",
     "repository": {
         "type": "git",
         "url": "https://github.com/emergente-llc/EVNTZ.git"
@@ -40,7 +40,7 @@
         "api"
     ],
     "scripts": {
-        "build": "cd src/frontend && VITE_CANISTER_ORIGIN=https://$(dfx canister id backend).raw.icp0.io vite build",
+        "build": "cd src/frontend && VITE_CANISTER_ORIGIN=https://$(dfx canister id backend --network ic).raw.icp0.io vite build",
         "pretest": "ts-node --transpile-only --ignore=false --skip-project test/pretest.ts",
         "test": "jest"
     },

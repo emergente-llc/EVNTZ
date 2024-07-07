@@ -17,7 +17,7 @@ EVNTZ, built on the Internet Computer Protocol Blockchain, aims to revolutionize
 
 #### 💁‍♂️️ Links & Resources
 Here are some useful links:
--   [EVNTZ](https://www.evntz.io/)
+-   [EVNTZ](https://v4wsq-jyaaa-aaaal-ajmta-cai.icp0.io/)
 
 #### FOR DEMO PURPOSES ONLY
 ```bash
@@ -32,7 +32,7 @@ npm install
 dfx start --clean --background --host 127.0.0.1:8000
 
 # with dfx
-dfx deploy nft --argument "(  
+dfx deploy nft --network ic --argument "(  
   principal\"$(dfx identity get-principal)\",  
   record {  
     logo = record {  
@@ -47,7 +47,7 @@ dfx deploy nft --argument "(
 
 dfx generate
 
-ACCESS_TOKEN_SECRET="ecc448d9-5f00-42f6-a973-ad6fca9fa265" RS_SEC_HDR_VENDOR_ID="ab38a423-9af0-4811-a5b4-482114fd918d" RS_SEC_HDR_VENDOR_PASSWORD="79*jA27i76q5P5E8e?Lz0x)f1vUw5*5hyv~Fu96b#--MZB>;~48p<E3L9L.9S-~GfO>i~#" NFT_ID="$(dfx canister id nft)" dfx deploy backend
+ACCESS_TOKEN_SECRET="YOUR-ACCESS-TOKEN-SECRET" RS_SEC_HDR_VENDOR_ID="YOUR-VENDOR-ID" RS_SEC_HDR_VENDOR_PASSWORD="YOUR-VENDOR-PASSWORD" NFT_ID="$(dfx canister id nft --network ic)" dfx deploy backend --network ic
 
 # In browser
 http://<backend_canister_name>.localhost:8000
