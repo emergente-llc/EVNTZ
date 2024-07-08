@@ -32,7 +32,7 @@ npm install
 dfx start --clean --background --host 127.0.0.1:8000
 
 # with dfx
-dfx deploy nft --network ic --argument "(  
+dfx deploy nft --argument "(  
   principal\"$(dfx identity get-principal)\",  
   record {  
     logo = record {  
@@ -47,7 +47,7 @@ dfx deploy nft --network ic --argument "(
 
 dfx generate
 
-ACCESS_TOKEN_SECRET="YOUR-ACCESS-TOKEN-SECRET" RS_SEC_HDR_VENDOR_ID="YOUR-VENDOR-ID" RS_SEC_HDR_VENDOR_PASSWORD="YOUR-VENDOR-PASSWORD" NFT_ID="$(dfx canister id nft --network ic)" dfx deploy backend --network ic
+ACCESS_TOKEN_SECRET="YOUR-ACCESS-TOKEN-SECRET" RS_SEC_HDR_VENDOR_ID="YOUR-VENDOR-ID" RS_SEC_HDR_VENDOR_PASSWORD="YOUR-VENDOR-PASSWORD" NFT_ID="$(dfx canister id nft)" dfx deploy backend
 
 # In browser
 http://<backend_canister_name>.localhost:8000
