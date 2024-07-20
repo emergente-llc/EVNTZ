@@ -1,9 +1,13 @@
+import Nat16 "mo:base/Nat16";
+import Nat64 "mo:base/Nat64";
 import List "mo:base/List";
-import Time "mo:base/Time";
-import Text "mo:base/Text";
+import Bool "mo:base/Bool";
+import Principal "mo:base/Principal";
+import Buffer "mo:base/Buffer";
 import Nat "mo:base/Nat";
 import Debug "mo:base/Debug";
-import Result "mo:base/Result";
+import Time "mo:base/Time";
+import Text "mo:base/Text";
 import Types "./types";
 
 shared actor class Tickets() {
@@ -18,7 +22,7 @@ shared actor class Tickets() {
   };
 
   public func create(ticketBody: Types.TicketCreatedParams): async Types.TicketCreated {
-    let newId: Types.TicketId = Text.fromNat(List.size(tickets) + 1);
+    let newId: Types.TicketId = Nat.toText(List.size(tickets));
 
     let ticket: Types.Ticket = {
       order_id = ticketBody.order_id;

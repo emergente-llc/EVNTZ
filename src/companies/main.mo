@@ -11,30 +11,32 @@ import Text "mo:base/Text";
 import Types "./types";
 
 shared actor class Companies() {
-  stable var companies = List.nil<Types.OrderSquema>();
+  stable var companies = List.nil<Types.Company>();
 
   public query func total(): async Nat {
     return List.size(companies);
   };
 
-  public query func getAllOrders() : async ([Types.OrderSquema]) {
+  public query func getAllCompanies(): async ([Types.Company]) {
     return List.toArray(companies);
   };
 
-  public func create(orderBody: Types.OrderCreatedParams): async Types.OrderCreated {
+  public func create(companyBody: Types.CompanyCreatedParams): async Types.CompanyCreated {
+    let newId: Types.CompanyId = Nat.toText(List.size(companies));
 
-    let newId: Types.OrderId = Nat.toText(List.size(companies));
-
-    let company: Types.OrderSquema = {
-      orderId = newId;
-      status = orderBody.status;
-      operation = orderBody.operation;
-      companyName = orderBody.companyName;
-      userEmail = orderBody.userEmail;
-      eventId = orderBody.eventId;
-      createdAt = ?Time.now();
-      receivedAt = null;
-      updatedAt = null;
+    let company: Types.Company = {
+      company_id = newId;
+      company_name = companyBody.company_name;
+      company_description = companyBody.company_description;
+      company_address = companyBody.company_address;
+      company_country = companyBody.company_country;
+      company_city = companyBody.company_city;
+      company_state = companyBody.company_state;
+      company_zip = companyBody.company_zip;
+      company_gps = companyBody.company_gps;
+      company_documents = companyBody.company_documents;
+      created_at = Time.now();
+      updated_at = Time.now();
     };
 
     companies := List.push(company, companies);
@@ -44,60 +46,62 @@ shared actor class Companies() {
     });
   };
 
-  public query func getById(orderId: Types.OrderId): async ?Types.OrderSquema {
-    let company = List.find(companies, func(company: Types.OrderSquema): Bool {
-      company.orderId == orderId
+  public query func getById(company_id: Types.CompanyId): async ?Types.Company {
+    let company = List.find(companies, func(company: Types.Company): Bool {
+      company.company_id == company_id
     });
 
     return company;
   };
 
-  public func delete(orderId: Types.OrderId): async ?Types.OrderSquema {
-    let orderToDelete = List.find(companies, func(company: Types.OrderSquema): Bool {
-      company.orderId == orderId
+  public func delete(company_id: Types.CompanyId): async ?Types.Company {
+    let companyToDelete = List.find(companies, func(company: Types.Company): Bool {
+      company.company_id == company_id
     });
     
-    if(orderToDelete != null) {
-      companies := List.filter(companies, func(company: Types.OrderSquema): Bool {
-        Text.notEqual(company.orderId, orderId)
+    if(companyToDelete != null) {
+      companies := List.filter(companies, func(company: Types.Company): Bool {
+        Text.notEqual(company.company_id, company_id)
       });
     };
     
-    return orderToDelete;
+    return companyToDelete;
   };
 
-  public func update(orderId: Types.OrderId, orderBody: Types.OrderCreatedParams): async ?Types.OrderSquema {
-    let orderToUpdate = List.find(companies, func(company: Types.OrderSquema): Bool {
-      company.orderId == orderId
+  public func update(company_id: Types.CompanyId, companyBody: Types.CompanyCreatedParams): async ?Types.Company {
+    let companyToUpdate = List.find(companies, func(company: Types.Company): Bool {
+      company.company_id == company_id
     });
 
-    var orderUpdatedFinded: ?Types.OrderSquema = null; 
+    var companyUpdatedFinded: ?Types.Company = null;
 
+    if(companyToUpdate != null) {
+      companies := List.map(companies, func(company: Types.Company): Types.Company {
+        if(company.company_id == company_id) {
 
-    if(orderToUpdate != null) {
-      companies := List.map(companies, func(company: Types.OrderSquema): Types.OrderSquema {
-        if(company.orderId == orderId) {
-
-          let orderUpdated: Types.OrderSquema = {
-            orderId = company.orderId;
-            status = orderBody.status;
-            operation = orderBody.operation;
-            companyName = orderBody.companyName;
-            userEmail = orderBody.userEmail;
-            eventId = orderBody.eventId;
-            createdAt = company.createdAt;
-            receivedAt = null;
-            updatedAt = ?Time.now();
+          let companyUpdated: Types.Company = {
+            company_id = company.company_id;
+            company_name = companyBody.company_name;
+            company_description = companyBody.company_description;
+            company_address = companyBody.company_address;
+            company_country = companyBody.company_country;
+            company_city = companyBody.company_city;
+            company_state = companyBody.company_state;
+            company_zip = companyBody.company_zip;
+            company_gps = companyBody.company_gps;
+            company_documents = companyBody.company_documents;
+            created_at = company.created_at;  // Se mantiene la fecha de creación original
+            updated_at = Time.now();
           };
           
-          orderUpdatedFinded := ?orderUpdated;
+          companyUpdatedFinded := ?companyUpdated;
 
-          return orderUpdated;
+          return companyUpdated;
         };
         return company;
       });
     };
 
-    return orderUpdatedFinded;
+    return companyUpdatedFinded;
   }
-}
+};

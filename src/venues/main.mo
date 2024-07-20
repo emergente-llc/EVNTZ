@@ -1,7 +1,13 @@
+import Nat16 "mo:base/Nat16";
+import Nat64 "mo:base/Nat64";
 import List "mo:base/List";
+import Bool "mo:base/Bool";
+import Principal "mo:base/Principal";
+import Buffer "mo:base/Buffer";
+import Nat "mo:base/Nat";
+import Debug "mo:base/Debug";
 import Time "mo:base/Time";
 import Text "mo:base/Text";
-import Result "mo:base/Result";
 import Types "./types";
 
 shared actor class Venues() {
@@ -16,7 +22,7 @@ shared actor class Venues() {
   };
 
   public func create(venueBody: Types.VenueCreatedParams): async Types.VenueCreated {
-    let newId: Types.VenueId = Text.fromNat(List.size(venues) + 1);
+    let newId: Types.VenueId = Nat.toText(List.size(venues));
 
     let venue: Types.Venue = {
       venue_id = newId;
