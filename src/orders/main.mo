@@ -11,13 +11,13 @@ import Text "mo:base/Text";
 import Types "./types";
 
 shared actor class Orders() {
-  stable var orders = List.nil<Types.OrderSquema>();
+  stable var orders = List.nil<Types.Order>();
 
   public query func total(): async Nat {
     return List.size(orders);
   };
 
-  public query func getAllOrders() : async ([Types.OrderSquema]) {
+  public query func getAllOrders() : async ([Types.Order]) {
     return List.toArray(orders);
   };
 
@@ -25,16 +25,16 @@ shared actor class Orders() {
 
     let newId: Types.OrderId = Nat.toText(List.size(orders));
 
-    let order: Types.OrderSquema = {
-      orderId = newId;
+    let order: Types.Order = {
+      order_id = newId;
       status = orderBody.status;
       operation = orderBody.operation;
-      companyName = orderBody.companyName;
-      userEmail = orderBody.userEmail;
-      eventId = orderBody.eventId;
-      createdAt = ?Time.now();
-      receivedAt = null;
-      updatedAt = null;
+      company_name = orderBody.company_name;
+      user_email = orderBody.user_email;
+      event_id = orderBody.event_id;
+      created_at = ?Time.now();
+      received_at = null;
+      updated_at = null;
     };
 
     orders := List.push(order, orders);
@@ -44,50 +44,50 @@ shared actor class Orders() {
     });
   };
 
-  public query func getById(orderId: Types.OrderId): async ?Types.OrderSquema {
-    let order = List.find(orders, func(order: Types.OrderSquema): Bool {
-      order.orderId == orderId
+  public query func getById(order_id: Types.OrderId): async ?Types.Order {
+    let order = List.find(orders, func(order: Types.Order): Bool {
+      order.order_id == order_id
     });
 
     return order;
   };
 
-  public func delete(orderId: Types.OrderId): async ?Types.OrderSquema {
-    let orderToDelete = List.find(orders, func(order: Types.OrderSquema): Bool {
-      order.orderId == orderId
+  public func delete(order_id: Types.OrderId): async ?Types.Order {
+    let orderToDelete = List.find(orders, func(order: Types.Order): Bool {
+      order.order_id == order_id
     });
     
     if(orderToDelete != null) {
-      orders := List.filter(orders, func(order: Types.OrderSquema): Bool {
-        Text.notEqual(order.orderId, orderId)
+      orders := List.filter(orders, func(order: Types.Order): Bool {
+        Text.notEqual(order.order_id, order_id)
       });
     };
     
     return orderToDelete;
   };
 
-  public func update(orderId: Types.OrderId, orderBody: Types.OrderCreatedParams): async ?Types.OrderSquema {
-    let orderToUpdate = List.find(orders, func(order: Types.OrderSquema): Bool {
-      order.orderId == orderId
+  public func update(order_id: Types.OrderId, orderBody: Types.OrderCreatedParams): async ?Types.Order {
+    let orderToUpdate = List.find(orders, func(order: Types.Order): Bool {
+      order.order_id == order_id
     });
 
-    var orderUpdatedFinded: ?Types.OrderSquema = null; 
+    var orderUpdatedFinded: ?Types.Order = null; 
 
 
     if(orderToUpdate != null) {
-      orders := List.map(orders, func(order: Types.OrderSquema): Types.OrderSquema {
-        if(order.orderId == orderId) {
+      orders := List.map(orders, func(order: Types.Order): Types.Order {
+        if(order.order_id == order_id) {
 
-          let orderUpdated: Types.OrderSquema = {
-            orderId = order.orderId;
+          let orderUpdated: Types.Order = {
+            order_id = order.order_id;
             status = orderBody.status;
             operation = orderBody.operation;
-            companyName = orderBody.companyName;
-            userEmail = orderBody.userEmail;
-            eventId = orderBody.eventId;
-            createdAt = order.createdAt;
-            receivedAt = null;
-            updatedAt = ?Time.now();
+            company_name = orderBody.company_name;
+            user_email = orderBody.user_email;
+            event_id = orderBody.event_id;
+            created_at = order.created_at;
+            received_at = null;
+            updated_at = ?Time.now();
           };
           
           orderUpdatedFinded := ?orderUpdated;

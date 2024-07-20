@@ -13,9 +13,34 @@
                 "RS_SEC_HDR_VENDOR_PASSWORD", 
                 "NFT_ID"]
         },
-        "nft": {
+        "companies": {
             "type": "motoko",
-            "main": "src/nft/main.mo",
+            "main": "src/companies/main.mo",
+            "opt_level": "4"
+          },
+        "events": {
+            "type": "motoko",
+            "main": "src/events/main.mo",
+            "opt_level": "4"
+          },
+        "orders": {
+            "type": "motoko",
+            "main": "src/orders/main.mo",
+            "opt_level": "4"
+          },
+        "tickets": {
+            "type": "motoko",
+            "main": "src/tickets/main.mo",
+            "opt_level": "4"
+          },
+        "users": {
+            "type": "motoko",
+            "main": "src/users/main.mo",
+            "opt_level": "4"
+          },
+        "venues": {
+            "type": "motoko",
+            "main": "src/venues/main.mo",
             "opt_level": "4"
           },
         "internet-identity": {
