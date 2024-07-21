@@ -1,11 +1,6 @@
-import Nat16 "mo:base/Nat16";
-import Nat64 "mo:base/Nat64";
 import List "mo:base/List";
 import Bool "mo:base/Bool";
-import Principal "mo:base/Principal";
-import Buffer "mo:base/Buffer";
 import Nat "mo:base/Nat";
-import Debug "mo:base/Debug";
 import Time "mo:base/Time";
 import Text "mo:base/Text";
 import Types "./types";

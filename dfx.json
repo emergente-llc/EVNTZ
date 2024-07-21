@@ -1,5 +1,6 @@
 {
     "canisters": {
+      
       "backend": {
         "type": "azle",
         "main": "src/backend/index.ts",
@@ -18,6 +19,11 @@
         "main": "src/nft/main.mo",
         "opt_level": "4"
       },
+        "backages": {
+            "type": "motoko",
+            "main": "src/backages/main.mo",
+            "opt_level": "4"
+          },
         "companies": {
             "type": "motoko",
             "main": "src/companies/main.mo",
