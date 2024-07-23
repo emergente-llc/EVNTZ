@@ -14,110 +14,238 @@ import {
   ic,
   update,
   query,
-  serialize
+  serialize,
+  Canister,
+  Vec,
+  int,
 } from "azle";
+
 import express, { Request, Response, NextFunction, Router } from "express";
+import { validateTicket } from './security_validations';
+import { string } from "joi";
 
 // Data structures =============================>
-type Transaction = {
-  orderId: string;
-  status: string;
-  operation: string;
-  companyId: string;
-  event: {
-    eventId: string;
-    eventName: string;
-    eventArtist: string;
-    eventVenue: string;
-    eventCountry: string;
-    eventVenueGPS: string;
-    eventDateTime: string;
-    eventPromoterCompany: string;
-    eventInformation: string;
-  };
-  user: {
-    name: string;
-    email: string;
-    phone: string;
-  };
-  seats: [
-    {
-      ticket: {
-        ticketId: string;
-        ticketStatus: string;
-        ticketSection: string;
-        ticketRow: string;
-        ticketSeat: string;
-        ticketDescription: string;
-        ticketQty: string;
-        ticketPrice: string;
-        ticketPriceIVU: string;
-        ticketServiceFee: string;
-        ticketServiceFeeIVU: string;
-        ticketPromoterFee: string;
-        ticketPromoterFeeIVU: string;
-        ticketClubSeatsFee: string;
-        ticketClubSeatsFeeIVU: string;
-        ticketFacilityFee: string;
-        ticketFacilityFeeIVU: string;
-        ticketOrderFeeWeb: string;
-        ticketOrderFeeWebIVU: string;
-        ticketTotal: string;
-      };
-    }
-  ];
-};
-
-let transaction: Transaction[] = [
-  {
-    orderId: "JAQ4L56",
-    status: "new",
-    operation: "sale",
-    companyId: "1642e7f0-979d-4d57-aaa0-c73ed96622ae",
+/*  
+  type _Transaction = {
+    orderId: string;
+    status: string;
+    operation: string;
+    companyId: string;
     event: {
-      eventId: "d472d65e-b4cb-47ef-837d-544e4f26974c",
-      eventName: "Journey - Freedom Tour 2022",
-      eventArtist: "Journey",
-      eventVenue: "Coliseo de Puerto Rico",
-      eventCountry: "San Juan Puerto Rico",
-      eventVenueGPS: "18.4277361,-66.0639617",
-      eventDateTime: "09/23/2022 08:00PM",
-      eventPromoterCompany:
-        "Sireno Mesa, R&M Entertainment y Caribbean Concerts",
-      eventInformation:
-        "Por política del Coliseo y por su seguridad, se requiere que todo menor de 16 años esté acompañado por un adulto en todo momento durante los eventos. Esta regla aplica para todos los eventos que se llevan a cabo en el Coliseo de Puerto Rico.",
-    },
+      eventId: string;
+      eventName: string;
+      eventArtist: string;
+      eventVenue: string;
+      eventCountry: string;
+      eventVenueGPS: string;
+      eventDateTime: string;
+      eventPromoterCompany: string;
+      eventInformation: string;
+    };
     user: {
-      name: "Juan del Pueblo",
-      email: "juan.delpueblo@gmail.com",
-      phone: "7873452022",
-    },
+      name: string;
+      email: string;
+      phone: string;
+    };
     seats: [
       {
         ticket: {
-          ticketId: "1256",
-          ticketStatus: "active",
-          ticketSection: "110",
-          ticketRow: "A",
-          ticketSeat: "15",
-          ticketDescription: "",
-          ticketQty: "1",
-          ticketPrice: "155.00",
-          ticketPriceIVU: "13.23",
-          ticketServiceFee: "6.75",
-          ticketServiceFeeIVU: "0.78",
-          ticketPromoterFee: "4.00",
-          ticketPromoterFeeIVU: "0.46",
-          ticketClubSeatsFee: "5.00",
-          ticketClubSeatsFeeIVU: "0.58",
-          ticketFacilityFee: "2.00",
-          ticketFacilityFeeIVU: "0.23",
-          ticketOrderFeeWeb: "3.00",
-          ticketOrderFeeWebIVU: "0.35",
-          ticketTotal: "151.38",
-        },
+          ticketId: string;
+          ticketStatus: string;
+          ticketSection: string;
+          ticketRow: string;
+          ticketSeat: string;
+          ticketDescription: string;
+          ticketQty: string;
+          ticketPrice: string;
+          ticketPriceIVU: string;
+          ticketServiceFee: string;
+          ticketServiceFeeIVU: string;
+          ticketPromoterFee: string;
+          ticketPromoterFeeIVU: string;
+          ticketClubSeatsFee: string;
+          ticketClubSeatsFeeIVU: string;
+          ticketFacilityFee: string;
+          ticketFacilityFeeIVU: string;
+          ticketOrderFeeWeb: string;
+          ticketOrderFeeWebIVU: string;
+          ticketTotal: string;
+        };
+      }
+    ];
+  };
+
+  let _transaction: Transaction[] = [
+    {
+      orderId: "JAQ4L56",
+      status: "new",
+      operation: "sale",
+      companyId: "1642e7f0-979d-4d57-aaa0-c73ed96622ae",
+      event: {
+        eventId: "d472d65e-b4cb-47ef-837d-544e4f26974c",
+        eventName: "Journey - Freedom Tour 2022",
+        eventArtist: "Journey",
+        eventVenue: "Coliseo de Puerto Rico",
+        eventCountry: "San Juan Puerto Rico",
+        eventVenueGPS: "18.4277361,-66.0639617",
+        eventDateTime: "09/23/2022 08:00PM",
+        eventPromoterCompany:
+          "Sireno Mesa, R&M Entertainment y Caribbean Concerts",
+        eventInformation:
+          "Por política del Coliseo y por su seguridad, se requiere que todo menor de 16 años esté acompañado por un adulto en todo momento durante los eventos. Esta regla aplica para todos los eventos que se llevan a cabo en el Coliseo de Puerto Rico.",
       },
-    ],
+      user: {
+        name: "Juan del Pueblo",
+        email: "juan.delpueblo@gmail.com",
+        phone: "7873452022",
+      },
+      seats: [
+        {
+          ticket: {
+            ticketId: "1256",
+            ticketStatus: "active",
+            ticketSection: "110",
+            ticketRow: "A",
+            ticketSeat: "15",
+            ticketDescription: "",
+            ticketQty: "1",
+            ticketPrice: "155.00",
+            ticketPriceIVU: "13.23",
+            ticketServiceFee: "6.75",
+            ticketServiceFeeIVU: "0.78",
+            ticketPromoterFee: "4.00",
+            ticketPromoterFeeIVU: "0.46",
+            ticketClubSeatsFee: "5.00",
+            ticketClubSeatsFeeIVU: "0.58",
+            ticketFacilityFee: "2.00",
+            ticketFacilityFeeIVU: "0.23",
+            ticketOrderFeeWeb: "3.00",
+            ticketOrderFeeWebIVU: "0.35",
+            ticketTotal: "151.38",
+          },
+        },
+      ],
+    },
+  ];
+*/
+
+type Transaction = {
+    order_id: string;
+    status: string;
+    operation: string;
+    company_id: string;
+    event_id: string;
+    user: {
+      email: string;
+      phone: string;
+    },
+    sale: [
+      {
+        ticket: {
+          ticket_id: string;
+          ticket_status: string;
+          ticket_section: string;
+          ticket_row: string;
+          ticket_seat: string;
+          ticket_description: string;
+          ticket_qty: int;
+          ticket_price: number;
+          fees: [
+            {
+              fee_id: string;
+              fee_description: string;
+              fee_amount: number;
+              taxes: {
+                tax_id: string;
+                tax_description: string;
+                tax_amount: number;
+              }
+            },
+            {
+              fee_id: string;
+              fee_description: string;
+              fee_amount: number;
+              taxes: {
+                tax_id: string;
+                tax_description: string;
+                tax_amount: number;
+              }
+            },
+            {
+              fee_id: string;
+              fee_description: string;
+              fee_amount: number;
+              taxes: {
+                tax_id: string;
+                tax_description: string;
+                tax_amount: number;
+              }
+            }
+          ],
+          ticket_total: number;
+        }
+      }
+    ]
+  };
+
+let transaction: Transaction[] = [
+  {
+    "order_id": "HEA4L30",
+    "status": "new",
+    "operation": "sale",
+    "company_id": "4542e7f0-675k-4f57-bca0-c73er95272sw",
+    "event_id": "f482d45e-t5cb-47yn-857d-524t4f86274r",
+    "user": {
+      "email": "hello@evntz.io",
+      "phone": "7871234589"
+    },
+    "sale": [
+      {
+        "ticket": {
+          "ticket_id": "0005",
+          "ticket_status": "active",
+          "ticket_section": "101",
+          "ticket_row": "A",
+          "ticket_seat": "05",
+          "ticket_description": "VIP",
+          "ticket_qty": "1",
+          "ticket_price": "999.00",
+          "fees": [
+            {
+              "fee_id": "A0",
+              "fee_description": "Base Price",
+              "fee_amount": "999.00",
+              "taxes": {
+                "tax_id": "6%",
+                "tax_description": "6%",
+                "tax_amount": "13.23"
+              }
+            },
+            {
+              "fee_id": "A1",
+              "fee_description": "Service Fee",
+              "fee_amount": "6.75",
+              "taxes": {
+                "tax_id": "6%",
+                "tax_description": "6%",
+                "tax_amount": "0.78"
+              }
+            },
+            {
+              "fee_id": "A2",
+              "fee_description": "Promoter Fee",
+              "fee_amount": "4.00",
+              "taxes": {
+                "tax_id": "6%",
+                "tax_description": "Promoter Fee IVU",
+                "tax_amount": "0.46"
+              }
+            }
+          ],
+          "ticket_total": "1035.38"
+        }
+      }
+    ]
   },
 ];
 
@@ -227,13 +355,13 @@ const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
   const vendorPasswordHeader = req.headers["rs_sec_hdr_vendor_password"] as string;
 
   if (!authHeader || !vendorIdHeader || !vendorPasswordHeader) {
-    return res.status(401).send("No authorization headers provided.");
+    return res.status(401).json({ error: "No authorization headers provided." });
   }
 
   const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
 
   if (!token) {
-    return res.status(401).send("Token not found.");
+    return res.status(401).json({ error: "Token not found." });
   }
 
   console.log("authHeader: " + token.trimStart().trimEnd());
@@ -244,15 +372,14 @@ const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
   console.log("Vendor Id: " + process.env.RS_SEC_HDR_VENDOR_ID);
   console.log("Vendor Password: " + process.env.RS_SEC_HDR_VENDOR_PASSWORD);
 
-  if (
-    token.trimStart().trimEnd() === process.env.ACCESS_TOKEN_SECRET &&
+  if (token.trimStart().trimEnd() === process.env.ACCESS_TOKEN_SECRET &&
     vendorIdHeader.trimStart().trimEnd() === process.env.RS_SEC_HDR_VENDOR_ID &&
     vendorPasswordHeader.trimStart().trimEnd() ===
     process.env.RS_SEC_HDR_VENDOR_PASSWORD
   ) {
     next(); // proceed to the next middleware or route handler
   } else {
-    res.sendStatus(403).send("403 Forbidden"); // if token is invalid, return 403 Forbidden
+    res.sendStatus(403).json({ error: "403 Forbidden" }); // if token is invalid, return 403 Forbidden
   }
 };
 
@@ -410,12 +537,12 @@ export default Server(() => {
   app.use("/v1/nft", nft);
 
   // GET
-  app.get("/v1/tickets/all", customerFrontDoor, (_req, res) => {
+  app.get("/v1/tickets/all", async (_req, res) => {
     res.json(transaction);
   });
 
   // GET
-  app.get("/v1/tickets/all/sorted", (_req, res) => {
+  app.get("/v1/tickets/all/sorted", async (_req, res) => {
     const sortedTransactions = transaction.sort((a, b) =>
       a.orderId.localeCompare(b.orderId)
     );
@@ -423,61 +550,64 @@ export default Server(() => {
   });
 
   // POST
-  app.post("/v1/tickets/post", customerFrontDoor, (req, res) => {
-    const { orderId } = req.body;
+  app.post("/v1/tickets/post", customerFrontDoor, async (req, res) => {
 
-    // Input validation
-    if (typeof orderId !== "string") {
-      return res.status(400).send("Invalid input data.");
+    const result = validateTicket(req.body);
+
+    if (result.error) {
+      console.error(result.error.details);
+      return res.status(400).json({ error: "Invalid input data." });
     }
+    else {
+      console.log('Validation successful');
 
-    const orderIdExists = transaction.some(
-      (transaction) => transaction.orderId === orderId
-    );
+      const { orderId } = req.body.order_id;
 
-    if (orderIdExists) {
-      res.status(409).send("Can't post this transaction.");
-      return;
+      const orderIdExists = transaction.some(
+        (transaction) => transaction.order_id === orderId
+      );
+
+      if (orderIdExists) {
+        return res.status(409).json({ error: "Can't post this transaction." });
+      }
+
+      transaction = [...transaction, req.body];
+      res.json({ message: "Ticket transaction added successfully!" });
+
+      function generateId(): Principal {
+        const randomBytes = new Array(29)
+          .fill(0)
+          .map((_) => Math.floor(Math.random() * 256));
+
+        return Principal.fromUint8Array(Uint8Array.from(randomBytes));
+      }
+
+      // Store the Order information
+      Canister({
+        createOrder: update([text], Order, (orderId) => {
+          const id = generateId();
+          const order: Order = {
+            orderId,
+            id,
+            status: req.body.status,
+            operation: req.body.operation,
+            companyId: req.body.companyId,
+            receivedAt: ic.time(),
+            eventId: req.body.eventId,
+          };
+
+          orders.insert(order.orderId, order);
+          return order;
+        }),
+        readOrders: query([], Vec(Order), () => {
+          return orders.values();
+        }),
+      });
     }
-
-    transaction = [...transaction, req.body];
-    res.send("Ticket transaction added successfully!");
-
-    function generateId(): Principal {
-      const randomBytes = new Array(29)
-        .fill(0)
-        .map((_) => Math.floor(Math.random() * 256));
-
-      return Principal.fromUint8Array(Uint8Array.from(randomBytes));
-    }
-
-    // Store the Order information
-    Canister({
-      createOrder: update([text], Order, (orderId) => {
-        const id = generateId();
-        const order: Order = {
-          orderId,
-          id,
-          status: req.body.status,
-          operation: req.body.operation,
-          companyId: req.body.companyId,
-          receivedAt: ic.time(),
-          eventId: req.body.eventId,
-        };
-
-        orders.insert(order.orderId, order);
-        return order;
-      }),
-      readOrders: query([], Vec(Order), () => {
-        return orders.values();
-      }),
-    });
-
-
   });
 
   // PUT
-  app.put("/v1/tickets/put/:ticketId", customerFrontDoor, (req, res) => {
+  app.put("/v1/tickets/put/:ticketId", async (req, res) => {
     const ticketId = req.params.ticketId;
     const newStatus = req.body.status;
 
@@ -506,7 +636,7 @@ export default Server(() => {
   });
 
   // DELETE
-  app.delete("/v1/tickets/delete/:orderid", customerFrontDoor, (req, res) => {
+  app.delete("/v1/tickets/delete/:orderid", async (req, res) => {
     const orderId = req.params.orderid;
 
     // Find the ticket directly
