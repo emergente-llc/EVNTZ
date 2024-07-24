@@ -17,12 +17,10 @@ import {
   serialize,
   Canister,
   Vec,
-  int,
 } from "azle";
 
 import express, { Request, Response, NextFunction, Router } from "express";
 import { validateTicket } from './security_validations';
-import { string } from "joi";
 
 // Data structures =============================>
 /*  
@@ -130,63 +128,63 @@ import { string } from "joi";
 */
 
 type Transaction = {
-    order_id: string;
-    status: string;
-    operation: string;
-    company_id: string;
-    event_id: string;
-    user: {
-      email: string;
-      phone: string;
-    },
-    sale: [
-      {
-        ticket: {
-          ticket_id: string;
-          ticket_status: string;
-          ticket_section: string;
-          ticket_row: string;
-          ticket_seat: string;
-          ticket_description: string;
-          ticket_qty: int;
-          ticket_price: number;
-          fees: [
-            {
-              fee_id: string;
-              fee_description: string;
-              fee_amount: number;
-              taxes: {
-                tax_id: string;
-                tax_description: string;
-                tax_amount: number;
-              }
-            },
-            {
-              fee_id: string;
-              fee_description: string;
-              fee_amount: number;
-              taxes: {
-                tax_id: string;
-                tax_description: string;
-                tax_amount: number;
-              }
-            },
-            {
-              fee_id: string;
-              fee_description: string;
-              fee_amount: number;
-              taxes: {
-                tax_id: string;
-                tax_description: string;
-                tax_amount: number;
-              }
+  order_id: string;
+  status: string;
+  operation: string;
+  company_id: string;
+  event_id: string;
+  user: {
+    email: string;
+    phone: string;
+  },
+  sale: [
+    {
+      ticket: {
+        ticket_id: string;
+        ticket_status: string;
+        ticket_section: string;
+        ticket_row: string;
+        ticket_seat: string;
+        ticket_description: string;
+        ticket_qty: number;
+        ticket_price: number;
+        fees: [
+          {
+            fee_id: string;
+            fee_description: string;
+            fee_amount: number;
+            taxes: {
+              tax_id: string;
+              tax_description: string;
+              tax_amount: number;
             }
-          ],
-          ticket_total: number;
-        }
+          },
+          {
+            fee_id: string;
+            fee_description: string;
+            fee_amount: number;
+            taxes: {
+              tax_id: string;
+              tax_description: string;
+              tax_amount: number;
+            }
+          },
+          {
+            fee_id: string;
+            fee_description: string;
+            fee_amount: number;
+            taxes: {
+              tax_id: string;
+              tax_description: string;
+              tax_amount: number;
+            }
+          }
+        ],
+        ticket_total: number;
       }
-    ]
-  };
+    }
+  ]
+};
 
 let transaction: Transaction[] = [
   {
@@ -208,41 +206,41 @@ let transaction: Transaction[] = [
           "ticket_row": "A",
           "ticket_seat": "05",
           "ticket_description": "VIP",
-          "ticket_qty": "1",
-          "ticket_price": "999.00",
+          "ticket_qty": 1,
+          "ticket_price": 999.00,
           "fees": [
             {
               "fee_id": "A0",
               "fee_description": "Base Price",
-              "fee_amount": "999.00",
+              "fee_amount": 999.00,
               "taxes": {
                 "tax_id": "6%",
                 "tax_description": "6%",
-                "tax_amount": "13.23"
+                "tax_amount": 13.23
               }
             },
             {
               "fee_id": "A1",
               "fee_description": "Service Fee",
-              "fee_amount": "6.75",
+              "fee_amount": 6.75,
               "taxes": {
                 "tax_id": "6%",
                 "tax_description": "6%",
-                "tax_amount": "0.78"
+                "tax_amount": 0.78
               }
             },
             {
               "fee_id": "A2",
               "fee_description": "Promoter Fee",
-              "fee_amount": "4.00",
+              "fee_amount": 4.00,
               "taxes": {
                 "tax_id": "6%",
                 "tax_description": "Promoter Fee IVU",
-                "tax_amount": "0.46"
+                "tax_amount": 0.46
               }
             }
           ],
-          "ticket_total": "1035.38"
+          "ticket_total": 1035.38
         }
       }
     ]
@@ -544,7 +542,7 @@ export default Server(() => {
   // GET
   app.get("/v1/tickets/all/sorted", async (_req, res) => {
     const sortedTransactions = transaction.sort((a, b) =>
-      a.orderId.localeCompare(b.orderId)
+      a.order_id.localeCompare(b.order_id)
     );
     res.json(sortedTransactions);
   });
@@ -591,9 +589,9 @@ export default Server(() => {
             id,
             status: req.body.status,
             operation: req.body.operation,
-            companyId: req.body.companyId,
+            companyId: req.body.company_id,
             receivedAt: ic.time(),
-            eventId: req.body.eventId,
+            eventId: req.body.event_id,
           };
 
           orders.insert(order.orderId, order);
@@ -613,21 +611,21 @@ export default Server(() => {
 
     // Find the ticket directly
     const foundTicket = transaction.find((t) =>
-      t.seats.some((seat) => seat.ticket.ticketId === ticketId)
+      t.sale.some((sale) => sale.ticket.ticket_id === ticketId)
     );
 
     console.log("Found ticket: " + foundTicket);
 
     if (!foundTicket) {
-      res.status(404).send("Ticket with the specified ID not found.");
+      res.status(404).json({ error: "Ticket with the specified ID not found." });
       return;
     }
 
     // Update the ticket status
-    foundTicket.seats.forEach((seat) => {
-      if (seat.ticket.ticketId === ticketId) {
-        seat.ticket.ticketStatus = newStatus;
-        console.log("Actual status: " + seat.ticket.ticketStatus);
+    foundTicket.sale.forEach((sale) => {
+      if (sale.ticket.ticket_id === ticketId) {
+        sale.ticket.ticket_status = newStatus;
+        console.log("Actual status: " + sale.ticket.ticket_status);
         console.log("New status: " + newStatus);
       }
     });
@@ -641,7 +639,7 @@ export default Server(() => {
 
     // Find the ticket directly
     const orderIdExists = transaction.some(
-      (transaction) => transaction.orderId === orderId
+      (transaction) => transaction.order_id === orderId
     );
 
     if (!orderIdExists) {
@@ -650,7 +648,7 @@ export default Server(() => {
     }
 
     transaction = transaction.filter(
-      (transaction) => transaction.orderId !== orderId
+      (transaction) => transaction.order_id !== orderId
     );
     res.send("Ticket transaction deleted successfully!");
   });

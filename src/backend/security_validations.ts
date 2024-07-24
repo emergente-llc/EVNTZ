@@ -3,8 +3,8 @@ import Joi from 'joi';
 // Define the ticket schema
 const ticketSchema = Joi.object({
   order_id: Joi.string().required(),
-  status: Joi.string().valid('new', 'pending', 'completed').required(),
-  operation: Joi.string().valid('sale', 'refund').required(),
+  status: Joi.string().valid('new', 'update').required(),
+  operation: Joi.string().valid('sale', 'refund', 'cancel').required(),
   company_id: Joi.string().guid({ version: 'uuidv4' }).required(),
   event_id: Joi.string().guid({ version: 'uuidv4' }).required(),
   user: Joi.object({
@@ -41,7 +41,7 @@ const ticketSchema = Joi.object({
 });
 
 // Function to validate ticket data
-const validateTicket = (data) => {
+const validateTicket = (data: unknown) => {
   return ticketSchema.validate(data);
 };
 
