@@ -391,8 +391,10 @@ const toJson = (json: { [key: string]: any }) => (
 
 export default Server(() => {
   const app = express();
+  const ipWhitelistMiddleware = require('./ipWhitelistMiddleware');
 
   app.use(express.json());
+  app.use(ipWhitelistMiddleware);
   app.use(postLog);
 
   const nft = Router();
