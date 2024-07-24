@@ -1,23 +1,26 @@
 {
   "__Candid_UI": {
-    "local": "by6od-j4aaa-aaaaa-qaadq-cai"
+    "local": "avqkn-guaaa-aaaaa-qaaea-cai"
   },
-  "companies": {
+  "backages": {
     "local": "bkyz2-fmaaa-aaaaa-qaaaq-cai"
   },
-  "events": {
+  "companies": {
     "local": "bd3sg-teaaa-aaaaa-qaaba-cai"
   },
-  "orders": {
+  "events": {
     "local": "be2us-64aaa-aaaaa-qaabq-cai"
   },
-  "tickets": {
+  "orders": {
     "local": "br5f7-7uaaa-aaaaa-qaaca-cai"
   },
-  "users": {
+  "tickets": {
     "local": "bw4dl-smaaa-aaaaa-qaacq-cai"
   },
-  "venues": {
+  "users": {
     "local": "b77ix-eeaaa-aaaaa-qaada-cai"
+  },
+  "venues": {
+    "local": "by6od-j4aaa-aaaaa-qaadq-cai"
   }
 }

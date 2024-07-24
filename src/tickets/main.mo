@@ -1,17 +1,28 @@
-import Nat16 "mo:base/Nat16";
-import Nat64 "mo:base/Nat64";
 import List "mo:base/List";
 import Bool "mo:base/Bool";
-import Principal "mo:base/Principal";
-import Buffer "mo:base/Buffer";
 import Nat "mo:base/Nat";
-import Debug "mo:base/Debug";
 import Time "mo:base/Time";
 import Text "mo:base/Text";
 import Types "./types";
 
 shared actor class Tickets() {
   stable var tickets = List.nil<Types.Ticket>();
+
+  public query func getByOrder(orderId: Text) : async ([Types.Ticket]) {
+    let ticketsByOrderId = List.filter(tickets, func (ticket: Types.Ticket): Bool {
+      return ticket.order_id == orderId;
+    });
+
+    return List.toArray(ticketsByOrderId);
+  };
+
+  public query func getByEvent(eventId: Text) : async ([Types.Ticket]) {
+    let ticketsByEventId = List.filter(tickets, func (ticket: Types.Ticket): Bool {
+      return ticket.event_id == eventId;
+    });
+
+    return List.toArray(ticketsByEventId);
+  };
 
   public query func total(): async Nat {
     return List.size(tickets);

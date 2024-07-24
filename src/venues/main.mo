@@ -17,6 +17,14 @@ shared actor class Venues() {
     return List.size(venues);
   };
 
+  public query func getByEvent(eventVenue: Text) : async ([Types.Venue]) {
+    let venuesByEventVenue = List.filter(venues, func (venue: Types.Venue): Bool {
+      return venue.venue_name == eventVenue
+    });
+
+    return List.toArray(venuesByEventVenue);
+  };
+
   public query func getAllVenues(): async ([Types.Venue]) {
     return List.toArray(venues);
   };

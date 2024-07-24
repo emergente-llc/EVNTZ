@@ -16,6 +16,15 @@ shared actor class Companies() {
     return List.toArray(companies);
   };
 
+  public query func getByOrder(companyName: Text) : async ([Types.Company]) {
+    let venuesByEventId = List.filter(companies, func (company: Types.Company): Bool {
+      return company.company_name == companyName;
+    });
+
+    return List.toArray(venuesByEventId);
+  };
+  
+
   public func create(companyBody: Types.CompanyCreatedParams): async Types.CompanyCreated {
     let newId: Types.CompanyId = Nat.toText(List.size(companies));
 

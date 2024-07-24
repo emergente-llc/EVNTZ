@@ -21,6 +21,14 @@ shared actor class Users() {
     return List.toArray(users);
   };
 
+  public query func getByOrder(userEmail: Text): async ([Types.User]){
+    let usersList = List.filter(users, func (user: Types.User): Bool {
+      return user.email == userEmail
+    });
+
+    return List.toArray(usersList);
+  };
+ 
   public func create(userBody: Types.UserCreatedParams): async Types.UserCreated {
     let newId: Types.UserId = Nat.toText(List.size(users));
 
