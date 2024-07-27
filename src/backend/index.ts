@@ -21,6 +21,7 @@ import {
 
 import express, { Request, Response, NextFunction, Router } from "express";
 import { validateTicket } from "./json_zod_validation";
+// import { ipWhitelistMiddleware } from './ipWhitelistMiddleware';
 
 // Data structures =============================>
 type Transaction = {
@@ -45,26 +46,6 @@ type Transaction = {
         ticket_qty: number;
         ticket_price: number;
         fees: [
-          {
-            fee_id: string;
-            fee_description: string;
-            fee_amount: number;
-            taxes: {
-              tax_id: string;
-              tax_description: string;
-              tax_amount: number;
-            }
-          },
-          {
-            fee_id: string;
-            fee_description: string;
-            fee_amount: number;
-            taxes: {
-              tax_id: string;
-              tax_description: string;
-              tax_amount: number;
-            }
-          },
           {
             fee_id: string;
             fee_description: string;
@@ -114,26 +95,6 @@ let transaction: Transaction[] = [
                 "tax_description": "6%",
                 "tax_amount": 13.23
               }
-            },
-            {
-              "fee_id": "A1",
-              "fee_description": "Service Fee",
-              "fee_amount": 6.75,
-              "taxes": {
-                "tax_id": "6%",
-                "tax_description": "6%",
-                "tax_amount": 0.78
-              }
-            },
-            {
-              "fee_id": "A2",
-              "fee_description": "Promoter Fee",
-              "fee_amount": 4.00,
-              "taxes": {
-                "tax_id": "6%",
-                "tax_description": "Promoter Fee IVU",
-                "tax_amount": 0.46
-              }
             }
           ],
           "ticket_total": 1035.38
@@ -142,6 +103,19 @@ let transaction: Transaction[] = [
     ]
   },
 ];
+
+type Company_configs = {
+  ACCESS_TOKEN_SECRET: string;
+  RS_SEC_HDR_VENDOR_ID: string;
+  RS_SEC_HDR_VENDOR_PASSWORD: string;
+};
+
+let company_configs: Company_configs = 
+  {
+    "ACCESS_TOKEN_SECRET": "b59bde1a-f5f6-457f-8ad9-29b4c32e0b2r",
+    "RS_SEC_HDR_VENDOR_ID": "d23744bf-1d90-4be0-91fd-e94047f06036",
+    "RS_SEC_HDR_VENDOR_PASSWORD": "r*^7ipJH7L4@wod+89atA"
+  };
 
 const Order = Record({
   orderId: text,
@@ -244,9 +218,10 @@ function postLog(req: Request, res: Response, next: NextFunction) {
 
 // Middleware to validate Customer Tokens
 const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers["authorization"];
+  const authHeader = req.headers["authorization"] as string;
   const vendorIdHeader = req.headers["rs_sec_hdr_vendor_id"] as string;
   const vendorPasswordHeader = req.headers["rs_sec_hdr_vendor_password"] as string;
+  //const clientIP = req.ip as string;
 
   if (!authHeader || !vendorIdHeader || !vendorPasswordHeader) {
     return res.status(401).json({ error: "No authorization headers provided." });
@@ -258,18 +233,17 @@ const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
     return res.status(401).json({ error: "Token not found." });
   }
 
+  //console.log("IP: " + clientIP.trimStart().trimEnd());
   console.log("authHeader: " + token.trimStart().trimEnd());
-  console.log("vendorIdHeader: " + vendorIdHeader);
-  console.log("vendorPasswordHeader: " + vendorPasswordHeader);
+  console.log("vendorIdHeader: " + vendorIdHeader.trimStart().trimEnd());
+  console.log("vendorPasswordHeader: " + vendorPasswordHeader.trimStart().trimEnd());
+  console.log("Token: " + company_configs.ACCESS_TOKEN_SECRET.toString());
+  console.log("Vendor Id: " + company_configs.RS_SEC_HDR_VENDOR_ID.toString());
+  console.log("Vendor Password: " + company_configs.RS_SEC_HDR_VENDOR_PASSWORD.toString());
 
-  console.log("Token: " + process.env.ACCESS_TOKEN_SECRET);
-  console.log("Vendor Id: " + process.env.RS_SEC_HDR_VENDOR_ID);
-  console.log("Vendor Password: " + process.env.RS_SEC_HDR_VENDOR_PASSWORD);
-
-  if (token.trimStart().trimEnd() === process.env.ACCESS_TOKEN_SECRET &&
-    vendorIdHeader.trimStart().trimEnd() === process.env.RS_SEC_HDR_VENDOR_ID &&
-    vendorPasswordHeader.trimStart().trimEnd() ===
-    process.env.RS_SEC_HDR_VENDOR_PASSWORD
+  if (token.trimStart().trimEnd() === company_configs.ACCESS_TOKEN_SECRET.toString() &&
+    vendorIdHeader.trimStart().trimEnd() === company_configs.RS_SEC_HDR_VENDOR_ID.toString() &&
+    vendorPasswordHeader.trimStart().trimEnd() === company_configs.RS_SEC_HDR_VENDOR_PASSWORD.toString()
   ) {
     next(); // proceed to the next middleware or route handler
   } else {
@@ -287,14 +261,11 @@ const toJson = (json: { [key: string]: any }) => (
 
 export default Server(() => {
   const app = express();
-  //const ipWhitelistMiddleware = require('./ipWhitelistMiddleware');
-
   app.use(express.json());
-  //app.use(ipWhitelistMiddleware);
   app.use(postLog);
-
   const nft = Router();
-
+  //app.set('trust proxy', true);
+  
   // GET
   nft.get("/total", async (req, res) => {
     try {
@@ -457,10 +428,10 @@ export default Server(() => {
     else {
       console.log('Validation successful');
 
-      const { orderId } = req.body.order_id;
+      //const { orderId } = req.body.order_id;
 
       const orderIdExists = transaction.some(
-        (transaction) => transaction.order_id === orderId
+        (transaction) => transaction.order_id === req.body.order_id
       );
 
       if (orderIdExists) {

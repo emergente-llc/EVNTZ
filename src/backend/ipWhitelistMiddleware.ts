@@ -1,17 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
-
-const IPCIDR = require('ip-cidr');
+import IPCIDR from 'ip-cidr';
 
 const whitelist = [
-  //'123.456.789.000', // Single IP address
-  //'123.456.789.0/24', // CIDR block
-  //'::1', // IPv6 localhost
   '127.0.0.1', // IPv4 localhost
   'http://be2us-64aaa-aaaaa-qaabq-cai.localhost:8000/',
+  'http://$(dfx canister id backend).localhost:8000'
 ];
 
-const ipWhitelistMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const requestIP = req.ip;
+export const ipWhitelistMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const requestIP = req.ip || req.socket.remoteAddress;
+
+  if (!requestIP) {
+    return res.status(400).json({ message: 'Unable to determine client IP' });
+  }
 
   const isWhitelisted = whitelist.some((range) => {
     if (range.includes('/')) {
