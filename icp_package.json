@@ -40,7 +40,7 @@
         "api"
     ],
     "scripts": {
-        "build": "cd src/frontend && VITE_CANISTER_ORIGIN=http://$(dfx canister id backend).localhost:8000 vite build",
+        "build": "cd src/frontend && VITE_CANISTER_ORIGIN=https://$(dfx canister id backend --network ic).raw.icp0.io vite build",
         "pretest": "ts-node --transpile-only --ignore=false --skip-project test/pretest.ts",
         "test": "jest"
     },
@@ -61,8 +61,8 @@
         "dotenv": "^16.4.5",
         "express": "^4.18.2",
         "ip-cidr": "^4.0.1",
-        "lit": "^3.1.2",
-        "zod": "^3.23.8"
+        "joi": "^17.13.3",
+        "lit": "^3.1.2"
     },
     "devDependencies": {
         "@types/canvas-confetti": "^1.6.4",

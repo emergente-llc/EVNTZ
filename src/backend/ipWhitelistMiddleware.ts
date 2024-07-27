@@ -7,6 +7,7 @@ const whitelist = [
   //'123.456.789.0/24', // CIDR block
   //'::1', // IPv6 localhost
   '127.0.0.1', // IPv4 localhost
+  'http://be2us-64aaa-aaaaa-qaabq-cai.localhost:8000/',
 ];
 
 const ipWhitelistMiddleware = (req: Request, res: Response, next: NextFunction) => {

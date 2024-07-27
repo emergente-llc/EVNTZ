@@ -20,113 +20,9 @@ import {
 } from "azle";
 
 import express, { Request, Response, NextFunction, Router } from "express";
-import { validateTicket } from './security_validations';
+import { validateTicket } from "./json_zod_validation";
 
 // Data structures =============================>
-/*  
-  type _Transaction = {
-    orderId: string;
-    status: string;
-    operation: string;
-    companyId: string;
-    event: {
-      eventId: string;
-      eventName: string;
-      eventArtist: string;
-      eventVenue: string;
-      eventCountry: string;
-      eventVenueGPS: string;
-      eventDateTime: string;
-      eventPromoterCompany: string;
-      eventInformation: string;
-    };
-    user: {
-      name: string;
-      email: string;
-      phone: string;
-    };
-    seats: [
-      {
-        ticket: {
-          ticketId: string;
-          ticketStatus: string;
-          ticketSection: string;
-          ticketRow: string;
-          ticketSeat: string;
-          ticketDescription: string;
-          ticketQty: string;
-          ticketPrice: string;
-          ticketPriceIVU: string;
-          ticketServiceFee: string;
-          ticketServiceFeeIVU: string;
-          ticketPromoterFee: string;
-          ticketPromoterFeeIVU: string;
-          ticketClubSeatsFee: string;
-          ticketClubSeatsFeeIVU: string;
-          ticketFacilityFee: string;
-          ticketFacilityFeeIVU: string;
-          ticketOrderFeeWeb: string;
-          ticketOrderFeeWebIVU: string;
-          ticketTotal: string;
-        };
-      }
-    ];
-  };
-
-  let _transaction: Transaction[] = [
-    {
-      orderId: "JAQ4L56",
-      status: "new",
-      operation: "sale",
-      companyId: "1642e7f0-979d-4d57-aaa0-c73ed96622ae",
-      event: {
-        eventId: "d472d65e-b4cb-47ef-837d-544e4f26974c",
-        eventName: "Journey - Freedom Tour 2022",
-        eventArtist: "Journey",
-        eventVenue: "Coliseo de Puerto Rico",
-        eventCountry: "San Juan Puerto Rico",
-        eventVenueGPS: "18.4277361,-66.0639617",
-        eventDateTime: "09/23/2022 08:00PM",
-        eventPromoterCompany:
-          "Sireno Mesa, R&M Entertainment y Caribbean Concerts",
-        eventInformation:
-          "Por política del Coliseo y por su seguridad, se requiere que todo menor de 16 años esté acompañado por un adulto en todo momento durante los eventos. Esta regla aplica para todos los eventos que se llevan a cabo en el Coliseo de Puerto Rico.",
-      },
-      user: {
-        name: "Juan del Pueblo",
-        email: "juan.delpueblo@gmail.com",
-        phone: "7873452022",
-      },
-      seats: [
-        {
-          ticket: {
-            ticketId: "1256",
-            ticketStatus: "active",
-            ticketSection: "110",
-            ticketRow: "A",
-            ticketSeat: "15",
-            ticketDescription: "",
-            ticketQty: "1",
-            ticketPrice: "155.00",
-            ticketPriceIVU: "13.23",
-            ticketServiceFee: "6.75",
-            ticketServiceFeeIVU: "0.78",
-            ticketPromoterFee: "4.00",
-            ticketPromoterFeeIVU: "0.46",
-            ticketClubSeatsFee: "5.00",
-            ticketClubSeatsFeeIVU: "0.58",
-            ticketFacilityFee: "2.00",
-            ticketFacilityFeeIVU: "0.23",
-            ticketOrderFeeWeb: "3.00",
-            ticketOrderFeeWebIVU: "0.35",
-            ticketTotal: "151.38",
-          },
-        },
-      ],
-    },
-  ];
-*/
-
 type Transaction = {
   order_id: string;
   status: string;
@@ -555,8 +451,8 @@ export default Server(() => {
     const result = validateTicket(req.body);
 
     if (result.error) {
-      console.error(result.error.details);
-      return res.status(400).json({ error: "Invalid input data." });
+      console.error(result.error.errors);
+      return res.status(400).json({ error: "Invalid input data.", details: result.error.errors });
     }
     else {
       console.log('Validation successful');
