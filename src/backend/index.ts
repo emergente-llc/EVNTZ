@@ -15,121 +15,107 @@ import {
   update,
   query,
   serialize,
-  AzleBlob,
+  Canister,
+  Vec,
 } from "azle";
-import helmet from "helmet";
-import express, { Request, Response, NextFunction, Router } from "express";
-// import dotenv from "dotenv";
-// import { encode } from "base64-arraybuffer";
-// import { body, validationResult } from 'express-validator';
-// import sqlstring from 'sqlstring';
 
-// dotenv.config({
-//   path: "/.env.file"
-// });
+import express, { Request, Response, NextFunction, Router } from "express";
+import { validateTicket } from "./json_zod_validation";
+// import { ipWhitelistMiddleware } from './ipWhitelistMiddleware';
 
 // Data structures =============================>
 type Transaction = {
-  orderId: string;
+  order_id: string;
   status: string;
   operation: string;
-  companyId: string;
-  event: {
-    eventId: string;
-    eventName: string;
-    eventArtist: string;
-    eventVenue: string;
-    eventCountry: string;
-    eventVenueGPS: string;
-    eventDateTime: string;
-    eventPromoterCompany: string;
-    eventInformation: string;
-  };
+  company_id: string;
+  event_id: string;
   user: {
-    name: string;
     email: string;
     phone: string;
-  };
-  seats: [
+  },
+  sale: [
     {
       ticket: {
-        ticketId: string;
-        ticketStatus: string;
-        ticketSection: string;
-        ticketRow: string;
-        ticketSeat: string;
-        ticketDescription: string;
-        ticketQty: string;
-        ticketPrice: string;
-        ticketPriceIVU: string;
-        ticketServiceFee: string;
-        ticketServiceFeeIVU: string;
-        ticketPromoterFee: string;
-        ticketPromoterFeeIVU: string;
-        ticketClubSeatsFee: string;
-        ticketClubSeatsFeeIVU: string;
-        ticketFacilityFee: string;
-        ticketFacilityFeeIVU: string;
-        ticketOrderFeeWeb: string;
-        ticketOrderFeeWebIVU: string;
-        ticketTotal: string;
-      };
+        ticket_id: string;
+        ticket_status: string;
+        ticket_section: string;
+        ticket_row: string;
+        ticket_seat: string;
+        ticket_description: string;
+        ticket_qty: number;
+        ticket_price: number;
+        fees: [
+          {
+            fee_id: string;
+            fee_description: string;
+            fee_amount: number;
+            taxes: {
+              tax_id: string;
+              tax_description: string;
+              tax_amount: number;
+            }
+          }
+        ],
+        ticket_total: number;
+      }
     }
-  ];
+  ]
 };
 
 let transaction: Transaction[] = [
   {
-    orderId: "JAQ4L56",
-    status: "new",
-    operation: "sale",
-    companyId: "1642e7f0-979d-4d57-aaa0-c73ed96622ae",
-    event: {
-      eventId: "d472d65e-b4cb-47ef-837d-544e4f26974c",
-      eventName: "Journey - Freedom Tour 2022",
-      eventArtist: "Journey",
-      eventVenue: "Coliseo de Puerto Rico",
-      eventCountry: "San Juan Puerto Rico",
-      eventVenueGPS: "18.4277361,-66.0639617",
-      eventDateTime: "09/23/2022 08:00PM",
-      eventPromoterCompany:
-        "Sireno Mesa, R&M Entertainment y Caribbean Concerts",
-      eventInformation:
-        "Por política del Coliseo y por su seguridad, se requiere que todo menor de 16 años esté acompañado por un adulto en todo momento durante los eventos. Esta regla aplica para todos los eventos que se llevan a cabo en el Coliseo de Puerto Rico.",
+    "order_id": "HEA4L30",
+    "status": "new",
+    "operation": "sale",
+    "company_id": "4542e7f0-675k-4f57-bca0-c73er95272sw",
+    "event_id": "f482d45e-t5cb-47yn-857d-524t4f86274r",
+    "user": {
+      "email": "hello@evntz.io",
+      "phone": "7871234589"
     },
-    user: {
-      name: "Juan del Pueblo",
-      email: "juan.delpueblo@gmail.com",
-      phone: "7873452022",
-    },
-    seats: [
+    "sale": [
       {
-        ticket: {
-          ticketId: "1256",
-          ticketStatus: "active",
-          ticketSection: "110",
-          ticketRow: "A",
-          ticketSeat: "15",
-          ticketDescription: "",
-          ticketQty: "1",
-          ticketPrice: "155.00",
-          ticketPriceIVU: "13.23",
-          ticketServiceFee: "6.75",
-          ticketServiceFeeIVU: "0.78",
-          ticketPromoterFee: "4.00",
-          ticketPromoterFeeIVU: "0.46",
-          ticketClubSeatsFee: "5.00",
-          ticketClubSeatsFeeIVU: "0.58",
-          ticketFacilityFee: "2.00",
-          ticketFacilityFeeIVU: "0.23",
-          ticketOrderFeeWeb: "3.00",
-          ticketOrderFeeWebIVU: "0.35",
-          ticketTotal: "151.38",
-        },
-      },
-    ],
+        "ticket": {
+          "ticket_id": "0005",
+          "ticket_status": "active",
+          "ticket_section": "101",
+          "ticket_row": "A",
+          "ticket_seat": "05",
+          "ticket_description": "VIP",
+          "ticket_qty": 1,
+          "ticket_price": 999.00,
+          "fees": [
+            {
+              "fee_id": "A0",
+              "fee_description": "Base Price",
+              "fee_amount": 999.00,
+              "taxes": {
+                "tax_id": "6%",
+                "tax_description": "6%",
+                "tax_amount": 13.23
+              }
+            }
+          ],
+          "ticket_total": 1035.38
+        }
+      }
+    ]
   },
 ];
+
+type Company_configs = {
+  ACCESS_TOKEN_SECRET: string;
+  RS_SEC_HDR_VENDOR_ID: string;
+  RS_SEC_HDR_VENDOR_PASSWORD: string;
+};
+
+let company_configs: Company_configs = 
+  {
+    "ACCESS_TOKEN_SECRET": "b59bde1a-f5f6-457f-8ad9-29b4c32e0b2r",
+    "RS_SEC_HDR_VENDOR_ID": "d23744bf-1d90-4be0-91fd-e94047f06036",
+    "RS_SEC_HDR_VENDOR_PASSWORD": "r*^7ipJH7L4@wod+89atA"
+  };
 
 const Order = Record({
   orderId: text,
@@ -232,58 +218,38 @@ function postLog(req: Request, res: Response, next: NextFunction) {
 
 // Middleware to validate Customer Tokens
 const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers["authorization"];
+  const authHeader = req.headers["authorization"] as string;
   const vendorIdHeader = req.headers["rs_sec_hdr_vendor_id"] as string;
   const vendorPasswordHeader = req.headers["rs_sec_hdr_vendor_password"] as string;
+  //const clientIP = req.ip as string;
 
   if (!authHeader || !vendorIdHeader || !vendorPasswordHeader) {
-    return res.status(401).send("No authorization headers provided.");
+    return res.status(401).json({ error: "No authorization headers provided." });
   }
 
   const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
 
   if (!token) {
-    return res.status(401).send("Token not found.");
+    return res.status(401).json({ error: "Token not found." });
   }
 
+  //console.log("IP: " + clientIP.trimStart().trimEnd());
   console.log("authHeader: " + token.trimStart().trimEnd());
-  console.log("vendorIdHeader: " + vendorIdHeader);
-  console.log("vendorPasswordHeader: " + vendorPasswordHeader);
+  console.log("vendorIdHeader: " + vendorIdHeader.trimStart().trimEnd());
+  console.log("vendorPasswordHeader: " + vendorPasswordHeader.trimStart().trimEnd());
+  console.log("Token: " + company_configs.ACCESS_TOKEN_SECRET.toString());
+  console.log("Vendor Id: " + company_configs.RS_SEC_HDR_VENDOR_ID.toString());
+  console.log("Vendor Password: " + company_configs.RS_SEC_HDR_VENDOR_PASSWORD.toString());
 
-  console.log("Token: " + process.env.ACCESS_TOKEN_SECRET);
-  console.log("Vendor Id: " + process.env.RS_SEC_HDR_VENDOR_ID);
-  console.log("Vendor Password: " + process.env.RS_SEC_HDR_VENDOR_PASSWORD);
-
-  if (
-    token.trimStart().trimEnd() === process.env.ACCESS_TOKEN_SECRET &&
-    vendorIdHeader.trimStart().trimEnd() === process.env.RS_SEC_HDR_VENDOR_ID &&
-    vendorPasswordHeader.trimStart().trimEnd() ===
-    process.env.RS_SEC_HDR_VENDOR_PASSWORD
+  if (token.trimStart().trimEnd() === company_configs.ACCESS_TOKEN_SECRET.toString() &&
+    vendorIdHeader.trimStart().trimEnd() === company_configs.RS_SEC_HDR_VENDOR_ID.toString() &&
+    vendorPasswordHeader.trimStart().trimEnd() === company_configs.RS_SEC_HDR_VENDOR_PASSWORD.toString()
   ) {
     next(); // proceed to the next middleware or route handler
   } else {
-    res.sendStatus(403).send("403 Forbidden"); // if token is invalid, return 403 Forbidden
+    res.sendStatus(403).json({ error: "403 Forbidden" }); // if token is invalid, return 403 Forbidden
   }
 };
-
-// Middleware to sanitize req.body and prevent SQL injections
-// const sanitizeRequestBody = [
-//   body('orderId').trim().escape(),
-//   // Add more sanitization rules for other fields as needed
-//   (req: Request, res: Response, next: NextFunction) => {
-//     const errors = validationResult(req);
-//     if (!errors.isEmpty()) {
-//       return res.status(400).json({ errors: errors.array() });
-//     }
-
-//     // Prevent SQL injections
-//     Object.keys(req.body).forEach(key => {
-//       req.body[key] = sqlstring.escape(req.body[key]).trim();
-//     });
-
-//     next();
-//   }
-// ];
 
 const toJson = (json: { [key: string]: any }) => (
   JSON.parse(JSON.stringify(json, (_key, value) =>
@@ -295,45 +261,12 @@ const toJson = (json: { [key: string]: any }) => (
 
 export default Server(() => {
   const app = express();
-
   app.use(express.json());
   app.use(postLog);
-
-  // Redirect HTTP to HTTPS
-  // app.use((req, res, next) => {
-  //   if (req.headers["x-forwarded-proto"] !== "https") {
-  //     return res.redirect("https://" + req.headers.host + req.url);
-  //   }
-  //   next();
-  // });
-
-  // Add helmet middleware for setting HSTS: HTTP Strict Transport Security header
-  app.use(
-    helmet.hsts({
-      maxAge: 31536000, // 1 year in seconds
-      includeSubDomains: true,
-      preload: true,
-    })
-  );
-
-
-  // app.post("/v1/nft/create", async (req, res) => {
-  //   const minter: Principal = req.body.minter;
-  //   const metadataNft: { [key: string]: any } = req.body.metadata;
-
-  //   const response = await fetch(`icp://bd3sg-teaaa-aaaaa-qaaba-cai&id=be2us-64aaa-aaaaa-qaabq-cai/mintDip721`, {
-  //       body: serialize({
-  //         args: [minter, metadataNft]
-  //       })
-  //   });
-  //   const responseJson = await response.json();
-  //   res.json(responseJson);
-
-  // });
-
   const nft = Router();
-
-
+  //app.set('trust proxy', true);
+  
+  // GET
   nft.get("/total", async (req, res) => {
     try {
       const response = await fetch(`icp://${process.env.NFT_ID}/totalSupplyDip721`, {
@@ -351,40 +284,7 @@ export default Server(() => {
     }
   });
 
-  // nft.get("/nfts", async (req, res) => {
-  //   try {
-  //     const response = await fetch(`icp://${process.env.NFT_ID}/getAllNfts`, {
-  //       body: serialize({
-  //         candidPath: "/candid/nft.did",
-  //         args: []
-  //       })
-  //     });
-  //     const responseJson = await response.json();
-  //     console.log(responseJson)
-  //     res.json(toJson(responseJson));
-  //   } catch (err) {
-  //     res.send({
-  //       error: err,
-  //     });
-  //   }
-  // });
-  nft.get("/total", async (req, res) => {
-    try {
-      const response = await fetch(`icp://${process.env.NFT_ID}/totalSupplyDip721`, {
-        body: serialize({
-          candidPath: "/candid/nft.did",
-          args: []
-        })
-      });
-      const responseJson = await response.json();
-      res.json(toJson(responseJson));
-    } catch (err) {
-      res.send({
-        error: err,
-      });
-    }
-  });
-
+  // POST
   nft.post("/mint", async (req, res) => {
     const minter: string = req.body.minter;
     const metadataNft: { [key: string]: any } = req.body.metadata;
@@ -402,9 +302,9 @@ export default Server(() => {
     } catch (err) {
       res.send(`${err}`);
     }
-
   });
 
+  // PUT
   nft.put("/update", async (req, res) => {
     const tokenId: string = req.body.token;
     const key: string = req.body.key;
@@ -423,9 +323,9 @@ export default Server(() => {
     } catch (err) {
       res.send(`${err}`);
     }
-
   });
 
+  // GET
   nft.get("/tokens/:id", async (req, res) => {
     const { id } = req.params;
 
@@ -442,9 +342,9 @@ export default Server(() => {
     } catch (err) {
       res.send(`${err}`);
     }
-
   });
 
+  // GET
   nft.get("/tokens/:id", async (req, res) => {
     const { id } = req.params;
 
@@ -461,9 +361,9 @@ export default Server(() => {
     } catch (err) {
       res.send(`${err}`);
     }
-
   });
 
+  // GET
   nft.get("/metadata/:id", async (req, res) => {
     const { id } = req.params;
 
@@ -480,9 +380,9 @@ export default Server(() => {
     } catch (err) {
       res.send(`${err}`);
     }
-
   });
 
+  // POST
   nft.post("/transfer", async (req, res) => {
     const { from, to, tokenId } = req.body;
 
@@ -499,101 +399,102 @@ export default Server(() => {
     } catch (err) {
       res.send(`${err}`);
     }
-
   });
-
 
   app.use("/v1/nft", nft);
 
   // GET
-  app.get("/v1/tickets/all", customerFrontDoor, (_req, res) => {
+  app.get("/v1/tickets/all", async (_req, res) => {
     res.json(transaction);
   });
 
   // GET
-  app.get("/v1/tickets/all/sorted", (_req, res) => {
+  app.get("/v1/tickets/all/sorted", async (_req, res) => {
     const sortedTransactions = transaction.sort((a, b) =>
-      a.orderId.localeCompare(b.orderId)
+      a.order_id.localeCompare(b.order_id)
     );
     res.json(sortedTransactions);
   });
 
   // POST
-  app.post("/v1/tickets/post", customerFrontDoor, (req, res) => {
-    const { orderId } = req.body;
+  app.post("/v1/tickets/post", customerFrontDoor, async (req, res) => {
 
-    // Input validation
-    if (typeof orderId !== "string") {
-      return res.status(400).send("Invalid input data.");
+    const result = validateTicket(req.body);
+
+    if (result.error) {
+      console.error(result.error.errors);
+      return res.status(400).json({ error: "Invalid input data.", details: result.error.errors });
     }
+    else {
+      console.log('Validation successful');
 
-    const orderIdExists = transaction.some(
-      (transaction) => transaction.orderId === orderId
-    );
+      //const { orderId } = req.body.order_id;
 
-    if (orderIdExists) {
-      res.status(409).send("Can't post this transaction.");
-      return;
+      const orderIdExists = transaction.some(
+        (transaction) => transaction.order_id === req.body.order_id
+      );
+
+      if (orderIdExists) {
+        return res.status(409).json({ error: "Can't post this transaction." });
+      }
+
+      transaction = [...transaction, req.body];
+      res.json({ message: "Ticket transaction added successfully!" });
+
+      function generateId(): Principal {
+        const randomBytes = new Array(29)
+          .fill(0)
+          .map((_) => Math.floor(Math.random() * 256));
+
+        return Principal.fromUint8Array(Uint8Array.from(randomBytes));
+      }
+
+      // Store the Order information
+      Canister({
+        createOrder: update([text], Order, (orderId) => {
+          const id = generateId();
+          const order: Order = {
+            orderId,
+            id,
+            status: req.body.status,
+            operation: req.body.operation,
+            companyId: req.body.company_id,
+            receivedAt: ic.time(),
+            eventId: req.body.event_id,
+          };
+
+          orders.insert(order.orderId, order);
+          return order;
+        }),
+        readOrders: query([], Vec(Order), () => {
+          return orders.values();
+        }),
+      });
     }
-
-    transaction = [...transaction, req.body];
-    res.send("Ticket transaction added successfully!");
-
-    function generateId(): Principal {
-      const randomBytes = new Array(29)
-        .fill(0)
-        .map((_) => Math.floor(Math.random() * 256));
-
-      return Principal.fromUint8Array(Uint8Array.from(randomBytes));
-    }
-
-    // Store the Order information
-    Canister({
-      createOrder: update([text], Order, (orderId) => {
-        const id = generateId();
-        const order: Order = {
-          orderId,
-          id,
-          status: req.body.status,
-          operation: req.body.operation,
-          companyId: req.body.companyId,
-          receivedAt: ic.time(),
-          eventId: req.body.eventId,
-        };
-
-        orders.insert(order.orderId, order);
-        return order;
-      }),
-      readOrders: query([], Vec(Order), () => {
-        return orders.values();
-      }),
-    });
-
-
   });
 
   // PUT
-  app.put("/v1/tickets/put/:ticketId", customerFrontDoor, (req, res) => {
+  app.put("/v1/tickets/put/:ticketId", async (req, res) => {
     const ticketId = req.params.ticketId;
     const newStatus = req.body.status;
 
     // Find the ticket directly
     const foundTicket = transaction.find((t) =>
-      t.seats.some((seat) => seat.ticket.ticketId === ticketId)
+      t.sale.some((sale) => sale.ticket.ticket_id === ticketId)
     );
 
     console.log("Found ticket: " + foundTicket);
 
     if (!foundTicket) {
-      res.status(404).send("Ticket with the specified ID not found.");
+      res.status(404).json({ error: "Ticket with the specified ID not found." });
       return;
     }
 
     // Update the ticket status
-    foundTicket.seats.forEach((seat) => {
-      if (seat.ticket.ticketId === ticketId) {
-        seat.ticket.ticketStatus = newStatus;
-        console.log("Actual status: " + seat.ticket.ticketStatus);
+    foundTicket.sale.forEach((sale) => {
+      if (sale.ticket.ticket_id === ticketId) {
+        sale.ticket.ticket_status = newStatus;
+        console.log("Actual status: " + sale.ticket.ticket_status);
         console.log("New status: " + newStatus);
       }
     });
@@ -602,12 +503,12 @@ export default Server(() => {
   });
 
   // DELETE
-  app.delete("/v1/tickets/delete/:orderid", customerFrontDoor, (req, res) => {
+  app.delete("/v1/tickets/delete/:orderid", async (req, res) => {
     const orderId = req.params.orderid;
 
     // Find the ticket directly
     const orderIdExists = transaction.some(
-      (transaction) => transaction.orderId === orderId
+      (transaction) => transaction.order_id === orderId
     );
 
     if (!orderIdExists) {
@@ -616,7 +517,7 @@ export default Server(() => {
     }
 
     transaction = transaction.filter(
-      (transaction) => transaction.orderId !== orderId
+      (transaction) => transaction.order_id !== orderId
     );
     res.send("Ticket transaction deleted successfully!");
   });

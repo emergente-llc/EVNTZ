@@ -1,11 +1,11 @@
 {
-    "name": "EVNTZ MVP",
+    "name": "EVNTZ",
     "version": "1.0.0",
     "license": "PROPRIETARY LICENSE AGREEMENT",
     "author": "Richard Román Crespo, Alejandro Oroncoy",
     "company": "Emergente, LLC",
     "description": "EVNTZ is an agnostic digital platform designed to seamlessly integrate with existing web2 ticketing systems, leveraging the power of tokenization and sophisticated security mechanisms in the Internet Computer Protocol, transforming the way event tickets are issued.",
-    "homepage": "https://www.evntz.io",
+    "homepage": "https://v4wsq-jyaaa-aaaal-ajmta-cai.icp0.io/ ",
     "repository": {
         "type": "git",
         "url": "https://github.com/emergente-llc/EVNTZ.git"
@@ -60,8 +60,9 @@
         "cors": "^2.8.5",
         "dotenv": "^16.4.5",
         "express": "^4.18.2",
-        "helmet": "^7.1.0",
-        "lit": "^3.1.2"
+        "ip-cidr": "^4.0.1",
+        "lit": "^3.1.2",
+        "zod": "^3.23.8"
     },
     "devDependencies": {
         "@types/canvas-confetti": "^1.6.4",

@@ -17,10 +17,12 @@ EVNTZ, built on the Internet Computer Protocol Blockchain, aims to revolutionize
 
 #### 💁‍♂️️ Links & Resources
 Here are some useful links:
--   [EVNTZ](https://www.evntz.io/)
+-   [EVNTZ](https://v4wsq-jyaaa-aaaal-ajmta-cai.icp0.io/)
 
-#### For demo purposes only
+#### FOR DEMO PURPOSES ONLY
 ```bash
+git clone https://github.com/emergente-llc/EVNTZ.git
+
 cd EVNTZ
 
 # with npm
@@ -30,7 +32,22 @@ npm install
 dfx start --clean --background --host 127.0.0.1:8000
 
 # with dfx
-ACCESS_TOKEN_SECRET="ecc448d9-5f00-42f6-a973-ad6fca9fa265" RS_SEC_HDR_VENDOR_ID="ab38a423-9af0-4811-a5b4-482114fd918d" RS_SEC_HDR_VENDOR_PASSWORD="79*jA27i76q5P5E8e?Lz0x)f1vUw5*5hyv~Fu96b#--MZB>;~48p<E3L9L.9S-~GfO>i~#" dfx deploy
+dfx deploy nft --network ic --argument "(  
+  principal\"$(dfx identity get-principal)\",  
+  record {  
+    logo = record {  
+      logo_type = \"NFT_logo/png\";  
+      data = \"\";  
+    };  
+    name = \"Dev Journey NFT\";  
+    symbol = \"DJNFT\";  
+    maxLimit = 50;  
+  }  
+)"
+
+dfx generate
+
+ACCESS_TOKEN_SECRET="YOUR-ACCESS-TOKEN-SECRET" RS_SEC_HDR_VENDOR_ID="YOUR-VENDOR-ID" RS_SEC_HDR_VENDOR_PASSWORD="YOUR-VENDOR-PASSWORD" NFT_ID="$(dfx canister id nft --network ic)" dfx deploy backend --network ic
 
 # In browser
 http://<backend_canister_name>.localhost:8000
@@ -39,17 +56,26 @@ http://<backend_canister_name>.localhost:8000
 #### 🧑‍🤝‍🧑 Community
 Have questions, comments, or feedback?
 
+- [LinkedIn](https://www.linkedin.com/company/evntzpr)
+- [Instagram](https://www.instagram.com/evntz_official/)
+- [X](@evntz_official)
+
 #### 💬 Contact
 Email us at hello@evntz.io
 
 #### 🖥️ Technology Stack
 EVNTZ was develop using:
-- [Azle](https://github.com/demergent-labs/azle).
+
+- [Azle](https://github.com/demergent-labs/azle)
 Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript on [ICP](https://internetcomputer.org/). The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
 
 For more documentation please see [The Azle Book](https://demergent-labs.github.io/azle/).
 
-- [Motoko](https://internetcomputer.org/docs/current/motoko/main/getting-started/motoko-introduction).
-Motoko is a modern, general-purpose programming language you can use specifically to author ICP canister smart contracts. Although aimed primarily at ICP canister development, its design is general enough to support future compilation to other targets.
+- [Juno](https://juno.build/)
+Build Web3 at Lightning Speed. Juno is a blockchainless platform designed for developers aiming to craft groundbreaking applications on the Web3 space.
 
-Motoko is designed to be approachable for programmers who have some basic familiarity with object-oriented and/or functional programming idioms in either JavaScript, or another modern programming language, such as Rust, Swift, TypeScript, C#, or Java.
+- [NFID](https://nfid.one/)
+Your crypto wallet & gateway to ICP apps. Start exploring ICP applications in seconds. Trusted by hundreds of thousands of users worldwide.
+
+- [Motoko](https://internetcomputer.org/docs/current/motoko/main/getting-started/motoko-introduction)
+Motoko is a modern, general-purpose programming language you can use specifically to author ICP canister smart contracts. Although aimed primarily at ICP canister development, its design is general enough to support future compilation to other targets. Motoko is designed to be approachable for programmers who have some basic familiarity with object-oriented and/or functional programming idioms in either JavaScript, or another modern programming language, such as Rust, Swift, TypeScript, C#, or Java.

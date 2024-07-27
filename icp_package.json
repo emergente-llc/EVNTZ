@@ -1,0 +1,77 @@
+{
+    "name": "EVNTZ",
+    "version": "1.0.0",
+    "license": "PROPRIETARY LICENSE AGREEMENT",
+    "author": "Richard Román Crespo, Alejandro Oroncoy",
+    "company": "Emergente, LLC",
+    "description": "EVNTZ is an agnostic digital platform designed to seamlessly integrate with existing web2 ticketing systems, leveraging the power of tokenization and sophisticated security mechanisms in the Internet Computer Protocol, transforming the way event tickets are issued.",
+    "homepage": "https://v4wsq-jyaaa-aaaal-ajmta-cai.icp0.io/ ",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/emergente-llc/EVNTZ.git"
+    },
+    "workspaces": [
+        "backend",
+        "frontend"
+    ],
+    "keywords": [
+        "ic",
+        "dfinity",
+        "dfx",
+        "candid",
+        "webauthn",
+        "identity",
+        "principal",
+        "authentication",
+        "azle",
+        "dapps",
+        "express",
+        "icp",
+        "internet computer",
+        "nft",
+        "javascript",
+        "rest",
+        "rest api",
+        "motoko",
+        "typescript",
+        "blockchain",
+        "crypto",
+        "distributed",
+        "api"
+    ],
+    "scripts": {
+        "build": "cd src/frontend && VITE_CANISTER_ORIGIN=https://$(dfx canister id backend --network ic).raw.icp0.io vite build",
+        "pretest": "ts-node --transpile-only --ignore=false --skip-project test/pretest.ts",
+        "test": "jest"
+    },
+    "type": "module",
+    "dependencies": {
+        "@dfinity/agent": "^1.4.0",
+        "@dfinity/auth-client": "^1.4.0",
+        "@dfinity/identity": "^1.4.0",
+        "@dfinity/principal": "^1.4.0",
+        "@junobuild/core": "^0.0.53",
+        "@nfid/embed": "^0.10.3",
+        "azle": "^0.22.0",
+        "base64-arraybuffer": "^1.0.2",
+        "bootstrap": "^5.3.3",
+        "canvas-confetti": "^1.9.3",
+        "compressorjs": "^1.2.1",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.18.2",
+        "ip-cidr": "^4.0.1",
+        "joi": "^17.13.3",
+        "lit": "^3.1.2"
+    },
+    "devDependencies": {
+        "@types/canvas-confetti": "^1.6.4",
+        "@types/cors": "^2.8.17",
+        "@types/express": "^4.17.21",
+        "jest": "^29.7.0",
+        "ts-jest": "^29.1.4",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2",
+        "vite": "^5.0.12"
+    }
+}

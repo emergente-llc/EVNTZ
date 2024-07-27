@@ -38,9 +38,6 @@ class NftFormComponent extends LitElement {
   sendRequestForCreateNft = async (dataNft: DataNft) => {
     const { VITE_CANISTER_ORIGIN } = import.meta.env;
 
-
-    // const arrayBufferImg = await this.imgSrcToArrayBuffer(dataNft.img);
-
     const result = await uploadFile({
       data: dataNft.img,
       collection: "evntz_nfts",
@@ -87,8 +84,6 @@ class NftFormComponent extends LitElement {
     this.dispatchEvent(event);
   }
 
-  
-
   handleSubmitCreateNft = async (e: Event) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
@@ -121,8 +116,6 @@ class NftFormComponent extends LitElement {
     }
 
     this.loading = false;
-
-    
   }
 
   render = () => html`
@@ -151,7 +144,7 @@ class NftFormComponent extends LitElement {
 								<div id="nftNameHelp" class="form-text">You're creative and make a description for your NFT.</div>
 							</div>
 							<div class="mb-3">
-								<label for="nft" class="form-label">Upload a image of your NFT</label>
+								<label for="nft" class="form-label">Upload a image of your NFT (up to 25kb)</label>
 								<input required name="img" class="form-control" type="file" id="formFile">
 							</div>
 							<div class="d-flex align-items-center gap-2">
