@@ -1,6 +1,7 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { initSatellite, signIn, signOut,  NFIDProvider, authSubscribe, type User, Unsubscribe } from "@junobuild/core";
+import { initSatellite, setDoc, signIn, signOut,  NFIDProvider, authSubscribe, type User, Unsubscribe } from "@junobuild/core";
+import { nanoid } from "nanoid";
 import "./nft";
 
 // Update the top-level await to be within an async function
@@ -9,7 +10,6 @@ async function initializeApp() {
     satelliteId: "reahh-3qaaa-aaaal-ajmkq-cai"
   });
 }
-
 initializeApp();
 
 @customElement("azle-app")
@@ -27,6 +27,63 @@ export class AzleApp extends LitElement {
     super();
     this.getAllTransaction();
     this.getNftsTotal();
+    this.setupCompany();
+  }
+
+  async createCompany() {
+    const companyId = nanoid();
+
+    const doc = await setDoc({
+      collection: "company",
+      doc: {
+        key: companyId,
+        data: {
+          company_id: companyId,
+          company_status: "Active",
+          company_name: "EVNTZ",
+          company_description: "Emergente LLC",
+          company_address: "Guaynabo",
+          company_country: "Puerto Rico",
+          company_city: "Guaynabo",
+          company_state: "PR",
+          company_zip: "00971",
+          company_gps: "123456`",
+          company_documents: "List of assets",
+        },
+      },
+    });
+  
+    console.log("Company created: ", doc);
+  }
+  
+  async createCompanyConfigs() {
+    const configsId = nanoid();
+
+    const doc = await setDoc({
+      collection: "company_configs",
+      doc: {
+        key: configsId,
+        data: {
+          company_config_id: configsId,
+          company_id: "company id here",
+          access_token_secret: "Bearer b59bde1a-f5f6-457f-8ad9-29b4c32e0b2r",
+          vendor_id: "353767e3-b069-47a3-92c9-3be4bbafda85",
+          vendor_password: "H$&5m*CaKY7$4@O129V*q3%vH@yL#T",
+          ip_whitelist: "127.0.0.1, http://be2us-64aaa-aaaaa-qaabq-cai.localhost:8000",
+        },
+      },
+    });
+  
+    console.log("Company Configs created:", doc);
+  }
+  
+  async setupCompany() {
+    try {
+      await this.createCompany();
+      await this.createCompanyConfigs();
+    } catch (error) {
+      console.error("Error creating company:", error);
+    }
   }
 
   getNftsTotal = async () =>{
@@ -96,6 +153,9 @@ export class AzleApp extends LitElement {
               <div class="col-12 content-head">
                 <div class="card-wrapper mb-5">
                   <div class="card-box align-center">
+                    <button type="button" class="btn btn-warning" @click=${this.setupCompany}>
+                      Set Company Setups
+                    </button>
 
                     <button type="button" class="btn btn-primary" @click=${this.getAllTransaction}>
                       Fetch all transactions

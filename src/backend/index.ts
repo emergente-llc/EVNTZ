@@ -3,24 +3,10 @@
    https://owasp.org/www-project-api-security/ 
 */
 
-import {
-  Record,
-  Server,
-  StableBTreeMap,
-  text,
-  nat64,
-  Principal,
-  nat8,
-  ic,
-  update,
-  query,
-  serialize,
-  Canister,
-  Vec,
-} from "azle";
-
+import { Server, Principal, serialize } from "azle";
 import express, { Request, Response, NextFunction, Router } from "express";
 import { validateTicket } from "./json_zod_validation";
+// import { getDoc } from "@junobuild/core";
 // import { ipWhitelistMiddleware } from './ipWhitelistMiddleware';
 
 // Data structures =============================>
@@ -113,99 +99,9 @@ type Company_configs = {
 let company_configs: Company_configs = 
   {
     "ACCESS_TOKEN_SECRET": "b59bde1a-f5f6-457f-8ad9-29b4c32e0b2r",
-    "RS_SEC_HDR_VENDOR_ID": "d23744bf-1d90-4be0-91fd-e94047f06036",
-    "RS_SEC_HDR_VENDOR_PASSWORD": "r*^7ipJH7L4@wod+89atA"
+    "RS_SEC_HDR_VENDOR_ID": "353767e3-b069-47a3-92c9-3be4bbafda85",
+    "RS_SEC_HDR_VENDOR_PASSWORD": "H$&5m*CaKY7$4@O129V*q3%vH@yL#T"
   };
-
-const Order = Record({
-  orderId: text,
-  status: text,
-  operation: text,
-  companyId: text,
-  receivedAt: nat64,
-  id: Principal,
-  eventId: text,
-});
-type Order = typeof Order.tsType;
-let orders = StableBTreeMap<text, Order>(0);
-
-const User = Record({
-  id: Principal,
-  createdAt: nat64,
-  username: text,
-  email: text,
-  phone: text,
-});
-type User = typeof User.tsType;
-let users = StableBTreeMap<Principal, User>(1);
-
-const Event = Record({
-  eventId: text,
-  eventName: text,
-  eventArtist: text,
-  eventVenue: text,
-  eventCountry: text,
-  eventVenueGPS: nat8,
-  eventDateTime: nat64,
-  eventPromoterCompany: text,
-  eventInformation: text,
-});
-type Event = typeof Event.tsType;
-let events = StableBTreeMap<text, Event>(2);
-
-const Ticket = Record({
-  orderId: text,
-  ticketId: text,
-  ticketStatus: text,
-  ticketSection: text,
-  ticketRow: text,
-  ticketSeat: text,
-  ticketDescription: text,
-  ticketQty: text,
-  ticketPrice: text,
-  ticketPriceIVU: text,
-  ticketServiceFee: text,
-  ticketServiceFeeIVU: text,
-  ticketPromoterFee: text,
-  ticketPromoterFeeIVU: text,
-  ticketClubSeatsFee: text,
-  ticketClubSeatsFeeIVU: text,
-  ticketFacilityFee: text,
-  ticketFacilityFeeIVU: text,
-  ticketOrderFeeWeb: text,
-  ticketOrderFeeWebIVU: text,
-  ticketTotal: text,
-});
-type Ticket = typeof Ticket.tsType;
-let tickets = StableBTreeMap<Principal, Ticket>(3);
-
-const Company = Record({
-  companyId: text,
-  companyName: text,
-  companyDescription: text,
-  companyAddress: text,
-  companyCountry: text,
-  companyCity: text,
-  companyState: text,
-  companyZip: text,
-  companyGPS: text,
-});
-type Company = typeof Company.tsType;
-let companies = StableBTreeMap<text, Company>(4);
-
-const Venue = Record({
-  venueId: text,
-  venueName: text,
-  venueDescription: text,
-  venueAddress: text,
-  venueCountry: text,
-  venueCity: text,
-  venueState: text,
-  venueZip: text,
-  venueGPS: text,
-});
-type Venue = typeof Venue.tsType;
-let venues = StableBTreeMap<text, Venue>(5);
 // Data structures =============================>
 
 function postLog(req: Request, res: Response, next: NextFunction) {
@@ -216,12 +112,38 @@ function postLog(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
+// async function getConnectedCompany() {
+//   const ConnCompanyDoc = await getDoc({
+//     collection: "company",
+//     key: "-j2WsqfnmK6kIctELn9QB"
+//   });
+//   console.log("Company from Juno: ", ConnCompanyDoc);
+// };
+
+// async function getConnectedCompanyConfigs() {
+//   const ConnCompanyConfigDoc = await getDoc({
+//     collection: "company_configs",
+//     key: "APoNwJLBwgE-e2vF_KIaR"
+//   });
+//   console.log("Company config from Juno: ", ConnCompanyConfigDoc);
+// };
+
+// async function getConnectedCompanyData() {
+//   try {
+//     await getConnectedCompany();
+//     await getConnectedCompanyConfigs();
+//   } catch (error) {
+//     console.error("Error creating company:", error);
+//   }
+// }
+// getConnectedCompanyData();
+
+
 // Middleware to validate Customer Tokens
 const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers["authorization"] as string;
   const vendorIdHeader = req.headers["rs_sec_hdr_vendor_id"] as string;
   const vendorPasswordHeader = req.headers["rs_sec_hdr_vendor_password"] as string;
-  //const clientIP = req.ip as string;
 
   if (!authHeader || !vendorIdHeader || !vendorPasswordHeader) {
     return res.status(401).json({ error: "No authorization headers provided." });
@@ -233,7 +155,6 @@ const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
     return res.status(401).json({ error: "Token not found." });
   }
 
-  //console.log("IP: " + clientIP.trimStart().trimEnd());
   console.log("authHeader: " + token.trimStart().trimEnd());
   console.log("vendorIdHeader: " + vendorIdHeader.trimStart().trimEnd());
   console.log("vendorPasswordHeader: " + vendorPasswordHeader.trimStart().trimEnd());
@@ -264,7 +185,6 @@ export default Server(() => {
   app.use(express.json());
   app.use(postLog);
   const nft = Router();
-  //app.set('trust proxy', true);
   
   // GET
   nft.get("/total", async (req, res) => {
@@ -418,7 +338,6 @@ export default Server(() => {
 
   // POST
   app.post("/v1/tickets/post", customerFrontDoor, async (req, res) => {
-
     const result = validateTicket(req.body);
 
     if (result.error) {
@@ -450,26 +369,26 @@ export default Server(() => {
       }
 
       // Store the Order information
-      Canister({
-        createOrder: update([text], Order, (orderId) => {
-          const id = generateId();
-          const order: Order = {
-            orderId,
-            id,
-            status: req.body.status,
-            operation: req.body.operation,
-            companyId: req.body.company_id,
-            receivedAt: ic.time(),
-            eventId: req.body.event_id,
-          };
+      // Canister({
+      //   createOrder: update([text], Order, (orderId) => {
+      //     const id = generateId();
+      //     const order: Order = {
+      //       orderId,
+      //       id,
+      //       status: req.body.status,
+      //       operation: req.body.operation,
+      //       companyId: req.body.company_id,
+      //       receivedAt: ic.time(),
+      //       eventId: req.body.event_id,
+      //     };
 
-          orders.insert(order.orderId, order);
-          return order;
-        }),
-        readOrders: query([], Vec(Order), () => {
-          return orders.values();
-        }),
-      });
+      //     orders.insert(order.orderId, order);
+      //     return order;
+      //   }),
+      //   readOrders: query([], Vec(Order), () => {
+      //     return orders.values();
+      //   }),
+      // });
     }
   });
 
