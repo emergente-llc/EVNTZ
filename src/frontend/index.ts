@@ -27,7 +27,7 @@ export class AzleApp extends LitElement {
     super();
     this.getAllTransaction();
     this.getNftsTotal();
-    this.setupCompany();
+    //this.setupCompany();
   }
 
   async createCompany() {

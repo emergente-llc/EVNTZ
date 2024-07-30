@@ -1,4 +1,5 @@
-/* MUST IMPLEMENT BEST PRACTICES FROM
+/* 
+   MUST IMPLEMENT BEST PRACTICES FROM
    OWASP API Security Project
    https://owasp.org/www-project-api-security/ 
 */
@@ -6,8 +7,16 @@
 import { Server, Principal, serialize } from "azle";
 import express, { Request, Response, NextFunction, Router } from "express";
 import { validateTicket } from "./json_zod_validation";
-// import { getDoc } from "@junobuild/core";
+import { initSatellite, setDoc } from "@junobuild/core";
+import { nanoid } from "nanoid";
 // import { ipWhitelistMiddleware } from './ipWhitelistMiddleware';
+
+async function initializeApp() {
+  await initSatellite({
+    satelliteId: "reahh-3qaaa-aaaal-ajmkq-cai",
+  });
+}
+initializeApp();
 
 // Data structures =============================>
 type Transaction = {
@@ -96,12 +105,11 @@ type Company_configs = {
   RS_SEC_HDR_VENDOR_PASSWORD: string;
 };
 
-let company_configs: Company_configs = 
-  {
-    "ACCESS_TOKEN_SECRET": "b59bde1a-f5f6-457f-8ad9-29b4c32e0b2r",
-    "RS_SEC_HDR_VENDOR_ID": "353767e3-b069-47a3-92c9-3be4bbafda85",
-    "RS_SEC_HDR_VENDOR_PASSWORD": "H$&5m*CaKY7$4@O129V*q3%vH@yL#T"
-  };
+let company_configs: Company_configs = {
+  "ACCESS_TOKEN_SECRET": "b59bde1a-f5f6-457f-8ad9-29b4c32e0b2r",
+  "RS_SEC_HDR_VENDOR_ID": "353767e3-b069-47a3-92c9-3be4bbafda85",
+  "RS_SEC_HDR_VENDOR_PASSWORD": "H$&5m*CaKY7$4@O129V*q3%vH@yL#T"
+};
 // Data structures =============================>
 
 function postLog(req: Request, res: Response, next: NextFunction) {
@@ -347,8 +355,6 @@ export default Server(() => {
     else {
       console.log('Validation successful');
 
-      //const { orderId } = req.body.order_id;
-
       const orderIdExists = transaction.some(
         (transaction) => transaction.order_id === req.body.order_id
       );
@@ -357,6 +363,37 @@ export default Server(() => {
         return res.status(409).json({ error: "Can't post this transaction." });
       }
 
+      /**************************************/
+      /* JUNO DATABASE COLLECTIONS -> START */
+      /**************************************/
+
+      /*TODO: ORDERS COLLECTION */
+        const orderId = nanoid();
+        try {
+          await setDoc({
+            collection: "orders",
+            doc: {
+              key: orderId,
+              data: {
+                order_id: orderId,
+                status: req.body.status,
+                operation: req.body.operation,
+                company_id: req.body.company_id,
+                event_id: req.body.event_id,
+                user_email: req.body.user.email,
+                received_at: new Date().toLocaleString(),
+              },
+            },
+          });
+          console.log("Document added successfully:");
+        } catch (error) {
+          console.error("Error adding document:", error);
+        }
+      /*TODO: ORDERS COLLECTION */
+
+      /**************************************/
+      /* JUNO DATABASE COLLECTIONS -> START */
+      /**************************************/
       transaction = [...transaction, req.body];
       res.json({ message: "Ticket transaction added successfully!" });
 
