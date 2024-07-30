@@ -1,27 +1,22 @@
-/* MUST IMPLEMENT BEST PRACTICES FROM
+/* 
+   MUST IMPLEMENT BEST PRACTICES FROM
    OWASP API Security Project
    https://owasp.org/www-project-api-security/ 
 */
 
-import {
-  Record,
-  Server,
-  StableBTreeMap,
-  text,
-  nat64,
-  Principal,
-  nat8,
-  ic,
-  update,
-  query,
-  serialize,
-  Canister,
-  Vec,
-} from "azle";
-
+import { Server, Principal, serialize } from "azle";
 import express, { Request, Response, NextFunction, Router } from "express";
 import { validateTicket } from "./json_zod_validation";
+import { initSatellite, setDoc } from "@junobuild/core";
+import { nanoid } from "nanoid";
 // import { ipWhitelistMiddleware } from './ipWhitelistMiddleware';
+
+async function initializeApp() {
+  await initSatellite({
+    satelliteId: "reahh-3qaaa-aaaal-ajmkq-cai",
+  });
+}
+initializeApp();
 
 // Data structures =============================>
 type Transaction = {
@@ -110,102 +105,11 @@ type Company_configs = {
   RS_SEC_HDR_VENDOR_PASSWORD: string;
 };
 
-let company_configs: Company_configs = 
-  {
-    "ACCESS_TOKEN_SECRET": "b59bde1a-f5f6-457f-8ad9-29b4c32e0b2r",
-    "RS_SEC_HDR_VENDOR_ID": "d23744bf-1d90-4be0-91fd-e94047f06036",
-    "RS_SEC_HDR_VENDOR_PASSWORD": "r*^7ipJH7L4@wod+89atA"
-  };
-
-const Order = Record({
-  orderId: text,
-  status: text,
-  operation: text,
-  companyId: text,
-  receivedAt: nat64,
-  id: Principal,
-  eventId: text,
-});
-type Order = typeof Order.tsType;
-let orders = StableBTreeMap<text, Order>(0);
-
-const User = Record({
-  id: Principal,
-  createdAt: nat64,
-  username: text,
-  email: text,
-  phone: text,
-});
-type User = typeof User.tsType;
-let users = StableBTreeMap<Principal, User>(1);
-
-const Event = Record({
-  eventId: text,
-  eventName: text,
-  eventArtist: text,
-  eventVenue: text,
-  eventCountry: text,
-  eventVenueGPS: nat8,
-  eventDateTime: nat64,
-  eventPromoterCompany: text,
-  eventInformation: text,
-});
-type Event = typeof Event.tsType;
-let events = StableBTreeMap<text, Event>(2);
-
-const Ticket = Record({
-  orderId: text,
-  ticketId: text,
-  ticketStatus: text,
-  ticketSection: text,
-  ticketRow: text,
-  ticketSeat: text,
-  ticketDescription: text,
-  ticketQty: text,
-  ticketPrice: text,
-  ticketPriceIVU: text,
-  ticketServiceFee: text,
-  ticketServiceFeeIVU: text,
-  ticketPromoterFee: text,
-  ticketPromoterFeeIVU: text,
-  ticketClubSeatsFee: text,
-  ticketClubSeatsFeeIVU: text,
-  ticketFacilityFee: text,
-  ticketFacilityFeeIVU: text,
-  ticketOrderFeeWeb: text,
-  ticketOrderFeeWebIVU: text,
-  ticketTotal: text,
-});
-type Ticket = typeof Ticket.tsType;
-let tickets = StableBTreeMap<Principal, Ticket>(3);
-
-const Company = Record({
-  companyId: text,
-  companyName: text,
-  companyDescription: text,
-  companyAddress: text,
-  companyCountry: text,
-  companyCity: text,
-  companyState: text,
-  companyZip: text,
-  companyGPS: text,
-});
-type Company = typeof Company.tsType;
-let companies = StableBTreeMap<text, Company>(4);
-
-const Venue = Record({
-  venueId: text,
-  venueName: text,
-  venueDescription: text,
-  venueAddress: text,
-  venueCountry: text,
-  venueCity: text,
-  venueState: text,
-  venueZip: text,
-  venueGPS: text,
-});
-type Venue = typeof Venue.tsType;
-let venues = StableBTreeMap<text, Venue>(5);
+let company_configs: Company_configs = {
+  "ACCESS_TOKEN_SECRET": "b59bde1a-f5f6-457f-8ad9-29b4c32e0b2r",
+  "RS_SEC_HDR_VENDOR_ID": "353767e3-b069-47a3-92c9-3be4bbafda85",
+  "RS_SEC_HDR_VENDOR_PASSWORD": "H$&5m*CaKY7$4@O129V*q3%vH@yL#T"
+};
 // Data structures =============================>
 
 function postLog(req: Request, res: Response, next: NextFunction) {
@@ -215,6 +119,33 @@ function postLog(req: Request, res: Response, next: NextFunction) {
   console.log(`Request Body: ${JSON.stringify(req.body, null, 2)}`);
   next();
 }
+
+// async function getConnectedCompany() {
+//   const ConnCompanyDoc = await getDoc({
+//     collection: "company",
+//     key: "-j2WsqfnmK6kIctELn9QB"
+//   });
+//   console.log("Company from Juno: ", ConnCompanyDoc);
+// };
+
+// async function getConnectedCompanyConfigs() {
+//   const ConnCompanyConfigDoc = await getDoc({
+//     collection: "company_configs",
+//     key: "APoNwJLBwgE-e2vF_KIaR"
+//   });
+//   console.log("Company config from Juno: ", ConnCompanyConfigDoc);
+// };
+
+// async function getConnectedCompanyData() {
+//   try {
+//     await getConnectedCompany();
+//     await getConnectedCompanyConfigs();
+//   } catch (error) {
+//     console.error("Error creating company:", error);
+//   }
+// }
+// getConnectedCompanyData();
+
 
 // Middleware to validate Customer Tokens
 const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
@@ -264,7 +195,6 @@ export default Server(() => {
   app.use(express.json());
   app.use(postLog);
   const nft = Router();
-  //app.set('trust proxy', true);
   
   // GET
   nft.get("/total", async (req, res) => {
@@ -419,7 +349,6 @@ export default Server(() => {
 
   // POST
   app.post("/v1/tickets/post", customerFrontDoor, async (req, res) => {
-
     const result = validateTicket(req.body);
 
     if (result.error) {
@@ -429,8 +358,6 @@ export default Server(() => {
     else {
       console.log('Validation successful');
 
-      //const { orderId } = req.body.order_id;
-
       const orderIdExists = transaction.some(
         (transaction) => transaction.order_id === req.body.order_id
       );
@@ -439,6 +366,37 @@ export default Server(() => {
         return res.status(409).json({ error: "Can't post this transaction." });
       }
 
+      /**************************************/
+      /* JUNO DATABASE COLLECTIONS -> START */
+      /**************************************/
+
+      /*TODO: ORDERS COLLECTION */
+        const orderId = nanoid();
+        try {
+          await setDoc({
+            collection: "orders",
+            doc: {
+              key: orderId,
+              data: {
+                order_id: orderId,
+                status: req.body.status,
+                operation: req.body.operation,
+                company_id: req.body.company_id,
+                event_id: req.body.event_id,
+                user_email: req.body.user.email,
+                received_at: new Date().toLocaleString(),
+              },
+            },
+          });
+          console.log("Document added successfully:");
+        } catch (error) {
+          console.error("Error adding document:", error);
+        }
+      /*TODO: ORDERS COLLECTION */
+
+      /**************************************/
+      /* JUNO DATABASE COLLECTIONS -> START */
+      /**************************************/
       transaction = [...transaction, req.body];
       res.json({ message: "Ticket transaction added successfully!" });
 
@@ -451,26 +409,26 @@ export default Server(() => {
       }
 
       // Store the Order information
-      Canister({
-        createOrder: update([text], Order, (orderId) => {
-          const id = generateId();
-          const order: Order = {
-            orderId,
-            id,
-            status: req.body.status,
-            operation: req.body.operation,
-            companyId: req.body.company_id,
-            receivedAt: ic.time(),
-            eventId: req.body.event_id,
-          };
+      // Canister({
+      //   createOrder: update([text], Order, (orderId) => {
+      //     const id = generateId();
+      //     const order: Order = {
+      //       orderId,
+      //       id,
+      //       status: req.body.status,
+      //       operation: req.body.operation,
+      //       companyId: req.body.company_id,
+      //       receivedAt: ic.time(),
+      //       eventId: req.body.event_id,
+      //     };
 
-          orders.insert(order.orderId, order);
-          return order;
-        }),
-        readOrders: query([], Vec(Order), () => {
-          return orders.values();
-        }),
-      });
+      //     orders.insert(order.orderId, order);
+      //     return order;
+      //   }),
+      //   readOrders: query([], Vec(Order), () => {
+      //     return orders.values();
+      //   }),
+      // });
     }
   });
 
