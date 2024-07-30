@@ -20,6 +20,7 @@ module {
   };
 
   public type EventCreatedParams = {
+    event_id: EventId;
     event_name: Text;
     event_artist: Text;
     event_venue: Text;

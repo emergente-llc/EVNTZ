@@ -1,0 +1,38 @@
+type Time = int;
+type Backstages = 
+ service {
+   create: (BackstageCreatedParams) -> (BackstageCreated);
+   delete: (BackstageId) -> (opt Backstage);
+   getAllBackstages: () -> (vec Backstage) query;
+   getById: (BackstageId) -> (opt Backstage) query;
+   total: () -> (nat) query;
+   update: (BackstageId, BackstageCreatedParams) -> (opt Backstage);
+ };
+type BackstageId = text;
+type BackstageCreatedPart = record {id: BackstageId;};
+type BackstageCreatedParams = 
+ record {
+   details: vec text;
+   event_id: text;
+   user_id: text;
+ };
+type BackstageCreated = 
+ variant {
+   err: ApiError;
+   ok: BackstageCreatedPart;
+ };
+type Backstage = 
+ record {
+   created_at: opt Time;
+   details: vec text;
+   event_id: text;
+   id: BackstageId;
+   updated_at: opt Time;
+   user_id: text;
+ };
+type ApiError = 
+ variant {
+   Other;
+   Unauthorized;
+ };
+service : () -> Backstages

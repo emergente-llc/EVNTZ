@@ -5,7 +5,6 @@ import Time "mo:base/Time";
 import Text "mo:base/Text";
 import Types "./types";
 
-
 shared actor class Orders() {
   stable var orders = List.nil<Types.Order>();
 

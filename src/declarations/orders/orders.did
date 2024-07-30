@@ -1,0 +1,43 @@
+type Time = int;
+type Orders = 
+ service {
+   create: (OrderCreatedParams) -> (OrderCreated);
+   delete: (OrderId) -> (opt Order);
+   getAllOrders: () -> (vec Order) query;
+   getById: (OrderId) -> (opt Order) query;
+   total: () -> (nat) query;
+   update: (OrderId, OrderCreatedParams) -> (opt Order);
+ };
+type OrderId = text;
+type OrderCreatedPart = record {id: OrderId;};
+type OrderCreatedParams = 
+ record {
+   company_name: text;
+   event_id: text;
+   operation: text;
+   status: text;
+   user_email: text;
+ };
+type OrderCreated = 
+ variant {
+   err: ApiError;
+   ok: OrderCreatedPart;
+ };
+type Order = 
+ record {
+   company_name: text;
+   created_at: opt Time;
+   event_id: text;
+   operation: text;
+   order_id: OrderId;
+   received_at: opt Time;
+   status: text;
+   updated_at: opt Time;
+   user_email: text;
+ };
+type ApiError = 
+ variant {
+   Other;
+   Unauthorized;
+ };
+service : () -> Orders

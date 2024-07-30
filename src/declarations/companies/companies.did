@@ -1,0 +1,51 @@
+type Time = int;
+type CompanyId = text;
+type CompanyCreatedPart = record {id: CompanyId;};
+type CompanyCreatedParams = 
+ record {
+   company_address: text;
+   company_city: text;
+   company_country: text;
+   company_description: text;
+   company_documents: text;
+   company_gps: text;
+   company_name: text;
+   company_state: text;
+   company_zip: text;
+ };
+type CompanyCreated = 
+ variant {
+   err: ApiError;
+   ok: CompanyCreatedPart;
+ };
+type Company = 
+ record {
+   company_address: text;
+   company_city: text;
+   company_country: text;
+   company_description: text;
+   company_documents: text;
+   company_gps: text;
+   company_id: CompanyId;
+   company_name: text;
+   company_state: text;
+   company_zip: text;
+   created_at: Time;
+   updated_at: Time;
+ };
+type Companies = 
+ service {
+   create: (CompanyCreatedParams) -> (CompanyCreated);
+   delete: (CompanyId) -> (opt Company);
+   getAllCompanies: () -> (vec Company) query;
+   getById: (CompanyId) -> (opt Company) query;
+   getByOrder: (text) -> (vec Company) query;
+   total: () -> (nat) query;
+   update: (CompanyId, CompanyCreatedParams) -> (opt Company);
+ };
+type ApiError = 
+ variant {
+   Other;
+   Unauthorized;
+ };
+service : () -> Companies

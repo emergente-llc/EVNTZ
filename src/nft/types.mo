@@ -3,6 +3,7 @@ import Nat8 "mo:base/Nat8";
 import Nat16 "mo:base/Nat16";
 import Nat32 "mo:base/Nat32";
 import Nat64 "mo:base/Nat64";
+import Blob "mo:base/Blob";
 import Principal "mo:base/Principal";
 
 module {
@@ -62,7 +63,7 @@ module {
   public type MetadataPart = {
     purpose: MetadataPurpose;
     key_val_data: [MetadataKeyVal];
-    data: Text;
+    data: Blob;
   };
 
   public type MetadataPurpose = {
@@ -83,7 +84,6 @@ module {
     #Nat16Content: Nat16;
     #Nat32Content: Nat32;
     #Nat64Content: Nat64;
-    #TextArray: [Text];
   };
 
   public type MintReceipt = Result<MintReceiptPart, ApiError>;

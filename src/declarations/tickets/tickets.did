@@ -1,0 +1,77 @@
+type Time = int;
+type Tickets = 
+ service {
+   create: (TicketCreatedParams) -> (TicketCreated);
+   delete: (TicketId) -> (opt Ticket);
+   getAllTickets: () -> (vec Ticket) query;
+   getByEvent: (text) -> (vec Ticket) query;
+   getById: (TicketId) -> (opt Ticket) query;
+   getByOrder: (text) -> (vec Ticket) query;
+   total: () -> (nat) query;
+   update: (TicketId, TicketCreatedParams) -> (opt Ticket);
+ };
+type TicketId = text;
+type TicketCreatedPart = record {id: TicketId;};
+type TicketCreatedParams = 
+ record {
+   asset_id: text;
+   event_id: text;
+   order_id: text;
+   ticket_club_seats_fee: int;
+   ticket_club_seats_fee_ivu: int;
+   ticket_description: text;
+   ticket_facility_fee: int;
+   ticket_facility_fee_ivu: int;
+   ticket_order_fee_web: int;
+   ticket_order_fee_web_ivu: int;
+   ticket_price: int;
+   ticket_price_ivu: int;
+   ticket_promoter_fee: int;
+   ticket_promoter_fee_ivu: int;
+   ticket_qty: int;
+   ticket_row: text;
+   ticket_seat: text;
+   ticket_section: text;
+   ticket_service_fee: int;
+   ticket_service_fee_ivu: int;
+   ticket_status: text;
+ };
+type TicketCreated = 
+ variant {
+   err: ApiError;
+   ok: TicketCreatedPart;
+ };
+type Ticket = 
+ record {
+   asset_id: text;
+   created_at: opt Time;
+   event_id: text;
+   order_id: text;
+   ticket_club_seats_fee: int;
+   ticket_club_seats_fee_ivu: int;
+   ticket_description: text;
+   ticket_facility_fee: int;
+   ticket_facility_fee_ivu: int;
+   ticket_id: TicketId;
+   ticket_order_fee_web: int;
+   ticket_order_fee_web_ivu: int;
+   ticket_price: int;
+   ticket_price_ivu: int;
+   ticket_promoter_fee: int;
+   ticket_promoter_fee_ivu: int;
+   ticket_qty: int;
+   ticket_row: text;
+   ticket_seat: text;
+   ticket_section: text;
+   ticket_service_fee: int;
+   ticket_service_fee_ivu: int;
+   ticket_status: text;
+   ticket_total: int;
+   updated_at: opt Time;
+ };
+type ApiError = 
+ variant {
+   Other;
+   Unauthorized;
+ };
+service : () -> Tickets

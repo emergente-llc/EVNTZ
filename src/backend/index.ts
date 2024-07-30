@@ -278,6 +278,7 @@ export default Server(() => {
       const responseJson = await response.json();
       res.json(toJson(responseJson));
     } catch (err) {
+      console.log(err);
       res.send({
         error: err,
       });

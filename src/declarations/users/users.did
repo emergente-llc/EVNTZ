@@ -1,0 +1,39 @@
+type Users = 
+ service {
+   create: (UserCreatedParams) -> (UserCreated);
+   delete: (UserId) -> (opt User);
+   getAllUsers: () -> (vec User) query;
+   getById: (UserId) -> (opt User) query;
+   getByOrder: (text) -> (vec User) query;
+   total: () -> (nat) query;
+   update: (UserId, UserCreatedParams) -> (opt User);
+ };
+type UserId = text;
+type UserCreatedPart = record {id: UserId;};
+type UserCreatedParams = 
+ record {
+   email: text;
+   phone: text;
+   role: text;
+ };
+type UserCreated = 
+ variant {
+   err: ApiError;
+   ok: UserCreatedPart;
+ };
+type User = 
+ record {
+   created_at: opt Time;
+   email: text;
+   id: UserId;
+   phone: text;
+   role: text;
+   updated_at: opt Time;
+ };
+type Time = int;
+type ApiError = 
+ variant {
+   Other;
+   Unauthorized;
+ };
+service : () -> Users

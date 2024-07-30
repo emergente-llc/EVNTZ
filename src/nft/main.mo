@@ -3,19 +3,19 @@ import Nat64 "mo:base/Nat64";
 import List "mo:base/List";
 import Bool "mo:base/Bool";
 import Principal "mo:base/Principal";
-import Buffer "mo:base/Buffer";
 import Types "./types";
 
 shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibleToken) = Self {
   stable var transactionId: Types.TransactionId = 0;
   stable var nfts = List.nil<Types.Nft>();
+  stable var custodians = List.make<Principal>(custodian);
   stable var logo : Types.LogoResult = init.logo;
   stable var name : Text = init.name;
   stable var symbol : Text = init.symbol;
   stable var maxLimit : Nat16 = init.maxLimit;
 
+  // https://forum.dfinity.org/t/is-there-any-address-0-equivalent-at-dfinity-motoko/5445/3
   let null_address : Principal = Principal.fromText("aaaaa-aa");
-
 
   public query func balanceOfDip721(user: Principal) : async Nat64 {
     return Nat64.fromNat(
@@ -24,11 +24,6 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
       )
     );
   };
-
-  public query func getAllNfts() : async ([Types.Nft]) {
-    return List.toArray(nfts);
-  };
-  
 
   public query func ownerOfDip721(token_id: Types.TokenId) : async Types.OwnerResult {
     let item = List.find(nfts, func(token: Types.Nft) : Bool { token.id == token_id });
@@ -42,26 +37,31 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
     };
   };
 
-  public func safeTransferFromDip721(from: Principal, to: Principal, token_id: Types.TokenId) : async Types.TxReceipt {  
+  public shared({ caller }) func safeTransferFromDip721(from: Principal, to: Principal, token_id: Types.TokenId) : async Types.TxReceipt {  
     if (to == null_address) {
       return #Err(#ZeroAddress);
     } else {
-      return transferFrom(from, to, token_id);
+      return transferFrom(from, to, token_id, caller);
     };
   };
 
-  public func transferFromDip721(from: Principal, to: Principal, token_id: Types.TokenId) : async Types.TxReceipt {
-    return transferFrom(from, to, token_id);
+  public shared({ caller }) func transferFromDip721(from: Principal, to: Principal, token_id: Types.TokenId) : async Types.TxReceipt {
+    return transferFrom(from, to, token_id, caller);
   };
 
-  func transferFrom(from: Principal, to: Principal, token_id: Types.TokenId) : Types.TxReceipt {
+  func transferFrom(from: Principal, to: Principal, token_id: Types.TokenId, caller: Principal) : Types.TxReceipt {
     let item = List.find(nfts, func(token: Types.Nft) : Bool { token.id == token_id });
     switch (item) {
       case null {
         return #Err(#InvalidTokenId);
       };
       case (?token) {
-        if (Principal.notEqual(from, token.owner)) {
+        if (
+          caller != token.owner and
+          not List.some(custodians, func (custodian : Principal) : Bool { custodian == caller })
+        ) {
+          return #Err(#Unauthorized);
+        } else if (Principal.notEqual(from, token.owner)) {
           return #Err(#Other);
         } else {
           nfts := List.map(nfts, func (item : Types.Nft) : Types.Nft {
@@ -142,7 +142,10 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
     return List.toArray(tokenIds);
   };
 
-  public func mintDip721(to: Principal, metadata: Types.MetadataDesc) : async Types.MintReceipt {
+  public shared({ caller }) func mintDip721(to: Principal, metadata: Types.MetadataDesc) : async Types.MintReceipt {
+    if (not List.some(custodians, func (custodian : Principal) : Bool { custodian == caller })) {
+      return #Err(#Unauthorized);
+    };
 
     let newId = Nat64.fromNat(List.size(nfts));
     let nft : Types.Nft = {
@@ -161,7 +164,7 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
     });
   };
 
-  public func update_value(token_id: Types.TokenId, key: Text, new_value: Types.MetadataVal) : async Types.TxReceipt {
+  public shared({ caller }) func increaseCounter(token_id: Types.TokenId) : async Types.TxReceipt {
     let item = List.find(nfts, func(token: Types.Nft) : Bool { token.id == token_id });
     switch (item) {
       case null {
@@ -176,22 +179,20 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
         // } else {
           nfts := List.map(nfts, func (item : Types.Nft) : Types.Nft {
             if (item.id == token.id) {
-              let updatedKeyVals = Buffer.Buffer<Types.MetadataKeyVal>(5);
-
-              let index = for (element in token.metadata[0].key_val_data.vals()) {
-                if(element.key == key) {
-                  updatedKeyVals.add({ key = element.key; val = new_value });
-                } else {
-                  updatedKeyVals.add(element);
-                }
+              let updatedVal = switch (token.metadata[0].key_val_data[0].val) {
+                case (#Nat8Content(n)) #Nat8Content(n + 1);
+                case _ token.metadata[0].key_val_data[0].val;
               };
-
+              
               let updatedMetadata: Types.MetadataDesc = [{
                 data = token.metadata[0].data;
                 purpose = token.metadata[0].purpose;
-                key_val_data = Buffer.toArray(updatedKeyVals);
+                key_val_data = [{
+                  key = token.metadata[0].key_val_data[0].key;
+                  val = updatedVal;
+                }]
               }];
-                            
+              
               let update : Types.Nft = {
                 owner = token.owner;
                 id = item.id;
@@ -204,7 +205,7 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
           });
           transactionId += 1;
           return #Ok(transactionId);   
-        // };
+        //};
       };
     };
   };

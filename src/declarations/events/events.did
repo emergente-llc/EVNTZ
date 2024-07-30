@@ -1,0 +1,51 @@
+type Time = int;
+type Events = 
+ service {
+   create: (EventCreatedParams) -> (EventCreated);
+   delete: (EventId) -> (opt Event);
+   getAllEvents: () -> (vec Event) query;
+   getById: (EventId) -> (opt Event) query;
+   total: () -> (nat) query;
+   update: (EventId, EventCreatedParams) -> (opt Event);
+ };
+type EventId = text;
+type EventCreatedPart = record {id: EventId;};
+type EventCreatedParams = 
+ record {
+   event_artist: text;
+   event_country: text;
+   event_date: Time;
+   event_id: EventId;
+   event_information: text;
+   event_name: text;
+   event_promoter_company: text;
+   event_time: text;
+   event_venue: text;
+   event_venue_gps: text;
+ };
+type EventCreated = 
+ variant {
+   err: ApiError;
+   ok: EventCreatedPart;
+ };
+type Event = 
+ record {
+   created_at: opt Time;
+   event_artist: text;
+   event_country: text;
+   event_date: Time;
+   event_id: EventId;
+   event_information: text;
+   event_name: text;
+   event_promoter_company: text;
+   event_time: text;
+   event_venue: text;
+   event_venue_gps: text;
+   updated_at: opt Time;
+ };
+type ApiError = 
+ variant {
+   Other;
+   Unauthorized;
+ };
+service : () -> Events

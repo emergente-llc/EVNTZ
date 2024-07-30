@@ -1,0 +1,49 @@
+type Venues = 
+ service {
+   create: (VenueCreatedParams) -> (VenueCreated);
+   delete: (VenueId) -> (opt Venue);
+   getAllVenues: () -> (vec Venue) query;
+   getByEvent: (text) -> (vec Venue) query;
+   getById: (VenueId) -> (opt Venue) query;
+   total: () -> (nat) query;
+   update: (VenueId, VenueCreatedParams) -> (opt Venue);
+ };
+type VenueId = text;
+type VenueCreatedPart = record {id: VenueId;};
+type VenueCreatedParams = 
+ record {
+   venue_address: text;
+   venue_city: text;
+   venue_country: text;
+   venue_description: text;
+   venue_gps: text;
+   venue_name: text;
+   venue_state: text;
+   venue_zip: text;
+ };
+type VenueCreated = 
+ variant {
+   err: ApiError;
+   ok: VenueCreatedPart;
+ };
+type Venue = 
+ record {
+   created_at: opt Time;
+   updated_at: opt Time;
+   venue_address: text;
+   venue_city: text;
+   venue_country: text;
+   venue_description: text;
+   venue_gps: text;
+   venue_id: VenueId;
+   venue_name: text;
+   venue_state: text;
+   venue_zip: text;
+ };
+type Time = int;
+type ApiError = 
+ variant {
+   Other;
+   Unauthorized;
+ };
+service : () -> Venues
