@@ -5,6 +5,7 @@ import Nat32 "mo:base/Nat32";
 import Nat64 "mo:base/Nat64";
 import Blob "mo:base/Blob";
 import Principal "mo:base/Principal";
+import Bool "mo:base/Bool";
 
 module {
   public type Dip721NonFungibleToken = {
@@ -63,7 +64,7 @@ module {
   public type MetadataPart = {
     purpose: MetadataPurpose;
     key_val_data: [MetadataKeyVal];
-    data: Blob;
+    data: Text;
   };
 
   public type MetadataPurpose = {
@@ -84,6 +85,7 @@ module {
     #Nat16Content: Nat16;
     #Nat32Content: Nat32;
     #Nat64Content: Nat64;
+    #Bool: Nat64;
   };
 
   public type MintReceipt = Result<MintReceiptPart, ApiError>;

@@ -8,7 +8,6 @@ export type ApiError = { 'ZeroAddress' : null } |
   { 'Other' : null };
 export interface Dip721NFT {
   'balanceOfDip721' : ActorMethod<[Principal], bigint>,
-  'getAllNfts' : ActorMethod<[], Array<Nft>>,
   'getMaxLimitDip721' : ActorMethod<[], number>,
   'getMetadataDip721' : ActorMethod<[TokenId], MetadataResult>,
   'getMetadataForUserDip721' : ActorMethod<[Principal], ExtendedMetadataResult>,
@@ -16,6 +15,7 @@ export interface Dip721NFT {
     [Principal],
     BigUint64Array | bigint[]
   >,
+  'increaseCounter' : ActorMethod<[TokenId], TxReceipt>,
   'logoDip721' : ActorMethod<[], LogoResult>,
   'mintDip721' : ActorMethod<[Principal, MetadataDesc], MintReceipt>,
   'nameDip721' : ActorMethod<[], string>,
@@ -31,7 +31,6 @@ export interface Dip721NFT {
     [Principal, Principal, TokenId],
     TxReceipt
   >,
-  'update_value' : ActorMethod<[TokenId, string, MetadataVal], TxReceipt>,
 }
 export interface Dip721NonFungibleToken {
   'maxLimit' : number,
@@ -52,7 +51,7 @@ export interface LogoResult { 'data' : string, 'logo_type' : string }
 export type MetadataDesc = Array<MetadataPart>;
 export interface MetadataKeyVal { 'key' : string, 'val' : MetadataVal }
 export interface MetadataPart {
-  'data' : string,
+  'data' : Uint8Array | number[],
   'key_val_data' : Array<MetadataKeyVal>,
   'purpose' : MetadataPurpose,
 }
@@ -63,19 +62,14 @@ export type MetadataResult = { 'Ok' : MetadataDesc } |
 export type MetadataVal = { 'Nat64Content' : bigint } |
   { 'Nat32Content' : number } |
   { 'Nat8Content' : number } |
+  { 'Bool' : bigint } |
   { 'NatContent' : bigint } |
   { 'Nat16Content' : number } |
-  { 'TextArray' : Array<string> } |
   { 'BlobContent' : Uint8Array | number[] } |
   { 'TextContent' : string };
 export type MintReceipt = { 'Ok' : MintReceiptPart } |
   { 'Err' : ApiError };
 export interface MintReceiptPart { 'id' : bigint, 'token_id' : TokenId }
-export interface Nft {
-  'id' : TokenId,
-  'owner' : Principal,
-  'metadata' : MetadataDesc,
-}
 export type OwnerResult = { 'Ok' : Principal } |
   { 'Err' : ApiError };
 export type TokenId = bigint;

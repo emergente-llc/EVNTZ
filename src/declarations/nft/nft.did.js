@@ -11,9 +11,9 @@ export const idlFactory = ({ IDL }) => {
     'Nat64Content' : IDL.Nat64,
     'Nat32Content' : IDL.Nat32,
     'Nat8Content' : IDL.Nat8,
+    'Bool' : IDL.Nat64,
     'NatContent' : IDL.Nat,
     'Nat16Content' : IDL.Nat16,
-    'TextArray' : IDL.Vec(IDL.Text),
     'BlobContent' : IDL.Vec(IDL.Nat8),
     'TextContent' : IDL.Text,
   });
@@ -23,16 +23,11 @@ export const idlFactory = ({ IDL }) => {
     'Rendered' : IDL.Null,
   });
   const MetadataPart = IDL.Record({
-    'data' : IDL.Text,
+    'data' : IDL.Vec(IDL.Nat8),
     'key_val_data' : IDL.Vec(MetadataKeyVal),
     'purpose' : MetadataPurpose,
   });
   const MetadataDesc = IDL.Vec(MetadataPart);
-  const Nft = IDL.Record({
-    'id' : TokenId,
-    'owner' : IDL.Principal,
-    'metadata' : MetadataDesc,
-  });
   const ApiError = IDL.Variant({
     'ZeroAddress' : IDL.Null,
     'InvalidTokenId' : IDL.Null,
@@ -44,10 +39,10 @@ export const idlFactory = ({ IDL }) => {
     'Ok' : IDL.Record({ 'token_id' : TokenId, 'metadata_desc' : MetadataDesc }),
     'Err' : ApiError,
   });
+  const TxReceipt = IDL.Variant({ 'Ok' : IDL.Nat, 'Err' : ApiError });
   const MintReceiptPart = IDL.Record({ 'id' : IDL.Nat, 'token_id' : TokenId });
   const MintReceipt = IDL.Variant({ 'Ok' : MintReceiptPart, 'Err' : ApiError });
   const OwnerResult = IDL.Variant({ 'Ok' : IDL.Principal, 'Err' : ApiError });
-  const TxReceipt = IDL.Variant({ 'Ok' : IDL.Nat, 'Err' : ApiError });
   const InterfaceId = IDL.Variant({
     'Burn' : IDL.Null,
     'Mint' : IDL.Null,
@@ -57,7 +52,6 @@ export const idlFactory = ({ IDL }) => {
   });
   const Dip721NFT = IDL.Service({
     'balanceOfDip721' : IDL.Func([IDL.Principal], [IDL.Nat64], ['query']),
-    'getAllNfts' : IDL.Func([], [IDL.Vec(Nft)], ['query']),
     'getMaxLimitDip721' : IDL.Func([], [IDL.Nat16], ['query']),
     'getMetadataDip721' : IDL.Func([TokenId], [MetadataResult], ['query']),
     'getMetadataForUserDip721' : IDL.Func(
@@ -70,6 +64,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(TokenId)],
         ['query'],
       ),
+    'increaseCounter' : IDL.Func([TokenId], [TxReceipt], []),
     'logoDip721' : IDL.Func([], [LogoResult], ['query']),
     'mintDip721' : IDL.Func([IDL.Principal, MetadataDesc], [MintReceipt], []),
     'nameDip721' : IDL.Func([], [IDL.Text], ['query']),
@@ -88,11 +83,6 @@ export const idlFactory = ({ IDL }) => {
     'totalSupplyDip721' : IDL.Func([], [IDL.Nat64], ['query']),
     'transferFromDip721' : IDL.Func(
         [IDL.Principal, IDL.Principal, TokenId],
-        [TxReceipt],
-        [],
-      ),
-    'update_value' : IDL.Func(
-        [TokenId, IDL.Text, MetadataVal],
         [TxReceipt],
         [],
       ),

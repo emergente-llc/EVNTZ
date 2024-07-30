@@ -9,12 +9,6 @@ type OwnerResult =
    Err: ApiError;
    Ok: principal;
  };
-type Nft = 
- record {
-   id: TokenId;
-   metadata: MetadataDesc;
-   owner: principal;
- };
 type MintReceiptPart = 
  record {
    id: nat;
@@ -28,12 +22,12 @@ type MintReceipt =
 type MetadataVal = 
  variant {
    BlobContent: blob;
+   Bool: nat64;
    Nat16Content: nat16;
    Nat32Content: nat32;
    Nat64Content: nat64;
    Nat8Content: nat8;
    NatContent: nat;
-   TextArray: vec text;
    TextContent: text;
  };
 type MetadataResult = 
@@ -48,7 +42,7 @@ type MetadataPurpose =
  };
 type MetadataPart = 
  record {
-   data: text;
+   data: blob;
    key_val_data: vec MetadataKeyVal;
    purpose: MetadataPurpose;
  };
@@ -89,11 +83,11 @@ type Dip721NonFungibleToken =
 type Dip721NFT = 
  service {
    balanceOfDip721: (principal) -> (nat64) query;
-   getAllNfts: () -> (vec Nft) query;
    getMaxLimitDip721: () -> (nat16) query;
    getMetadataDip721: (TokenId) -> (MetadataResult) query;
    getMetadataForUserDip721: (principal) -> (ExtendedMetadataResult);
    getTokenIdsForUserDip721: (principal) -> (vec TokenId) query;
+   increaseCounter: (TokenId) -> (TxReceipt);
    logoDip721: () -> (LogoResult) query;
    mintDip721: (principal, MetadataDesc) -> (MintReceipt);
    nameDip721: () -> (text) query;
@@ -103,7 +97,6 @@ type Dip721NFT =
    symbolDip721: () -> (text) query;
    totalSupplyDip721: () -> (nat64) query;
    transferFromDip721: (principal, principal, TokenId) -> (TxReceipt);
-   update_value: (TokenId, text, MetadataVal) -> (TxReceipt);
  };
 type ApiError = 
  variant {

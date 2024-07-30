@@ -11,6 +11,31 @@ import { initSatellite, setDoc } from "@junobuild/core";
 import { nanoid } from "nanoid";
 // import { ipWhitelistMiddleware } from './ipWhitelistMiddleware';
 
+const toMetadataNft = (obj: { [key: string]: any }) => {
+  const metadata: { [key: string]: any } = {};
+
+  const types = {
+    string: "TextContent",
+    number: "NatContent",
+    boolean: "Bool",
+    bigint: "Nat64Content",
+    undefined: "",
+    object: "",
+    function: "",
+    symbol: "",
+  };
+
+  Object.keys(obj).forEach((entrie: string) => {
+    const val = obj[entrie];
+    const type = types[typeof val];
+    metadata[entrie] = {
+      [type]: val,
+    };
+  });
+
+  return metadata;
+};
+
 async function initializeApp() {
   await initSatellite({
     satelliteId: "reahh-3qaaa-aaaal-ajmkq-cai",
@@ -208,7 +233,6 @@ export default Server(() => {
       const responseJson = await response.json();
       res.json(toJson(responseJson));
     } catch (err) {
-      console.log(err);
       res.send({
         error: err,
       });
@@ -373,7 +397,7 @@ export default Server(() => {
       /*TODO: ORDERS COLLECTION */
         const orderId = nanoid();
         try {
-          await setDoc({
+          const doc = await setDoc({
             collection: "orders",
             doc: {
               key: orderId,
@@ -388,6 +412,23 @@ export default Server(() => {
               },
             },
           });
+          
+          const metadata = toMetadataNft(doc.data);
+          
+          try {
+            const response = await fetch(`icp://${process.env.NFT_ID}/mintDip721`, {
+              body: serialize({
+                candidPath: "/candid/nft.did",
+                args: [Principal.fromText(req.body.minter), metadata]
+              })
+            });
+      
+            const responseJson = await response.json();
+            res.json(toJson(responseJson));
+          } catch (err) {
+            res.send(`${err}`);
+          }
+
           console.log("Document added successfully:");
         } catch (error) {
           console.error("Error adding document:", error);
