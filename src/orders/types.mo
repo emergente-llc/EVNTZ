@@ -3,26 +3,68 @@ import Result "mo:base/Result";
 
 module {
 
-  public type OrderId = Text;
+public type Ticket = {
+    ticketId: Text;
+    ticketStatus: Text;
+    ticketSection: Text;
+    ticketRow: Text;
+    ticketSeat: Text;
+    ticketDescription: Text;
+    ticketQty: Text;
+    ticketPrice: Text;
+    ticketPriceIVU: Text;
+    ticketServiceFee: Text;
+    ticketServiceFeeIVU: Text;
+    ticketPromoterFee: Text;
+    ticketPromoterFeeIVU: Text;
+    ticketClubSeatsFee: Text;
+    ticketClubSeatsFeeIVU: Text;
+    ticketFacilityFee: Text;
+    ticketFacilityFeeIVU: Text;
+    ticketOrderFeeWeb: Text;
+    ticketOrderFeeWebIVU: Text;
+    ticketTotal: Text;
+};
 
-  public type Order = {
-    order_id: OrderId;
+public type Seat = {
+    ticket: Ticket;
+};
+
+public type Event = {
+    eventName: Text;
+    eventArtist: Text;
+    eventVenue: Text;
+    eventCountry: Text;
+    eventDateTime: Text;
+    eventPromoterCompany: Text;
+};
+
+public type User = {
+    name: Text;
+    email: Text;
+    phone: Text;
+};
+
+ public type OrderId = Text;
+
+
+public type Order = {
+    orderId: OrderId;
     status: Text;
     operation: Text;
-    company_name: Text;
-    user_email: Text;
-    event_id: Text;
-    received_at: ?Time.Time;
-    created_at: ?Time.Time;
-    updated_at: ?Time.Time;
-  };
+    companyId: Text;
+    event: Event;
+    user: User;
+    seats: [Seat];
+};
 
   public type OrderCreatedParams = {
-    status: Text;
-    operation: Text;
-    company_name: Text;
-    user_email: Text;
-    event_id: Text;
+    status: ?Text;
+    operation: ?Text;
+    companyId: ?Text;
+    event: ?Event;
+    user: ?User;
+    seats: ?[Seat];
   };
 
   public type OrderCreatedPart = {

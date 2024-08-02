@@ -1,23 +1,44 @@
-type Time = int;
+type User = 
+ record {
+   email: text;
+   name: text;
+   phone: text;
+ };
+type Ticket = 
+ record {
+   ticketClubSeatsFee: text;
+   ticketClubSeatsFeeIVU: text;
+   ticketDescription: text;
+   ticketFacilityFee: text;
+   ticketFacilityFeeIVU: text;
+   ticketId: text;
+   ticketOrderFeeWeb: text;
+   ticketOrderFeeWebIVU: text;
+   ticketPrice: text;
+   ticketPriceIVU: text;
+   ticketPromoterFee: text;
+   ticketPromoterFeeIVU: text;
+   ticketQty: text;
+   ticketRow: text;
+   ticketSeat: text;
+   ticketSection: text;
+   ticketServiceFee: text;
+   ticketServiceFeeIVU: text;
+   ticketStatus: text;
+   ticketTotal: text;
+ };
+type Seat = record {ticket: Ticket;};
 type Orders = 
  service {
-   create: (OrderCreatedParams) -> (OrderCreated);
+   create: (Order) -> (OrderCreated);
    delete: (OrderId) -> (opt Order);
    getAllOrders: () -> (vec Order) query;
    getById: (OrderId) -> (opt Order) query;
    total: () -> (nat) query;
-   update: (OrderId, OrderCreatedParams) -> (opt Order);
+   update: (OrderId, Order) -> (opt Order);
  };
 type OrderId = text;
 type OrderCreatedPart = record {id: OrderId;};
-type OrderCreatedParams = 
- record {
-   company_name: text;
-   event_id: text;
-   operation: text;
-   status: text;
-   user_email: text;
- };
 type OrderCreated = 
  variant {
    err: ApiError;
@@ -25,15 +46,22 @@ type OrderCreated =
  };
 type Order = 
  record {
-   company_name: text;
-   created_at: opt Time;
-   event_id: text;
+   companyId: text;
+   event: Event;
    operation: text;
-   order_id: OrderId;
-   received_at: opt Time;
+   orderId: OrderId;
+   seats: vec Seat;
    status: text;
-   updated_at: opt Time;
-   user_email: text;
+   user: User;
+ };
+type Event = 
+ record {
+   eventArtist: text;
+   eventCountry: text;
+   eventDateTime: text;
+   eventName: text;
+   eventPromoterCompany: text;
+   eventVenue: text;
  };
 type ApiError = 
  variant {

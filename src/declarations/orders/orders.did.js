@@ -1,12 +1,50 @@
 export const idlFactory = ({ IDL }) => {
-  const OrderCreatedParams = IDL.Record({
-    'status' : IDL.Text,
-    'user_email' : IDL.Text,
-    'company_name' : IDL.Text,
-    'operation' : IDL.Text,
-    'event_id' : IDL.Text,
+  const User = IDL.Record({
+    'name' : IDL.Text,
+    'email' : IDL.Text,
+    'phone' : IDL.Text,
   });
   const OrderId = IDL.Text;
+  const Event = IDL.Record({
+    'eventPromoterCompany' : IDL.Text,
+    'eventArtist' : IDL.Text,
+    'eventDateTime' : IDL.Text,
+    'eventCountry' : IDL.Text,
+    'eventVenue' : IDL.Text,
+    'eventName' : IDL.Text,
+  });
+  const Ticket = IDL.Record({
+    'ticketSection' : IDL.Text,
+    'ticketFacilityFee' : IDL.Text,
+    'ticketPromoterFeeIVU' : IDL.Text,
+    'ticketTotal' : IDL.Text,
+    'ticketPriceIVU' : IDL.Text,
+    'ticketQty' : IDL.Text,
+    'ticketRow' : IDL.Text,
+    'ticketId' : IDL.Text,
+    'ticketSeat' : IDL.Text,
+    'ticketOrderFeeWebIVU' : IDL.Text,
+    'ticketServiceFee' : IDL.Text,
+    'ticketDescription' : IDL.Text,
+    'ticketOrderFeeWeb' : IDL.Text,
+    'ticketServiceFeeIVU' : IDL.Text,
+    'ticketClubSeatsFee' : IDL.Text,
+    'ticketClubSeatsFeeIVU' : IDL.Text,
+    'ticketStatus' : IDL.Text,
+    'ticketPrice' : IDL.Text,
+    'ticketPromoterFee' : IDL.Text,
+    'ticketFacilityFeeIVU' : IDL.Text,
+  });
+  const Seat = IDL.Record({ 'ticket' : Ticket });
+  const Order = IDL.Record({
+    'status' : IDL.Text,
+    'user' : User,
+    'orderId' : OrderId,
+    'event' : Event,
+    'seats' : IDL.Vec(Seat),
+    'operation' : IDL.Text,
+    'companyId' : IDL.Text,
+  });
   const OrderCreatedPart = IDL.Record({ 'id' : OrderId });
   const ApiError = IDL.Variant({
     'Unauthorized' : IDL.Null,
@@ -16,25 +54,13 @@ export const idlFactory = ({ IDL }) => {
     'ok' : OrderCreatedPart,
     'err' : ApiError,
   });
-  const Time = IDL.Int;
-  const Order = IDL.Record({
-    'status' : IDL.Text,
-    'received_at' : IDL.Opt(Time),
-    'updated_at' : IDL.Opt(Time),
-    'user_email' : IDL.Text,
-    'company_name' : IDL.Text,
-    'created_at' : IDL.Opt(Time),
-    'operation' : IDL.Text,
-    'order_id' : OrderId,
-    'event_id' : IDL.Text,
-  });
   const Orders = IDL.Service({
-    'create' : IDL.Func([OrderCreatedParams], [OrderCreated], []),
+    'create' : IDL.Func([Order], [OrderCreated], []),
     'delete' : IDL.Func([OrderId], [IDL.Opt(Order)], []),
     'getAllOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
     'getById' : IDL.Func([OrderId], [IDL.Opt(Order)], ['query']),
     'total' : IDL.Func([], [IDL.Nat], ['query']),
-    'update' : IDL.Func([OrderId, OrderCreatedParams], [IDL.Opt(Order)], []),
+    'update' : IDL.Func([OrderId, Order], [IDL.Opt(Order)], []),
   });
   return Orders;
 };

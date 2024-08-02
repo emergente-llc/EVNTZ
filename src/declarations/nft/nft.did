@@ -42,7 +42,7 @@ type MetadataPurpose =
  };
 type MetadataPart = 
  record {
-   data: blob;
+   data: text;
    key_val_data: vec MetadataKeyVal;
    purpose: MetadataPurpose;
  };

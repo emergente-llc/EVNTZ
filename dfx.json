@@ -1,58 +1,42 @@
 {
-    "canisters": {
-      
-      "backend": {
-        "type": "azle",
-        "main": "src/backend/index.ts",
-        "assets": [["src/frontend/dist", "dist"], ["src/declarations/nft/nft.did", "candid/nft.did"]],
-        "build_assets": "npm run build",
-        "gzip": true,
-        "opt_level": "4",
-        "env": [
-            "ACCESS_TOKEN_SECRET",
-            "RS_SEC_HDR_VENDOR_ID",
-            "RS_SEC_HDR_VENDOR_PASSWORD", 
-            "NFT_ID"]
+  "canisters": {
+    "backend": {
+      "type": "azle",
+      "main": "src/backend/index.ts",
+      "assets": [
+        [
+          "src/frontend/dist",
+          "dist"
+        ],
+        [
+          "src/declarations/nft/nft.did",
+          "candid/nft.did"
+        ],
+        [
+          "src/declarations/orders/orders.did",
+          "candid/orders.did"
+        ]
+      ],
+      "build_assets": "npm run build",
+      "gzip": true,
+      "opt_level": "4",
+      "env": [
+        "ACCESS_TOKEN_SECRET",
+        "RS_SEC_HDR_VENDOR_ID",
+        "RS_SEC_HDR_VENDOR_PASSWORD",
+        "NFT_ID",
+        "ORDERS_ID"
+      ]
     },
     "nft": {
-        "type": "motoko",
-        "main": "src/nft/main.mo",
-        "opt_level": "4"
-      },
-        "backages": {
-            "type": "motoko",
-            "main": "src/backages/main.mo",
-            "opt_level": "4"
-          },
-        "companies": {
-            "type": "motoko",
-            "main": "src/companies/main.mo",
-            "opt_level": "4"
-          },
-        "events": {
-            "type": "motoko",
-            "main": "src/events/main.mo",
-            "opt_level": "4"
-          },
-        "orders": {
-            "type": "motoko",
-            "main": "src/orders/main.mo",
-            "opt_level": "4"
-          },
-        "tickets": {
-            "type": "motoko",
-            "main": "src/tickets/main.mo",
-            "opt_level": "4"
-          },
-        "users": {
-            "type": "motoko",
-            "main": "src/users/main.mo",
-            "opt_level": "4"
-          },
-        "venues": {
-            "type": "motoko",
-            "main": "src/venues/main.mo",
-            "opt_level": "4"
-          }
+      "type": "motoko",
+      "main": "src/nft/main.mo",
+      "opt_level": "4"
+    },
+    "orders": {
+      "type": "motoko",
+      "main": "src/orders/main.mo",
+      "opt_level": "4"
     }
+  }
 }

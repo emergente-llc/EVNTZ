@@ -1,6 +1,6 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { initSatellite, setDoc, signIn, signOut,  NFIDProvider, authSubscribe, type User, Unsubscribe } from "@junobuild/core";
+import { initSatellite, setDoc, signIn, signOut,  NFIDProvider, authSubscribe, type User, Unsubscribe, listDocs } from "@junobuild/core";
 import { nanoid } from "nanoid";
 import "./nft";
 
@@ -102,6 +102,11 @@ export class AzleApp extends LitElement {
     );
     const responseJson = await response.json();
 
+    const docs = await listDocs({
+      collection: "orders"
+    })
+    console.log(docs)
+    
     this.sortedTransactions = responseJson;
     this.transactions = responseJson;
   }

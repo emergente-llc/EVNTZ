@@ -4,37 +4,59 @@ import type { IDL } from '@dfinity/candid';
 
 export type ApiError = { 'Unauthorized' : null } |
   { 'Other' : null };
+export interface Event {
+  'eventPromoterCompany' : string,
+  'eventArtist' : string,
+  'eventDateTime' : string,
+  'eventCountry' : string,
+  'eventVenue' : string,
+  'eventName' : string,
+}
 export interface Order {
   'status' : string,
-  'received_at' : [] | [Time],
-  'updated_at' : [] | [Time],
-  'user_email' : string,
-  'company_name' : string,
-  'created_at' : [] | [Time],
+  'user' : User,
+  'orderId' : OrderId,
+  'event' : Event,
+  'seats' : Array<Seat>,
   'operation' : string,
-  'order_id' : OrderId,
-  'event_id' : string,
+  'companyId' : string,
 }
 export type OrderCreated = { 'ok' : OrderCreatedPart } |
   { 'err' : ApiError };
-export interface OrderCreatedParams {
-  'status' : string,
-  'user_email' : string,
-  'company_name' : string,
-  'operation' : string,
-  'event_id' : string,
-}
 export interface OrderCreatedPart { 'id' : OrderId }
 export type OrderId = string;
 export interface Orders {
-  'create' : ActorMethod<[OrderCreatedParams], OrderCreated>,
+  'create' : ActorMethod<[Order], OrderCreated>,
   'delete' : ActorMethod<[OrderId], [] | [Order]>,
   'getAllOrders' : ActorMethod<[], Array<Order>>,
   'getById' : ActorMethod<[OrderId], [] | [Order]>,
   'total' : ActorMethod<[], bigint>,
-  'update' : ActorMethod<[OrderId, OrderCreatedParams], [] | [Order]>,
+  'update' : ActorMethod<[OrderId, Order], [] | [Order]>,
 }
-export type Time = bigint;
+export interface Seat { 'ticket' : Ticket }
+export interface Ticket {
+  'ticketSection' : string,
+  'ticketFacilityFee' : string,
+  'ticketPromoterFeeIVU' : string,
+  'ticketTotal' : string,
+  'ticketPriceIVU' : string,
+  'ticketQty' : string,
+  'ticketRow' : string,
+  'ticketId' : string,
+  'ticketSeat' : string,
+  'ticketOrderFeeWebIVU' : string,
+  'ticketServiceFee' : string,
+  'ticketDescription' : string,
+  'ticketOrderFeeWeb' : string,
+  'ticketServiceFeeIVU' : string,
+  'ticketClubSeatsFee' : string,
+  'ticketClubSeatsFeeIVU' : string,
+  'ticketStatus' : string,
+  'ticketPrice' : string,
+  'ticketPromoterFee' : string,
+  'ticketFacilityFeeIVU' : string,
+}
+export interface User { 'name' : string, 'email' : string, 'phone' : string }
 export interface _SERVICE extends Orders {}
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

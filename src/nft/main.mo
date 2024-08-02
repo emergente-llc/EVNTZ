@@ -3,6 +3,7 @@ import Nat64 "mo:base/Nat64";
 import List "mo:base/List";
 import Bool "mo:base/Bool";
 import Principal "mo:base/Principal";
+import Debug "mo:base/Debug";
 import Types "./types";
 
 shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibleToken) = Self {
@@ -143,9 +144,9 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
   };
 
   public shared({ caller }) func mintDip721(to: Principal, metadata: Types.MetadataDesc) : async Types.MintReceipt {
-    if (not List.some(custodians, func (custodian : Principal) : Bool { custodian == caller })) {
-      return #Err(#Unauthorized);
-    };
+    // if (not List.some(custodians, func (custodian : Principal) : Bool { custodian == caller })) {
+    //   return #Err(#Unauthorized);
+    // };
 
     let newId = Nat64.fromNat(List.size(nfts));
     let nft : Types.Nft = {

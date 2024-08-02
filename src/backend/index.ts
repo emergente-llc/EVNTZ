@@ -7,13 +7,12 @@
 import { Server, Principal, serialize } from "azle";
 import express, { Request, Response, NextFunction, Router } from "express";
 import { validateTicket } from "./json_zod_validation";
-import { initSatellite, setDoc } from "@junobuild/core";
+import { initSatellite, setDoc, listDocs } from "@junobuild/core-peer";
 import { nanoid } from "nanoid";
+import { AnonymousIdentity } from "@dfinity/agent";
 // import { ipWhitelistMiddleware } from './ipWhitelistMiddleware';
 
 const toMetadataNft = (obj: { [key: string]: any }) => {
-  const metadata: { [key: string]: any } = {};
-
   const types = {
     string: "TextContent",
     number: "NatContent",
@@ -25,103 +24,116 @@ const toMetadataNft = (obj: { [key: string]: any }) => {
     symbol: "",
   };
 
-  Object.keys(obj).forEach((entrie: string) => {
-    const val = obj[entrie];
-    const type = types[typeof val];
-    metadata[entrie] = {
-      [type]: val,
-    };
+  const metadata = Object.keys(obj).map((entry: string) => {
+    const value = obj[entry];
+    const type = types[typeof value];
+    return {
+      key: entry,
+      val: {
+        [type]: value
+      },
+    }
   });
 
   return metadata;
 };
 
-async function initializeApp() {
-  await initSatellite({
-    satelliteId: "reahh-3qaaa-aaaal-ajmkq-cai",
-  });
-}
-initializeApp();
+const satellite = {
+  identity: new AnonymousIdentity(),
+  satelliteId: "reahh-3qaaa-aaaal-ajmkq-cai",
+};
+
 
 // Data structures =============================>
 type Transaction = {
-  order_id: string;
   status: string;
+  orderId?: string;
   operation: string;
-  company_id: string;
-  event_id: string;
+  companyId: string;
+  event: {
+      eventName: string;
+      eventArtist: string;
+      eventVenue: string;
+      eventCountry: string;
+      eventDateTime: string;
+      eventPromoterCompany: string;
+  };
   user: {
-    email: string;
-    phone: string;
-  },
-  sale: [
-    {
+      name: string;
+      email: string;
+      phone: string;
+  };
+  seats: {
       ticket: {
-        ticket_id: string;
-        ticket_status: string;
-        ticket_section: string;
-        ticket_row: string;
-        ticket_seat: string;
-        ticket_description: string;
-        ticket_qty: number;
-        ticket_price: number;
-        fees: [
-          {
-            fee_id: string;
-            fee_description: string;
-            fee_amount: number;
-            taxes: {
-              tax_id: string;
-              tax_description: string;
-              tax_amount: number;
-            }
-          }
-        ],
-        ticket_total: number;
-      }
-    }
-  ]
+          ticketId: string;
+          ticketStatus: string;
+          ticketSection: string;
+          ticketRow: string;
+          ticketSeat: string;
+          ticketDescription: string;
+          ticketQty: string;
+          ticketPrice: string;
+          ticketPriceIVU: string;
+          ticketServiceFee: string;
+          ticketServiceFeeIVU: string;
+          ticketPromoterFee: string;
+          ticketPromoterFeeIVU: string;
+          ticketClubSeatsFee: string;
+          ticketClubSeatsFeeIVU: string;
+          ticketFacilityFee: string;
+          ticketFacilityFeeIVU: string;
+          ticketOrderFeeWeb: string;
+          ticketOrderFeeWebIVU: string;
+          ticketTotal: string;
+      };
+  }[];
 };
 
 let transaction: Transaction[] = [
   {
-    "order_id": "HEA4L30",
     "status": "new",
     "operation": "sale",
-    "company_id": "4542e7f0-675k-4f57-bca0-c73er95272sw",
-    "event_id": "f482d45e-t5cb-47yn-857d-524t4f86274r",
-    "user": {
-      "email": "hello@evntz.io",
-      "phone": "7871234589"
+    "companyId": "4542e7f0-675k-4f57-bca0-c73er95272sw",
+    "event": {
+        "eventName": "EVNTZ Demo Day 2024",
+        "eventArtist": "Richard Roman Crespo & Alejandro Oroncoy",
+        "eventVenue": "Zona Tres Labs Live",
+        "eventCountry": "Worldwide",
+        "eventDateTime": "07/12/2024 07:00PM",
+        "eventPromoterCompany": "Zona Tres Labs"
     },
-    "sale": [
-      {
-        "ticket": {
-          "ticket_id": "0005",
-          "ticket_status": "active",
-          "ticket_section": "101",
-          "ticket_row": "A",
-          "ticket_seat": "05",
-          "ticket_description": "VIP",
-          "ticket_qty": 1,
-          "ticket_price": 999.00,
-          "fees": [
-            {
-              "fee_id": "A0",
-              "fee_description": "Base Price",
-              "fee_amount": 999.00,
-              "taxes": {
-                "tax_id": "6%",
-                "tax_description": "6%",
-                "tax_amount": 13.23
-              }
+    "user": {
+        "name": "Neil Roman Crespo",
+        "email": "hello@evntz.io",
+        "phone": "7871234589"
+    },
+    "seats": [
+        {
+            "ticket": {
+                "ticketId": "0005",
+                "ticketStatus": "active",
+                "ticketSection": "101",
+                "ticketRow": "A",
+                "ticketSeat": "05",
+                "ticketDescription": "VIP",
+                "ticketQty": "1",
+                "ticketPrice": "999.00",
+                "ticketPriceIVU": "13.23",
+                "ticketServiceFee": "6.75",
+                "ticketServiceFeeIVU": "0.78",
+                "ticketPromoterFee": "4.00",
+                "ticketPromoterFeeIVU": "0.46",
+                "ticketClubSeatsFee": "5.00",
+                "ticketClubSeatsFeeIVU": "0.58",
+                "ticketFacilityFee": "2.00",
+                "ticketFacilityFeeIVU": "0.23",
+                "ticketOrderFeeWeb": "3.00",
+                "ticketOrderFeeWebIVU": "0.35",
+                "ticketTotal": "1035.38"
             }
-          ],
-          "ticket_total": 1035.38
         }
-      }
     ]
-  },
+}
 ];
 
 type Company_configs = {
@@ -175,8 +187,8 @@ function postLog(req: Request, res: Response, next: NextFunction) {
 // Middleware to validate Customer Tokens
 const customerFrontDoor = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers["authorization"] as string;
-  const vendorIdHeader = req.headers["rs_sec_hdr_vendor_id"] as string;
-  const vendorPasswordHeader = req.headers["rs_sec_hdr_vendor_password"] as string;
+  const vendorIdHeader = req.headers["rs-sec-hdr-vendor-id"] as string;
+  const vendorPasswordHeader = req.headers["rs-sec-hdr-vendor-password"] as string;
   //const clientIP = req.ip as string;
 
   if (!authHeader || !vendorIdHeader || !vendorPasswordHeader) {
@@ -356,6 +368,8 @@ export default Server(() => {
     }
   });
 
+  // nft.post("", async (req, res) => {});
+
   app.use("/v1/nft", nft);
 
   // GET
@@ -366,14 +380,14 @@ export default Server(() => {
   // GET
   app.get("/v1/tickets/all/sorted", async (_req, res) => {
     const sortedTransactions = transaction.sort((a, b) =>
-      a.order_id.localeCompare(b.order_id)
+      a.orderId.localeCompare(b.orderId)
     );
     res.json(sortedTransactions);
   });
 
   // POST
-  app.post("/v1/tickets/post", customerFrontDoor, async (req, res) => {
-    const result = validateTicket(req.body);
+  app.post("/v1/tickets/post", async (req, res) => {
+    const result = req.body;
 
     if (result.error) {
       console.error(result.error.errors);
@@ -382,57 +396,78 @@ export default Server(() => {
     else {
       console.log('Validation successful');
 
-      const orderIdExists = transaction.some(
-        (transaction) => transaction.order_id === req.body.order_id
-      );
+      // const orderIdExists = transaction.some(
+      //   (transaction) => transaction.orderId === req.body.orderId
+      // );
 
-      if (orderIdExists) {
-        return res.status(409).json({ error: "Can't post this transaction." });
-      }
-
+      // if (orderIdExists) {
+      //   return res.status(409).json({ error: "Can't post this transaction." });
+      // }
+      
       /**************************************/
       /* JUNO DATABASE COLLECTIONS -> START */
       /**************************************/
 
       /*TODO: ORDERS COLLECTION */
-        const orderId = nanoid();
-        try {
-          const doc = await setDoc({
-            collection: "orders",
-            doc: {
-              key: orderId,
-              data: {
-                order_id: orderId,
-                status: req.body.status,
-                operation: req.body.operation,
-                company_id: req.body.company_id,
-                event_id: req.body.event_id,
-                user_email: req.body.user.email,
-                received_at: new Date().toLocaleString(),
-              },
-            },
-          });
-          
-          const metadata = toMetadataNft(doc.data);
-          
-          try {
-            const response = await fetch(`icp://${process.env.NFT_ID}/mintDip721`, {
-              body: serialize({
-                candidPath: "/candid/nft.did",
-                args: [Principal.fromText(req.body.minter), metadata]
-              })
-            });
-      
-            const responseJson = await response.json();
-            res.json(toJson(responseJson));
-          } catch (err) {
-            res.send(`${err}`);
-          }
+      const orderId = nanoid();
+      const order =  {
+        orderId: orderId,
+        status: req.body.status,
+        operation: req.body.operation,
+        companyId: req.body.companyId,
+        event: {
+            eventName: req.body.event?.eventName,
+            eventArtist: req.body.event?.eventArtist,
+            eventVenue: req.body.event?.eventVenue,
+            eventCountry: req.body.event?.eventCountry,
+            eventDateTime: req.body.event?.eventDateTime,
+            eventPromoterCompany: req.body.event?.eventPromoterCompany
+        },
+        user: {
+            name: req.body.user?.name,
+            email: req.body.user?.email,
+            phone: req.body.user?.phone
+        },
+        seats: req.body.seats || []
+    };
 
-          console.log("Document added successfully:");
-        } catch (error) {
-          console.error("Error adding document:", error);
-        }
+    try {
+      const response = await fetch(`icp://${process.env.ORDERS_ID}/create`, {
+        body: serialize({
+          candidPath: "/candid/orders.did",
+          args: [order]
+        })
+      });
+
+      const responseJson = await response.json();
+      if(!responseJson.ok) throw Error("There is a mistake"); 
+    } catch (err) {
+      res.send(`${err}`);
+    }
+
+    const minter: string = req.body.minter;
+    const metadataNft: { [key: string]: any } = [{
+      data: "",
+      purpose: { Rendered: null },
+      key_val_data: toMetadataNft({
+        orderId: order.orderId,
+      }),
+    }];
+
+    try {
+      const response = await fetch(`icp://${process.env.NFT_ID}/mintDip721`, {
+        body: serialize({
+          candidPath: "/candid/nft.did",
+          args: [Principal.fromText(minter), metadataNft]
+        })
+      });
+
+      const responseJson = await response.json();
+      if(!responseJson.Ok) throw Error("There is a mistake"); 
+    } catch (err) {
+      res.send(`${err}`);
+    }
+      
       /*TODO: ORDERS COLLECTION */
 
       /**************************************/
