@@ -9,6 +9,7 @@ import express, { Request, Response, NextFunction, Router } from "express";
 import { validateTicket } from "./json_zod_validation";
 import { initSatellite, setDoc } from "@junobuild/core";
 import { nanoid } from "nanoid";
+import {v4 as uuidv4} from 'uuid';
 // import { ipWhitelistMiddleware } from './ipWhitelistMiddleware';
 
 async function initializeApp() {
@@ -342,6 +343,27 @@ export default Server(() => {
       a.order_id.localeCompare(b.order_id)
     );
     res.json(sortedTransactions);
+  });
+
+  // POST
+  app.post("/v1/get_token", async (req, res) => {
+    const vendorIdHeader = req.headers["rs_sec_hdr_vendor_id"] as string;
+    const vendorPasswordHeader = req.headers["rs_sec_hdr_vendor_password"] as string;
+
+    if (!vendorIdHeader || !vendorPasswordHeader) {
+      return res.status(401).json({ error: "No authorization headers provided." });
+    }
+
+    if (vendorIdHeader.trimStart().trimEnd() === company_configs.RS_SEC_HDR_VENDOR_ID.toString() &&
+        vendorPasswordHeader.trimStart().trimEnd() === company_configs.RS_SEC_HDR_VENDOR_PASSWORD.toString()) {
+      // Generates a random UUID
+      const token = uuidv4();
+      // Store the token to the Customer Profile Configurations
+      res.send(token);
+    }
+    else {
+      res.sendStatus(403).json({ error: "403 Forbidden" });
+    }
   });
 
   // POST
